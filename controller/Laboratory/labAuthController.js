@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const Laboratory = require("../../models/Laboratory/laboratory.js");
 const multer = require("multer");
-const fs = require('fs');
+const fs = require("fs");
 const admin = require("firebase-admin");
 const serviceAccount = require("../../serviceAccountKey.json");
 const bodyParser = require("body-parser");
@@ -27,8 +27,7 @@ admin.initializeApp({
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{8,}$/;
-
+const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
 const labAuthController = {
   async register(req, res, next) {
@@ -105,18 +104,18 @@ const labAuthController = {
       cnicImage,
     } = req.body;
 
-    // try {
-    //   // Inside your try-catch block
-    //   const emailInUse = await Laboratory.exists({ email });
+    try {
+      // Inside your try-catch block
+      const emailInUse = await Laboratory.exists({ email });
 
-    //   if (emailInUse) {
-    //     const error = new Error("Email already registered, use another email!");
-    //     error.status = 409;
-    //     return next(error);
-    //   }
-    // } catch (error) {
-    //   return next(error);
-    // }
+      if (emailInUse) {
+        const error = new Error("Email already registered, use another email!");
+        error.status = 409;
+        return next(error);
+      }
+    } catch (error) {
+      return next(error);
+    }
 
     // 4. password hash
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -301,12 +300,11 @@ const labAuthController = {
   // },
 
   async labLogo(req, res) {
-    console.log(req)
+    console.log(req);
     const id = req.body.userId;
 
     try {
       if (req.file) {
-        
         const file = fs.readFileSync(req.file.path);
         const imageRef = bucket.file(
           `profile_pictures/${req.file.originalname}`
@@ -331,10 +329,12 @@ const labAuthController = {
               })
               .then((signedUrls) => {
                 const imageUrl = signedUrls[0];
-                    return res.status(200).json({
-                      message: "File added successfully",
-                      imageUrl: imageUrl,
-                    })
+                return res
+                  .status(200)
+                  .json({
+                    message: "File added successfully",
+                    imageUrl: imageUrl,
+                  })
                   .catch((error) => {
                     console.error("Error updating user:", error);
                     return res.status(500).send("Error updating user.");
@@ -352,7 +352,7 @@ const labAuthController = {
       } else {
         res.status(500).json({
           status: "Failure",
-          error: 'image not given',
+          error: "image not given",
         });
       }
     } catch (error) {
@@ -361,6 +361,93 @@ const labAuthController = {
         error: error.message,
       });
     }
+  },
+
+  async login(req, res, next) {
+    // 1. validate user input
+    // 2. if validation error, return error
+    // 3. match username and password
+    // 4. return response
+
+    // we expect input data to be in such shape
+    const labLoginSchema = Joi.object({
+      email: Joi.string().min(5).max(30).required(),
+      password: Joi.string().pattern(passwordPattern),
+    });
+
+    const { error } = labLoginSchema.validate(req.body);
+
+    if (error) {
+      return next(error);
+    }
+
+    const { email, password } = req.body;
+
+    // const username = req.body.username
+    // const password = req.body.password
+
+    let lab;
+
+    try {
+      // match username
+      lab = await Laboratory.findOne({ email: email });
+
+      if (!lab) {
+        const error = {
+          status: 401,
+          message: "Invalid email",
+        };
+
+        return next(error);
+      }
+
+      // match password
+
+      const match = await bcrypt.compare(password, lab.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+    } catch (error) {
+      return next(error);
+    }
+
+    const accessToken = JWTService.signAccessToken({ _id: lab._id }, "30m");
+    const refreshToken = JWTService.signRefreshToken({ _id: lab._id }, "60m");
+
+    // update refresh token in database
+    try {
+      await RefreshToken.updateOne(
+        {
+          _id: lab._id,
+        },
+        { token: refreshToken },
+        { upsert: true }
+      );
+    } catch (error) {
+      return next(error);
+    }
+
+    res.cookie("accessToken", accessToken, {
+      maxAge: 1000 * 60 * 60 * 24,
+      httpOnly: true,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 1000 * 60 * 60 * 24,
+      httpOnly: true,
+    });
+
+    const labDto = new LabDTO(lab);
+
+    return res
+      .status(200)
+      .json({ lab: labDto, auth: true, token: accessToken });
   },
 };
 module.exports = labAuthController;

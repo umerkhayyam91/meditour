@@ -15,7 +15,8 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 // register
-router.post("/register", labAuthController.register);
+router.post("/lab/register", labAuthController.register);
+router.post("/lab/login", labAuthController.login);
 router.post("/labLogo", upload.single("image"), labAuthController.labLogo);
 
 // router.post("/logout", auth, authController.logout);

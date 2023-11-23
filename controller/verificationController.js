@@ -60,37 +60,6 @@ const verificationController = {
             msg: "We were unable to find a user for this verification. Please enter a correct email!",
           });
         }
-        // User.findOne({ _id: cod._userId, email: email }, function (err, user) {
-        //   // not valid user
-        //   if (!user) {
-        //     return res.status(401).send({
-        //       msg: "We were unable to find a user for this verification. Please SignUp!",
-        //     });
-        //   }
-        //   // user is already verified
-        //   else if (user.isVerified) {
-        //     return res
-        //       .status(200)
-        //       .send("User has been already verified. Please Login");
-        //   }
-        //   // verify user
-        //   else {
-        //     // change isVerified to true
-        //     user.isVerified = true;
-        //     user.save(function (err) {
-        //       // error occur
-        //       if (err) {
-        //         return next(err);
-        //       }
-        //       // account successfully verified
-        //       else {
-        //         return res
-        //           .status(200)
-        //           .send("Your account has been successfully verified");
-        //       }
-        //     });
-        //   }
-        // });
       }
     });
   },
