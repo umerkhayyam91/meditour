@@ -1,5 +1,6 @@
 const express = require("express");
 const authController = require("../controller/authController");
+const verificationController = require("../controller/verificationController");
 const auth = require("../middlewares/auth");
 
 const router = express.Router();
@@ -20,5 +21,8 @@ router.post("/logout", auth, authController.logout);
 
 // refresh
 router.get("/refresh", authController.refresh);
+
+router.post("/sendCodeToEmail", verificationController.sendCodeToEmail);
+router.post("/confirmEmail", verificationController.confirmEmail);
 
 module.exports = router;
