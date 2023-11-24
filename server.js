@@ -10,6 +10,9 @@ app.use(labRouter);
 
 dbConnect();
 
+// const user = require('./routes/dummy');
+// app.use('/api/v1/', user)
+
 app.listen(PORT , ()=>{
     console.log('server running')
 })

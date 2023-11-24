@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
 const Laboratory = require("../../models/Laboratory/laboratory.js");
+const serviceAccount = require("../../serviceAccountKey.json"); // Replace with your actual key file
 const multer = require("multer");
 const fs = require("fs");
 const admin = require("firebase-admin");
-const serviceAccount = require("../../serviceAccountKey.json");
 const bodyParser = require("body-parser");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
@@ -13,19 +13,22 @@ const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 // const nodemailer = require("nodemailer");
 
-app.use(
-  bodyParser.urlencoded({
-    limit: "5000mb",
-    extended: true,
-    parameterLimit: 100000000000,
-  })
-);
+// app.use(
+//   bodyParser.urlencoded({
+//     limit: "5000mb",
+//     extended: true,
+//     parameterLimit: 100000000000,
+//   })
+// );
+
+// Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: "gs://meditour-33ba8.appspot.com",
+  storageBucket: "meditour-33ba8.appspot.com", // Replace with your actual storage bucket URL
 });
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+
+const bucket = admin.storage().bucket();
+// const upload = multer({ dest: 'temp/' })
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
@@ -190,119 +193,8 @@ const labAuthController = {
       .status(201)
       .json({ lab: labDto, auth: true, token: accessToken });
   },
-  // async register(req, res) {
-  //     try {
 
-  // const { labFirstName, labLastName, labLicenseNumber, labExpiryDate, OwnerFirstName, OwnerMiddleName, OwnerLastName,
-  //     cnicOrPassportNo, cnicOrPassportExpiry, labAddress, state, country, website,
-  //     twitter, facebook, instagram, incomeTaxNo,
-  //     salesTaxNo, bankName, accountHolderName, accountName } = req.body;
-
-  //         if (!labFirstName, !labLastName, !labLicenseNumber, !labExpiryDate, !OwnerFirstName, !OwnerMiddleName, !OwnerLastName,
-  //             !cnicOrPassportNo, !cnicOrPassportExpiry, !labAddress, !state, !country, !website,
-  //             !twitter, !facebook, !instagram, !incomeTaxNo,
-  //             !salesTaxNo, !bankName, !accountHolderName, !accountName) {
-  //             return res.status(401).json({
-  //                 status: "failure",
-  //                 message: 'Please enter the required credentials'
-  //             });
-  //         }
-  //         // const userId = req.user.id;
-
-  //         // const labLogoUpload = req.files['labLogo'] !== undefined && req.files['labLogo'].length > 0;
-  //         // const isMultipleFileUpload = req.files['images'] !== undefined && req.files['images'].length > 0;
-
-  //         const newLab = new Lab({
-  //             labFirstName, labLastName, labLicenseNumber, labExpiryDate, OwnerFirstName, OwnerMiddleName, OwnerLastName,
-  //             cnicOrPassportNo, cnicOrPassportExpiry, labAddress, state, country, website,
-  //             twitter, facebook, instagram, incomeTaxNo,
-  //             salesTaxNo, bankName, accountHolderName, accountName
-  //         });
-  //         await newLab.save();
-
-  //         // if (labLogoUpload) {
-  //         //     const propertyDocumentFile = req.files['labLogoUpload'][0];
-  //         //     const file = fs.readFileSync(propertyDocumentFile.path);
-  //         //     const imageRef = bucket.file(`labLogoUploads/${userId}/${propertyDocumentFile.originalname}`);
-
-  //         //     await new Promise((resolve, reject) => {
-  //         //         bucket.upload(propertyDocumentFile.path, {
-  //         //             destination: imageRef,
-  //         //             metadata: {
-  //         //                 contentType: propertyDocumentFile.mimetype,
-  //         //             },
-  //         //         })
-  //         //             .then(() => {
-  //         //                 fs.unlinkSync(propertyDocumentFile.path);
-  //         //                 resolve();
-  //         //             })
-  //         //             .catch((error) => {
-  //         //                 console.error('Error uploading labLogoUpload:', error);
-  //         //                 reject(error);
-  //         //             });
-  //         //     });
-
-  //         //     // Get the public URL of the uploaded document
-  //         //     const documentUrl = await imageRef.getSignedUrl({
-  //         //         action: 'read',
-  //         //         expires: '01-01-3000',
-  //         //     });
-
-  //         //     // Update the labLogoUpload URL in the newPoster object
-  //         //     newPoster.labLogoUpload = documentUrl[0];
-  //         // }
-
-  //         // const imagesFiles = req.files['images']
-  //         // // Wait for all image uploads to complete
-  //         // await Promise.all(
-  //         //     imagesFiles.map((imageFile) =>
-  //         //         new Promise((resolve, reject) => {
-  //         //             const imageRef = bucket.file(`residence_images/${userId}/${imageFile.originalname}`);
-  //         //             bucket.upload(imageFile.path, {
-  //         //                 destination: imageRef,
-  //         //                 metadata: {
-  //         //                     contentType: imageFile.mimetype
-  //         //                 },
-  //         //             })
-  //         //                 .then(() => {
-  //         //                     fs.unlinkSync(imageFile.path);
-  //         //                     // Get the public URL of the uploaded image
-  //         //                     return imageRef.getSignedUrl({
-  //         //                         action: 'read',
-  //         //                         expires: '01-01-3000',
-  //         //                     });
-  //         //                 })
-  //         //                 .then((signedUrls) => {
-  //         //                     // Add the image URL to the 'images' array in the newPoster object
-  //         //                     newPoster.images.push(signedUrls[0]);
-  //         //                     resolve();
-  //         //                 })
-  //         //                 .catch((error) => {
-  //         //                     console.error('Error uploading an image:', error);
-  //         //                     reject(error);
-  //         //                 });
-  //         //         })
-  //         //     )
-  //         // );
-
-  //         // Save the newPoster object to the database
-  //         // await newPoster.save();
-
-  //         return res.status(200).json({ newLab });
-
-  //     } catch (error) {
-  //         // Handle errors
-  //         return res.json({
-  //             'status': 'failure',
-  //             'message': error.message,
-  //         });
-  //     }
-  // },
-
-  async labLogo(req, res) {
-    console.log(req);
-    const id = req.body.userId;
-
+  async uploadFile(req, res) {
     try {
       if (req.file) {
         const file = fs.readFileSync(req.file.path);
@@ -329,16 +221,10 @@ const labAuthController = {
               })
               .then((signedUrls) => {
                 const imageUrl = signedUrls[0];
-                return res
-                  .status(200)
-                  .json({
-                    message: "File added successfully",
-                    imageUrl: imageUrl,
-                  })
-                  .catch((error) => {
-                    console.error("Error updating user:", error);
-                    return res.status(500).send("Error updating user.");
-                  });
+                return res.status(200).json({
+                  fileUrl: imageUrl,
+                });
+                // })
               })
               .catch((error) => {
                 console.error("Error getting signed URL:", error);
@@ -350,10 +236,7 @@ const labAuthController = {
             return res.status(500).send("Error uploading image.");
           });
       } else {
-        res.status(500).json({
-          status: "Failure",
-          error: "image not given",
-        });
+        return res.send("Please select an image");
       }
     } catch (error) {
       res.status(500).json({
