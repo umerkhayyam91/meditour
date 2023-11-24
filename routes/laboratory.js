@@ -3,8 +3,6 @@ const labAuthController = require("../controller/Laboratory/labAuthController");
 const labTestController = require("../controller/Laboratory/labTestController");
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
-
-const multer = require("multer");
 const router = express.Router();
 const upload = multer({ dest: "temp/" });
 
