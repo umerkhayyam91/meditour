@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const Laboratory = require("../../models/Laboratory/laboratory.js");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Order = require("../../models/Laboratory/order.js");
 const serviceAccount = require("../../serviceAccountKey.json");
@@ -21,6 +21,7 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
 const labAuthController = {
   async register(req, res, next) {
+    console.log(req.user);
     // 1. validate user input
     const labRegisterSchema = Joi.object({
       email: Joi.string().email().required(),
@@ -283,27 +284,38 @@ const labAuthController = {
     }
   },
 
-  async changeStatus(req, res) {
+  async changeStatus(req, res, next) {
     try {
       const newStatus = req.body.status;
+      if (!newStatus) {
+        const error = {
+          status: 401,
+          message: "Status not found",
+        };
+
+        return next(error);
+      }
       const id = req.query.id;
-      const result = await Order.findOneAndUpdate(
+      const result = await Laboratory.findOneAndUpdate(
         { _id: ObjectId(id) },
-        { $set: { status: newStatus } },
-        { returnDocument: 'after' } // Optional: Specify 'after' to return the updated document
+        { $set: { labFirstName: newStatus } },
+        { returnDocument: "after" } // Optional: Specify 'after' to return the updated document
       );
+      console.log(result)
       if (!result) {
-        return res.status(404).json({ error: "Order not found" });
+        const error = {
+          status: 401,
+          message: "Order not found",
+        };
+
+        return next(error);
       }
       res.status(200).json({
-        status: "Success",
-        error: "Status changed successfully",
+        auth: true,
+        message: "status changed successfully",
       });
     } catch (error) {
-      res.status(500).json({
-        status: "Failure",
-        error: error.message,
-      });
+      return next(error);
     }
   },
 };
