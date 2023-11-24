@@ -1,7 +1,10 @@
 const express = require("express");
 const app = express();
 const Laboratory = require("../../models/Laboratory/laboratory.js");
-const serviceAccount = require("../../serviceAccountKey.json"); // Replace with your actual key file
+const mongoose = require("mongoose")
+const ObjectId = mongoose.Types.ObjectId;
+const Order = require("../../models/Laboratory/order.js");
+const serviceAccount = require("../../serviceAccountKey.json");
 const multer = require("multer");
 const fs = require("fs");
 const admin = require("firebase-admin");
@@ -9,26 +12,10 @@ const bodyParser = require("body-parser");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
 const LabDTO = require("../../dto/lab.js");
+const orderDto = require("../../dto/order.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
-// const nodemailer = require("nodemailer");
-
-// app.use(
-//   bodyParser.urlencoded({
-//     limit: "5000mb",
-//     extended: true,
-//     parameterLimit: 100000000000,
-//   })
-// );
-
-// Initialize Firebase Admin SDK
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: "meditour-33ba8.appspot.com", // Replace with your actual storage bucket URL
-});
-
-const bucket = admin.storage().bucket();
-// const upload = multer({ dest: 'temp/' })
+let userCounter = 0;
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
@@ -128,7 +115,8 @@ const labAuthController = {
     let refreshToken;
 
     let lab;
-
+    const randomNumber = Math.floor(Math.random() * 1000000); // Generate a random number between 0 and 99999999
+    // const sixDigitId = randomNumber.toString().padStart(8, '0'); // Ensure it is eight digits long
     try {
       const labToRegister = new Laboratory({
         labFirstName,
@@ -159,6 +147,7 @@ const labAuthController = {
         taxFileImage,
         cnicImage,
         password: hashedPassword,
+        MR_NO: randomNumber,
       });
 
       lab = await labToRegister.save();
@@ -192,58 +181,6 @@ const labAuthController = {
     return res
       .status(201)
       .json({ lab: labDto, auth: true, token: accessToken });
-  },
-
-  async uploadFile(req, res) {
-    try {
-      if (req.file) {
-        const file = fs.readFileSync(req.file.path);
-        const imageRef = bucket.file(
-          `profile_pictures/${req.file.originalname}`
-        );
-
-        bucket
-          .upload(req.file.path, {
-            destination: imageRef,
-            metadata: {
-              contentType: req.file.mimetype,
-            },
-          })
-          .then(() => {
-            // Delete the local file after uploading
-            fs.unlinkSync(req.file.path);
-
-            // Get the public URL of the uploaded image
-            imageRef
-              .getSignedUrl({
-                action: "read",
-                expires: "01-01-3000", // Set an expiration date if needed
-              })
-              .then((signedUrls) => {
-                const imageUrl = signedUrls[0];
-                return res.status(200).json({
-                  fileUrl: imageUrl,
-                });
-                // })
-              })
-              .catch((error) => {
-                console.error("Error getting signed URL:", error);
-                return res.status(500).send("Error getting signed URL.");
-              });
-          })
-          .catch((error) => {
-            console.error("Error uploading image:", error);
-            return res.status(500).send("Error uploading image.");
-          });
-      } else {
-        return res.send("Please select an image");
-      }
-    } catch (error) {
-      res.status(500).json({
-        status: "Failure",
-        error: error.message,
-      });
-    }
   },
 
   async login(req, res, next) {
@@ -332,5 +269,43 @@ const labAuthController = {
       .status(200)
       .json({ lab: labDto, auth: true, token: accessToken });
   },
+
+  async getOrders(req, res) {
+    try {
+      const allOrders = await Order.find();
+      const OrderDto = new orderDto(allOrders);
+      return res.status(200).json({ orders: OrderDto, auth: true });
+    } catch (error) {
+      res.status(500).json({
+        status: "Failure",
+        error: error.message,
+      });
+    }
+  },
+
+  async changeStatus(req, res) {
+    try {
+      const newStatus = req.body.status;
+      const id = req.query.id;
+      const result = await Order.findOneAndUpdate(
+        { _id: ObjectId(id) },
+        { $set: { status: newStatus } },
+        { returnDocument: 'after' } // Optional: Specify 'after' to return the updated document
+      );
+      if (!result) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+      res.status(200).json({
+        status: "Success",
+        error: "Status changed successfully",
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "Failure",
+        error: error.message,
+      });
+    }
+  },
 };
+
 module.exports = labAuthController;
