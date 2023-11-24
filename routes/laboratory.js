@@ -8,15 +8,11 @@ const bodyParser = require("body-parser");
 // const auth = require("../middlewares/auth");
 
 const router = express.Router();
-// admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount),
-//     storageBucket: "gs://meditour-33ba8.appspot.com",
-//   });
-  const storage = multer.memoryStorage();
-  const upload = multer({ storage: storage });
-// register
+
+const upload = multer({ dest: 'temp/' });
+
+router.post("/uploadFile", upload.single('file'), labAuthController.uploadFile);
 router.post("/register", labAuthController.register);
-router.post("/labLogo", upload.single('image'), labAuthController.labLogo);
 
 // router.post("/logout", auth, authController.logout);
 
