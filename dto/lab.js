@@ -21,7 +21,7 @@ class LabDTO {
     this.salesTaxNo = lab.salesTaxNo;
     this.bankName = lab.bankName;
     this.accountHolderName = lab.accountHolderName;
-    this.accountName = lab.accountName;
+    this.accountNumber = lab.accountNumber;
     this.labLogo = lab.labLogo;
     this.labLicenseImage = lab.labLicenseImage;
     this.taxFileImage = lab.taxFileImage;

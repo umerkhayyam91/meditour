@@ -41,15 +41,15 @@ const labAuthController = {
       cnicOrPassportExpiry: Joi.string().required(),
       labAddress: Joi.string().required(),
       state: Joi.string().required(),
-      website: Joi.string().required(),
-      twitter: Joi.string().required(),
-      facebook: Joi.string().required(),
-      instagram: Joi.string().required(),
+      website: Joi.string(),
+      twitter: Joi.string(),
+      facebook: Joi.string(),
+      instagram: Joi.string(),
       incomeTaxNo: Joi.string().required(),
       salesTaxNo: Joi.string().required(),
       bankName: Joi.string().required(),
       accountHolderName: Joi.string().required(),
-      accountName: Joi.string().required(),
+      accountNumber: Joi.string().required(),
       country: Joi.string().required(),
     });
 
@@ -82,7 +82,7 @@ const labAuthController = {
       salesTaxNo,
       bankName,
       accountHolderName,
-      accountName,
+      accountNumber,
       // email,
       // password,
       // confirmPassword,
@@ -138,7 +138,7 @@ const labAuthController = {
         salesTaxNo,
         bankName,
         accountHolderName,
-        accountName,
+        accountNumber,
         // email,
         // phoneNumber,
         labLogo,
@@ -320,7 +320,50 @@ const labAuthController = {
 
   },
 
-  
+  async updateProfile(req,res,next){
+    const labSchema = Joi.object({
+      website: Joi.string(),
+      twitter: Joi.string(),
+      facebook: Joi.string(),
+      instagram: Joi.string(),
+      bankName: Joi.string(),
+      accountHolderName: Joi.string(),
+      accountNumber: Joi.string(),
+    });
+
+    const { error } = labSchema.validate(req.body);
+
+    if (error) {
+      return next(error);
+    }
+    const { website, twitter, facebook, instagram, bankName, accountHolderName, accountNumber } = req.body;
+    const labId = req.user._id;
+    console.log(labId);
+
+    const lab = await Laboratory.findById(labId);
+
+    if (!lab) {
+      const error = new Error("Laboratory not found!");
+      error.status = 404;
+      return next(error);
+    }
+
+    // Update only the provided fields
+    if (website) lab.website = website;
+    if (facebook) lab.facebook = facebook;
+    if (twitter) lab.twitter = twitter;
+    if (instagram) lab.instagram = instagram;
+    if (bankName) lab.bankName = bankName;
+    if (accountHolderName) lab.accountHolderName = accountHolderName;
+    if (accountNumber) lab.accountNumber = accountNumber;
+
+    // Save the updated test
+    await lab.save();
+
+    return res
+      .status(200)
+      .json({ message: "Laboratory updated successfully", Laboratory: lab });
+  }
 };
 
 module.exports = labAuthController;

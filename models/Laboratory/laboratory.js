@@ -61,19 +61,15 @@ const labSchema = new mongoose.Schema(
     },
     website: {
       type: String,
-      required: true,
     },
     twitter: {
       type: String,
-      required: true,
     },
     facebook: {
       type: String,
-      required: true,
     },
     instagram: {
       type: String,
-      required: true,
     },
     incomeTaxNo: {
       type: String,
@@ -91,7 +87,7 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    accountName: {
+    accountNumber: {
       type: String,
       required: true,
     },

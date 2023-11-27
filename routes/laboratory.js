@@ -14,6 +14,7 @@ router.post("/lab/register", labAuthController.register);
 router.post("/lab/login", labAuthController.login);
 router.post("/lab/uploadFile", upload.single("file"), uploadFileController.uploadFile);
 router.post("/lab/verify", labAuthController.verify);
+router.post("/lab/updateProfile", auth, labAuthController.updateProfile);
 
 
 //.....Tests................
