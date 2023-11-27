@@ -11,7 +11,7 @@ const labRouter = require("./routes/laboratory");
 
 app.use(labRouter);
 
-dbConnect();
+await dbConnect();
 app.use(ErrorHandler)
 app.listen(PORT , ()=>{
     console.log('server running')

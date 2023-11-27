@@ -157,7 +157,7 @@ const labTestController = {
         error.status = 404;
         return next(error);
       }
-      return res.status(200).json({ tests });
+      return res.status(200).json({ tests, auth: true });
     } catch (error) {
       return next(error);
     }
