@@ -4,11 +4,12 @@ const labSchema = new mongoose.Schema(
   {
     email: {
       type: String,
-      required: true,
     },
     password: {
       type: String,
-      required: true,
+    },
+    phoneNumber: {
+      type: String,
     },
     labFirstName: {
       type: String,
@@ -115,6 +116,10 @@ const labSchema = new mongoose.Schema(
       required: true,
       unique: true
     },
+    isVerified: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,

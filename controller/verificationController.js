@@ -4,7 +4,13 @@ const nodemailer = require("nodemailer");
 const verificationController = {
   async sendCodeToEmail(req, res, next) {
     const { email } = req.body;
-
+    const alreadySent = await VerificationCode.exists({ email });
+    if (alreadySent) {
+      return res.status(400).send({
+        message:
+          "Your verification code has been sent.",
+      });
+    }
     try {
       let code;
       var codeToSave = new VerificationCode({
@@ -63,6 +69,7 @@ const verificationController = {
       }
     });
   },
+
 };
 
 module.exports = verificationController;

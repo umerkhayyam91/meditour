@@ -20,17 +20,16 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
 const labAuthController = {
   async register(req, res, next) {
-    console.log(req.user);
     // 1. validate user input
     const labRegisterSchema = Joi.object({
-      email: Joi.string().email().required(),
+      // email: Joi.string().email().required(),
       labLogo: Joi.string().required(),
       labLicenseImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string().required(),
-      phoneNumber: Joi.string().required(),
-      password: Joi.string().pattern(passwordPattern).required(),
-      confirmPassword: Joi.ref("password"),
+      // phoneNumber: Joi.string().required(),
+      // password: Joi.string().pattern(passwordPattern).required(),
+      // confirmPassword: Joi.ref("password"),
       labFirstName: Joi.string().required(),
       labLastName: Joi.string().required(),
       labLicenseNumber: Joi.string().required(),
@@ -84,31 +83,31 @@ const labAuthController = {
       bankName,
       accountHolderName,
       accountName,
-      email,
-      password,
-      confirmPassword,
-      phoneNumber,
+      // email,
+      // password,
+      // confirmPassword,
+      // phoneNumber,
       labLogo,
       labLicenseImage,
       taxFileImage,
       cnicImage,
     } = req.body;
 
-    try {
-      // Inside your try-catch block
-      const emailInUse = await Laboratory.exists({ email });
+    // try {
+    //   // Inside your try-catch block
+    //   const emailInUse = await Laboratory.exists({ email });
 
-      if (emailInUse) {
-        const error = new Error("Email already registered, use another email!");
-        error.status = 409;
-        return next(error);
-      }
-    } catch (error) {
-      return next(error);
-    }
+    //   if (emailInUse) {
+    //     const error = new Error("Email already registered, use another email!");
+    //     error.status = 409;
+    //     return next(error);
+    //   }
+    // } catch (error) {
+    //   return next(error);
+    // }
 
     // 4. password hash
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // 5. store user data in db
     let accessToken;
@@ -140,13 +139,13 @@ const labAuthController = {
         bankName,
         accountHolderName,
         accountName,
-        email,
-        phoneNumber,
+        // email,
+        // phoneNumber,
         labLogo,
         labLicenseImage,
         taxFileImage,
         cnicImage,
-        password: hashedPassword,
+        // password: hashedPassword,
         MR_NO: randomNumber,
       });
 
@@ -211,6 +210,15 @@ const labAuthController = {
     try {
       // match username
       lab = await Laboratory.findOne({ email: email });
+      if(lab.isVerified==false){
+        const error = {
+          status: 401,
+          message: "User not verified",
+        };
+
+        return next(error);
+      }
+      
 
       if (!lab) {
         const error = {
@@ -269,6 +277,50 @@ const labAuthController = {
       .status(200)
       .json({ lab: labDto, auth: true, token: accessToken });
   },
+
+  async verify(req, res, next) {
+    const labRegisterSchema = Joi.object({
+      phoneNumber: Joi.string().required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().pattern(passwordPattern).required(),
+      confirmPassword: Joi.ref("password"),
+    });
+
+    const { error } = labRegisterSchema.validate(req.body);
+
+    // 2. if error in validation -> return error via middleware
+    if (error) {
+      return next(error);
+    }
+
+    const { password, email, phoneNumber } = req.body;
+
+    const userId = "65649fad03a247ed90f99464";
+    const existingUser = await Laboratory.findById(userId);
+
+    if (!existingUser) {
+      const error = new Error("User not found!");
+      error.status = 404;
+      return next(error);
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Update only the provided fields
+     existingUser.email = email;
+     existingUser.password = hashedPassword;
+     existingUser.phoneNumber = phoneNumber;
+     existingUser.isVerified = true;
+
+    // Save the updated test
+    await existingUser.save();
+
+    return res
+      .status(200)
+      .json({ message: "User updated successfully", test: existingUser });
+
+  },
+
+  
 };
 
 module.exports = labAuthController;
