@@ -2,6 +2,7 @@ const Tests = require("../../models/Laboratory/tests.js");
 const Joi = require("joi");
 const TestDTO = require("../../dto/test.js");
 const JWTService = require("../../services/JWTService.js");
+const Order = require("../../models/Laboratory/order.js")
 
 const labTestController = {
   async addTest(req, res, next) {
@@ -162,5 +163,30 @@ const labTestController = {
       return next(error);
     }
   },
+
+  async newOrders(req, res, next) {
+    try {
+        // Get the current date
+        const currentDate = new Date();
+
+        // Set the time to the beginning of the day
+        currentDate.setHours(0, 0, 0, 0);
+
+        // Set the time to the end of the day
+        const nextDay = new Date(currentDate);
+        nextDay.setDate(currentDate.getDate() + 1);
+
+        // Query the database to count orders for today
+        const todayOrdersCount = await Order.countDocuments({
+            createdAt: { $gte: currentDate, $lt: nextDay },
+            labId
+        });
+
+        res.json({ todayOrdersCount });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 };
 module.exports = labTestController;

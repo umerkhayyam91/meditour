@@ -2,6 +2,7 @@ const express = require("express");
 const labAuthController = require("../controller/Laboratory/labAuthController");
 const labOrderController = require("../controller/Laboratory/labOrderController");
 const labTestController = require("../controller/Laboratory/labTestController");
+const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -25,6 +26,14 @@ router.put("/lab/editTest", auth, labTestController.editTest);
 router.delete("/lab/deleteTest", auth, labTestController.deleteTest);
 router.get("/lab/getTest", auth, labTestController.getTest);
 router.get("/lab/getAllTests", auth, labTestController.getAllTests);
+router.get("/lab/newOrders", labTestController.newOrders);
+
+
+//..............verification.........
+router.post("/lab/sendCodeToEmail", VerificationController.sendCodeToEmail);
+router.post("/lab/confirmEmail", VerificationController.confirmEmail);
+
+
 
 // router.post("/logout", auth, authController.logout);
 
