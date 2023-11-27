@@ -1,13 +1,13 @@
 class orderDto {
-  constructor(lab) {
-    this.orderId = lab.orderId;
-    this.testCode = lab.testCode;
-    this.testName = lab.testName;
-    this.patientName = lab.patientName;
-    this.MR_NO = lab.MR_NO;
-    this.date = lab.date;
-    this.status = lab.status;
-    this.results = lab.results;
+  constructor(order) {
+    this._id = order._id;
+    this.testCode = order.testCode;
+    this.testName = order.testName;
+    this.patientName = order.patientName;
+    this.MR_NO = order.MR_NO;
+    this.date = order.date;
+    this.status = order.status;
+    this.results = order.results;
   }
 }
 module.exports = orderDto;

@@ -6,6 +6,10 @@ const testSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    labId: {
+      type: String,
+      required: true,
+    },
     testCode: {
       type: Number,
       required: true,

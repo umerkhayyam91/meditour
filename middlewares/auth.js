@@ -1,6 +1,7 @@
 const JWTService = require('../services/JWTService');
 const User = require('../models/user');
-const UserDTO = require('../dto/user');
+const labDto = require('../dto/lab');
+const Laboratory = require("../models/Laboratory/laboratory");
 
 const auth = async (req, res, next) => {
     try{
@@ -24,21 +25,23 @@ const auth = async (req, res, next) => {
     catch(error){
         return next(error);
     }
-
+    
     let user;
+    if (req.originalUrl.includes("/lab")) {
 
-    try{
-        user = await User.findOne({_id: _id});
+        try{
+            user = await Laboratory.findOne({_id: _id});
+        }
+        catch(error){
+            return next(error);
+        }
+        const LabDto = new labDto(user);
+        
+        req.user = LabDto;
+    
+        next();
+        return;
     }
-    catch(error){
-        return next(error);
-    }
-
-    const userDto = new UserDTO(user);
-
-    req.user = userDto;
-
-    next();
     }
     catch(error){
         return next(error);
