@@ -33,8 +33,6 @@ router.get("/lab/newOrders", labTestController.newOrders);
 router.post("/lab/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/lab/confirmEmail", VerificationController.confirmEmail);
 
-
-
 // router.post("/logout", auth, authController.logout);
 
 module.exports = router;

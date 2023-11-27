@@ -2,7 +2,7 @@ const Tests = require("../../models/Laboratory/tests.js");
 const Joi = require("joi");
 const TestDTO = require("../../dto/test.js");
 const JWTService = require("../../services/JWTService.js");
-const Order = require("../../models/Laboratory/order.js")
+const Order = require("../../models/Laboratory/order.js");
 
 const labTestController = {
   async addTest(req, res, next) {
@@ -19,14 +19,9 @@ const labTestController = {
     if (error) {
       return next(error);
     }
-    const {
-      testName,
-      testDescription,
-      price,
-      duration,
-      priceForMeditour,
-    } = req.body;
-    const labId = req.user._id
+    const { testName, testDescription, price, duration, priceForMeditour } =
+      req.body;
+    const labId = req.user._id;
     try {
       const testInUse = await Tests.exists({ testName, labId });
 
@@ -45,7 +40,7 @@ const labTestController = {
 
     try {
       const testToRegister = new Tests({
-        labId ,
+        labId,
         testCode,
         testName,
         testDescription,
@@ -166,27 +161,26 @@ const labTestController = {
 
   async newOrders(req, res, next) {
     try {
-        // Get the current date
-        const currentDate = new Date();
+      // Get the current date
+      const currentDate = new Date();
 
-        // Set the time to the beginning of the day
-        currentDate.setHours(0, 0, 0, 0);
+      // Set the time to the beginning of the day
+      currentDate.setHours(0, 0, 0, 0);
 
-        // Set the time to the end of the day
-        const nextDay = new Date(currentDate);
-        nextDay.setDate(currentDate.getDate() + 1);
+      // Set the time to the end of the day
+      const nextDay = new Date(currentDate);
+      nextDay.setDate(currentDate.getDate() + 1);
+      const labId = lab;
+      // Query the database to count orders for today
+      const todayOrdersCount = await Order.countDocuments({
+        createdAt: { $gte: currentDate, $lt: nextDay },
+        labId,
+      });
 
-        // Query the database to count orders for today
-        const todayOrdersCount = await Order.countDocuments({
-            createdAt: { $gte: currentDate, $lt: nextDay },
-            labId
-        });
-
-        res.json({ todayOrdersCount });
+      res.json({ todayOrdersCount });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+      return next(error);
     }
-}
+  },
 };
 module.exports = labTestController;
