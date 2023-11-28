@@ -159,7 +159,7 @@ const labTestController = {
     }
   },
 
-  async newOrders(req, res, next) {
+  async dashDetails(req, res, next) {
     try {
       // Get the current date
       const currentDate = new Date();
@@ -184,7 +184,7 @@ const labTestController = {
       // Fetch the count of orders for the day before yesterday
       const penDayBefYesCount = await Tests.countDocuments({
         createdAt: { $gte: dayBeforeYesterday, $lt: yesterdayDate },
-        status: pending
+        status: "pending"
       });
       // Fetch the count of orders for yesterday
       const yesterdayOrdersCount = await Tests.countDocuments({
@@ -193,21 +193,22 @@ const labTestController = {
 
       const pendingYesOrdersCount = await Tests.countDocuments({
         createdAt: { $gte: yesterdayDate, $lt: currentDate },
-        status: pending
+        status: "pending"
       });
   
       // Fetch the count of orders for today
       const todayOrdersCount = await Tests.countDocuments({
         createdAt: { $gte: currentDate, $lt: new Date() },
       });
+
       const completeTodayOrdersCount = await Tests.countDocuments({
         createdAt: { $gte: currentDate, $lt: new Date() },
-        status: completed
+        status: "completed"
       });
 
       const completeYesOrdersCount = await Tests.countDocuments({
         createdAt: { $gte: yesterdayDate, $lt: currentDate },
-        status: completed
+        status: "completed"
       });
 
       let pendingPercentageChange;
@@ -216,21 +217,22 @@ const labTestController = {
       } else {
         pendingPercentageChange = (((pendingYesOrdersCount - penDayBefYesCount) / penDayBefYesCount) * 100).toFixed(2) + "%";
       } 
+
       // Handle the case where yesterday's orders are zero
       let newOrdersPercentageChange;
       if (yesterdayOrdersCount === 0) {
         newOrdersPercentageChange = todayOrdersCount * 100 + "%"; // If yesterday's orders are zero, the change is undefined
       } else {
-          const newOrdersPercentageChange = (((todayOrdersCount - yesterdayOrdersCount) / yesterdayOrdersCount) * 100).toFixed(2) + "%";
+           newOrdersPercentageChange = (((todayOrdersCount - yesterdayOrdersCount) / yesterdayOrdersCount) * 100).toFixed(2) + "%";
       }
 
       let comOrdersPercentageChange;
       if (completeYesOrdersCount === 0) {
         comOrdersPercentageChange = completeTodayOrdersCount * 100 + "%"; // If yesterday's orders are zero, the change is undefined
       } else {
-          const comOrdersPercentageChange = (((completeTodayOrdersCount - completeYesOrdersCount) / completeYesOrdersCount) * 100).toFixed(2) + "%";
+           comOrdersPercentageChange = (((completeTodayOrdersCount - completeYesOrdersCount) / completeYesOrdersCount) * 100).toFixed(2) + "%";
       }
-  
+
       res.json({ todayOrdersCount, newOrdersPercentageChange, pendingYesOrdersCount, pendingPercentageChange, completeTodayOrdersCount, comOrdersPercentageChange });
     } catch (error) {
       next(error);

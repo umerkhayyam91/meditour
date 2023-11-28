@@ -28,7 +28,7 @@ router.put("/lab/editTest", auth, labTestController.editTest);
 router.delete("/lab/deleteTest", auth, labTestController.deleteTest);
 router.get("/lab/getTest", auth, labTestController.getTest);
 router.get("/lab/getAllTests", auth, labTestController.getAllTests);
-router.get("/lab/newOrders", auth, labTestController.newOrders);
+router.get("/lab/dashDetails", auth, labTestController.dashDetails);
 
 
 //..............verification.........
