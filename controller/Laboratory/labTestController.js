@@ -4,6 +4,8 @@ const TestDTO = require("../../dto/test.js");
 const JWTService = require("../../services/JWTService.js");
 const Order = require("../../models/Laboratory/order.js");
 
+
+
 const labTestController = {
   async addTest(req, res, next) {
     const labTestSchema = Joi.object({
@@ -159,84 +161,6 @@ const labTestController = {
     }
   },
 
-  async dashDetails(req, res, next) {
-    try {
-      // Get the current date
-      const currentDate = new Date();
-      console.log(currentDate);
-  
-      // Set the time to the beginning of the day
-      currentDate.setHours(0, 0, 0, 0);
-  
-      // Calculate yesterday's date
-      const yesterdayDate = new Date(currentDate);
-      yesterdayDate.setDate(currentDate.getDate() - 1);
-  
-      // Set the time to the beginning of yesterday
-      yesterdayDate.setHours(0, 0, 0, 0);
-
-      const dayBeforeYesterday = new Date(currentDate);
-      dayBeforeYesterday.setDate(currentDate.getDate() - 2);
-  
-      // Set the time to the beginning of the day before yesterday
-      dayBeforeYesterday.setHours(0, 0, 0, 0);
-  
-      // Fetch the count of orders for the day before yesterday
-      const penDayBefYesCount = await Tests.countDocuments({
-        createdAt: { $gte: dayBeforeYesterday, $lt: yesterdayDate },
-        status: "pending"
-      });
-      // Fetch the count of orders for yesterday
-      const yesterdayOrdersCount = await Tests.countDocuments({
-        createdAt: { $gte: yesterdayDate, $lt: currentDate },
-      });
-
-      const pendingYesOrdersCount = await Tests.countDocuments({
-        createdAt: { $gte: yesterdayDate, $lt: currentDate },
-        status: "pending"
-      });
-  
-      // Fetch the count of orders for today
-      const todayOrdersCount = await Tests.countDocuments({
-        createdAt: { $gte: currentDate, $lt: new Date() },
-      });
-
-      const completeTodayOrdersCount = await Tests.countDocuments({
-        createdAt: { $gte: currentDate, $lt: new Date() },
-        status: "completed"
-      });
-
-      const completeYesOrdersCount = await Tests.countDocuments({
-        createdAt: { $gte: yesterdayDate, $lt: currentDate },
-        status: "completed"
-      });
-
-      let pendingPercentageChange;
-      if (penDayBefYesCount === 0) {
-        pendingPercentageChange = pendingYesOrdersCount * 100 + "%"; // If the day before yesterday's orders are zero, the change is undefined
-      } else {
-        pendingPercentageChange = (((pendingYesOrdersCount - penDayBefYesCount) / penDayBefYesCount) * 100).toFixed(2) + "%";
-      } 
-
-      // Handle the case where yesterday's orders are zero
-      let newOrdersPercentageChange;
-      if (yesterdayOrdersCount === 0) {
-        newOrdersPercentageChange = todayOrdersCount * 100 + "%"; // If yesterday's orders are zero, the change is undefined
-      } else {
-           newOrdersPercentageChange = (((todayOrdersCount - yesterdayOrdersCount) / yesterdayOrdersCount) * 100).toFixed(2) + "%";
-      }
-
-      let comOrdersPercentageChange;
-      if (completeYesOrdersCount === 0) {
-        comOrdersPercentageChange = completeTodayOrdersCount * 100 + "%"; // If yesterday's orders are zero, the change is undefined
-      } else {
-           comOrdersPercentageChange = (((completeTodayOrdersCount - completeYesOrdersCount) / completeYesOrdersCount) * 100).toFixed(2) + "%";
-      }
-
-      res.json({ todayOrdersCount, newOrdersPercentageChange, pendingYesOrdersCount, pendingPercentageChange, completeTodayOrdersCount, comOrdersPercentageChange });
-    } catch (error) {
-      next(error);
-    }
-  }
+ 
 };
 module.exports = labTestController;

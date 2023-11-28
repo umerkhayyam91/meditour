@@ -17,9 +17,11 @@ router.post("/lab/verify", labAuthController.verify);
 router.post("/lab/updateProfile", auth, labAuthController.updateProfile);
 
 
-//.....Tests................
+//.....Orders................
 router.get("/lab/getOrders", labOrderController.getOrders);
 router.put("/lab/changeStatus", auth, labOrderController.changeStatus);
+router.get("/lab/dashDetails", auth, labOrderController.dashDetails);
+router.get("/lab/graph", auth, labOrderController.graph);
 
 
 //.....Tests................
@@ -28,7 +30,6 @@ router.put("/lab/editTest", auth, labTestController.editTest);
 router.delete("/lab/deleteTest", auth, labTestController.deleteTest);
 router.get("/lab/getTest", auth, labTestController.getTest);
 router.get("/lab/getAllTests", auth, labTestController.getAllTests);
-router.get("/lab/dashDetails", auth, labTestController.dashDetails);
 
 
 //..............verification.........
