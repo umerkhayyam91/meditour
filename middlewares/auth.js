@@ -25,7 +25,6 @@ const auth = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-
     let user;
     if (req.originalUrl.includes("/lab")) {
       try {
@@ -34,21 +33,22 @@ const auth = async (req, res, next) => {
         return next(error);
       }
       const LabDto = new labDto(user);
-
+      
       req.user = LabDto;
-
+      
       next();
       return;
     }else if (req.originalUrl.includes("/pharm")) {
       try {
         user = await Pharmacy.findOne({ _id: _id });
+        console.log(user)
       } catch (error) {
         return next(error);
       }
       const PharmDto = new pharmDto(user);
-
+      
       req.user = PharmDto;
-
+      
       next();
       return;
     }

@@ -4,6 +4,7 @@ const medDTO = require("../../dto/med.js");
 
 const pharmMedController = {
   async addMed(req, res, next) {
+    console.log("object")
     const pharmMedSchema = Joi.object({
       generic: Joi.string().required(),
       medicineBrand: Joi.string().required(),
@@ -20,7 +21,7 @@ const pharmMedController = {
       return next(error);
     }
     console.log("req.user._id")
-    const pharmId = req.user._id;
+    // const pharmId = req.user._id;
     const {
       generic,
       medicineBrand,

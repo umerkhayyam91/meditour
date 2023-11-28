@@ -286,6 +286,13 @@ const labAuthController = {
       confirmPassword: Joi.ref("password"),
     });
 
+    const emailExists = await Laboratory.exists({ email });
+    if (emailExists) {
+      const error = new Error("Email already exists!");
+      error.status = 400;
+      return next(error);
+    }
+
     const { error } = labRegisterSchema.validate(req.body);
 
     // 2. if error in validation -> return error via middleware
