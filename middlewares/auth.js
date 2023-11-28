@@ -41,7 +41,6 @@ const auth = async (req, res, next) => {
     }else if (req.originalUrl.includes("/pharm")) {
       try {
         user = await Pharmacy.findOne({ _id: _id });
-        console.log(user)
       } catch (error) {
         return next(error);
       }

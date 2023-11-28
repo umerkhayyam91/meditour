@@ -31,11 +31,11 @@ const medicineSchema = new mongoose.Schema(
       required: true,
     },
     priceMeditour: {
-      type: String,
+      type: Number,
       required: true,
     },
     actualPrice: {
-      type: String,
+      type: Number,
       required: true,
     },
   },

@@ -1,15 +1,15 @@
 const VerificationCode = require("../models/verificationCode");
 const nodemailer = require("nodemailer");
+const Laboratory = require("../models/Laboratory/laboratory")
 
 const verificationController = {
   async sendCodeToEmail(req, res, next) {
     const { email } = req.body;
-    const alreadySent = await VerificationCode.exists({ email });
-    if (alreadySent) {
-      return res.status(400).send({
-        message:
-          "Your verification code has been sent.",
-      });
+    const emailExists = await Laboratory.exists({ email });
+    if (emailExists) {
+      const error = new Error("Email already exists!");
+      error.status = 400;
+      return next(error);
     }
     try {
       let code;

@@ -1,10 +1,10 @@
 const Medicines = require("../../models/Pharmacy/medicine.js");
 const Joi = require("joi");
 const medDTO = require("../../dto/med.js");
+const Medicine = require("../../models/Pharmacy/medicine.js");
 
 const pharmMedController = {
   async addMed(req, res, next) {
-    console.log("object")
     const pharmMedSchema = Joi.object({
       generic: Joi.string().required(),
       medicineBrand: Joi.string().required(),
@@ -20,8 +20,7 @@ const pharmMedController = {
     if (error) {
       return next(error);
     }
-    console.log("req.user._id")
-    // const pharmId = req.user._id;
+    const pharmId = req.user._id;
     const {
       generic,
       medicineBrand,
@@ -71,58 +70,69 @@ const pharmMedController = {
     return res.status(201).json({ med: medDto, auth: true });
   },
 
-  async editTest(req, res, next) {
-    const labTestSchema = Joi.object({
-      testName: Joi.string(),
-      testDescription: Joi.string(),
-      price: Joi.number(),
-      duration: Joi.string(),
-      priceForMeditour: Joi.number(),
+  async editMed(req, res, next) {
+    const pharmMedSchema = Joi.object({
+      generic: Joi.string(),
+      medicineBrand: Joi.string(),
+      medicineType: Joi.string(),
+      strength: Joi.string(),
+      packSize: Joi.string(),
+      priceMeditour: Joi.number(),
+      actualPrice: Joi.number(),
     });
 
-    const { error } = labTestSchema.validate(req.body);
+    const { error } = pharmMedSchema.validate(req.body);
 
     if (error) {
       return next(error);
     }
-    const { testName, testDescription, price, duration, priceForMeditour } =
-      req.body;
-    const labId = req.user._id;
-    console.log(labId);
-    try {
-      const testInUse = await Tests.exists({ testName, labId });
+    const {
+      generic,
+      medicineBrand,
+      medicineType,
+      strength,
+      packSize,
+      priceMeditour,
+      actualPrice,
+    } = req.body;
+    const pharmId = req.user._id;
+    console.log(pharmId);
+    // try {
+    //   const testInUse = await Tests.exists({ testName, pharmId });
 
-      if (testInUse) {
-        const error = new Error("Test already added, use another TestName!");
-        error.status = 409;
-        return next(error);
-      }
-    } catch (error) {
-      return next(error);
-    }
+    //   if (testInUse) {
+    //     const error = new Error("Test already added, use another TestName!");
+    //     error.status = 409;
+    //     return next(error);
+    //   }
+    // } catch (error) {
+    //   return next(error);
+    // }
 
-    const testId = req.query.testId;
-    const existingTest = await Tests.findById(testId);
+    const medId = req.query.medId;
+    const existingMed = await Medicine.findById(medId);
 
-    if (!existingTest) {
-      const error = new Error("Test not found!");
+    if (!existingMed) {
+      const error = new Error("Medicine not found!");
       error.status = 404;
       return next(error);
     }
 
     // Update only the provided fields
-    if (testName) existingTest.testName = testName;
-    if (testDescription) existingTest.testDescription = testDescription;
-    if (price) existingTest.price = price;
-    if (duration) existingTest.duration = duration;
-    if (priceForMeditour) existingTest.priceForMeditour = priceForMeditour;
+    if (generic) existingMed.generic = generic;
+    if (medicineBrand) existingMed.medicineBrand = medicineBrand;
+    if (medicineType) existingMed.medicineType = medicineType;
+    if (strength) existingMed.strength = strength;
+    if (packSize) existingMed.packSize = packSize;
+    if (priceMeditour) existingMed.priceMeditour = priceMeditour;
+    if (actualPrice) existingMed.actualPrice = actualPrice;
 
     // Save the updated test
-    await existingTest.save();
+    await existingMed.save();
 
     return res
       .status(200)
-      .json({ message: "Test updated successfully", test: existingTest });
+      .json({ message: "Test updated successfully", test: existingMed });
   },
 
   async deleteTest(req, res, next) {

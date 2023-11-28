@@ -19,5 +19,6 @@ router.post("/pharm/updateProfile", auth, pharmAuthController.updateProfile);
 
 //............medicine............
 router.post("/pharm/addMed", auth, pharmMedController.addMed)
+router.put("/pharm/editMed", auth, pharmMedController.editMed)
 
 module.exports = router;
