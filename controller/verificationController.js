@@ -40,9 +40,13 @@ const verificationController = {
         }
 
         return res
-          .status(200)
-          .send("A verification email has been sent to " + email);
-      });
+        .status(200)
+        .json({
+          "status": true,
+          "message": ` A verification email has been sent to ${email}`
+        }
+          );
+    });
     } catch (error) {
       return next(error);
     }
