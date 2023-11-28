@@ -56,24 +56,29 @@ const verificationController = {
     const { code, email } = req.body;
     VerificationCode.findOne({ code: code }, function (err, cod) {
       if (!cod) {
-        return res.status(400).send({
-          message:
-            "Your verification code may have expired. Please click on resend for verify your Email.",
-        });
+        const error = new Error("Incorrect verification code. Please double-check the code and try again.");
+        error.status = 400;
+        return next(error);
       } else {
         if (email == cod.email) {
           return res
-            .status(200)
-            .send("Your account has been successfully verified");
+          .status(200)
+          .json({
+            "status": true,
+            "message": "Your account has been successfully verified"
+          }
+          );
         } else {
-          return res.status(401).send({
-            msg: "We were unable to find a user for this verification. Please enter a correct email!",
+            return res
+            .status(200)
+            .json({
+              "status": true,
+              "message": "We were unable to find a user for this verification. Please enter a correct email!"
           });
         }
       }
     });
   },
-
 };
 
 module.exports = verificationController;
