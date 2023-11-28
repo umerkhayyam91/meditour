@@ -10,8 +10,10 @@ const { PORT } = require("./config/index");
 app.use(express.json({ limit: "50mb" }));
 
 const labRouter = require("./routes/laboratory");
+const pharmRouter = require("./routes/pharmacy");
 
 app.use(labRouter);
+app.use(pharmRouter);
 
 dbConnect();
 app.use(ErrorHandler);

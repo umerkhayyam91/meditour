@@ -278,7 +278,7 @@ const labAuthController = {
       .json({ lab: labDto, auth: true, token: accessToken });
   },
 
-  async verify(req, res, next) {
+  async completeSignup(req, res, next) {
     const labRegisterSchema = Joi.object({
       phoneNumber: Joi.string().required(),
       email: Joi.string().email().required(),
@@ -295,7 +295,7 @@ const labAuthController = {
 
     const { password, email, phoneNumber } = req.body;
 
-    const userId = "65649fad03a247ed90f99464";
+    const userId = req.query.id;
     const existingUser = await Laboratory.findById(userId);
 
     if (!existingUser) {
@@ -364,6 +364,6 @@ const labAuthController = {
       .status(200)
       .json({ message: "Laboratory updated successfully", Laboratory: lab });
   }
-};
+}
 
 module.exports = labAuthController;

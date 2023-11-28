@@ -1,13 +1,14 @@
 const JWTService = require("../services/JWTService");
 const User = require("../models/user");
 const labDto = require("../dto/lab");
+const pharmDto = require("../dto/pharm");
 const Laboratory = require("../models/Laboratory/laboratory");
+const Pharmacy = require("../models/Pharmacy/pharmacy");
 
 const auth = async (req, res, next) => {
   try {
     // 1. refresh, access token validation
     const { refreshToken, accessToken } = req.cookies;
-    console.log(accessToken);
     if (!refreshToken || !accessToken) {
       const error = {
         status: 401,
@@ -38,10 +39,23 @@ const auth = async (req, res, next) => {
 
       next();
       return;
+    }else if (req.originalUrl.includes("/pharm")) {
+      try {
+        user = await Pharmacy.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const PharmDto = new pharmDto(user);
+
+      req.user = PharmDto;
+
+      next();
+      return;
     }
   } catch (error) {
     return next(error);
   }
+  
 };
 
 module.exports = auth;
