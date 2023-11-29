@@ -55,7 +55,10 @@ const uploadFileController = {
                 return res.status(500).send("Error uploading image.");
               });
           } else {
-            return res.send("Please select an image");
+            return res.status(404).json({
+              status: false,
+              message: "Please select an image"
+          });
           }
         } catch (error) {
           res.status(500).json({

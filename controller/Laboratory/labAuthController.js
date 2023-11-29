@@ -376,7 +376,91 @@ const labAuthController = {
     return res
       .status(200)
       .json({ message: "Laboratory updated successfully", Laboratory: lab });
-  }
+  },
+
+  async logout(req, res, next) {
+    // 1. delete refresh token from db
+    const { refreshToken } = req.cookies;
+
+    try {
+      await RefreshToken.deleteOne({ token: refreshToken });
+    } catch (error) {
+      return next(error);
+    }
+
+    // delete cookies
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+
+    // 2. response
+    res.status(200).json({ user: null, auth: false });
+  },
+
+  async refresh(req, res, next) {
+    // 1. get refreshToken from cookies
+    // 2. verify refreshToken
+    // 3. generate new tokens
+    // 4. update db, return response
+
+    const originalRefreshToken = req.cookies.refreshToken;
+
+    let id;
+
+    try {
+      id = JWTService.verifyRefreshToken(originalRefreshToken)._id;
+    } catch (e) {
+      const error = {
+        status: 401,
+        message: "Unauthorized",
+      };
+
+      return next(error);
+    }
+
+    try {
+      const match = RefreshToken.findOne({
+        _id: id,
+        token: originalRefreshToken,
+      });
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Unauthorized",
+        };
+
+        return next(error);
+      }
+    } catch (e) {
+      return next(e);
+    }
+
+    try {
+      const accessToken = JWTService.signAccessToken({ _id: id }, "365d");
+
+      const refreshToken = JWTService.signRefreshToken({ _id: id }, "365d");
+
+      await RefreshToken.updateOne({ _id: id }, { token: refreshToken });
+
+      res.cookie("accessToken", accessToken, {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+      });
+
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+      });
+    } catch (e) {
+      return next(e);
+    }
+
+    const lab = await Laboratory.findOne({ _id: id });
+
+    const labDto = new labDTO(lab);
+
+    return res.status(200).json({ lab: labDto, auth: true });
+  },
 }
 
 module.exports = labAuthController;
