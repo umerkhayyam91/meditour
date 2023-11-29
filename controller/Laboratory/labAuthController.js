@@ -251,8 +251,8 @@ const labAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: lab._id }, "'365d'");
-    const refreshToken = JWTService.signRefreshToken({ _id: lab._id }, "'365d'");
+    const accessToken = JWTService.signAccessToken({ _id: lab._id }, "365d");
+    const refreshToken = JWTService.signRefreshToken({ _id: lab._id }, "365d");
 
     // update refresh token in database
     try {
@@ -457,7 +457,7 @@ const labAuthController = {
 
     const lab = await Laboratory.findOne({ _id: id });
 
-    const labDto = new labDTO(lab);
+    const labDto = new LabDTO(lab);
 
     return res.status(200).json({ lab: labDto, auth: true });
   },

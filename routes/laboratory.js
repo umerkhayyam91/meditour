@@ -15,6 +15,8 @@ router.post("/lab/login", labAuthController.login);
 router.post("/lab/uploadFile", upload.single("file"), uploadFileController.uploadFile);
 router.post("/lab/completeSignup", labAuthController.completeSignup);
 router.put("/lab/updateProfile", auth, labAuthController.updateProfile);
+router.post("/lab/logout", auth, labAuthController.logout);
+router.post("/lab/refresh", auth, labAuthController.refresh);
 
 
 //.....Orders................
