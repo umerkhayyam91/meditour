@@ -162,11 +162,12 @@ const labTestController = {
         .limit(testPerPage);
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
-      const testDto = new TestDTO(tests);
+      // const testDto = new TestDTO(tests);
+
       return res
         .status(200)
         .json({
-          tests: testDto,
+          tests: tests,
           auth: true,
           previousPage: previousPage,
           nextPage: nextPage,
