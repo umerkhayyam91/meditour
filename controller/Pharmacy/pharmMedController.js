@@ -135,11 +135,11 @@ const pharmMedController = {
       .json({ message: "Test updated successfully", test: existingMed });
   },
 
-  async deleteTest(req, res, next) {
+  async deleteMed(req, res, next) {
     const medId = req.query.medId;
-    const existingTest = await Medicine.findById(medId);
+    const existingMed = await Medicine.findById(medId);
 
-    if (!existingTest) {
+    if (!existingMed) {
       const error = new Error("Medicine not found!");
       error.status = 404;
       return next(error);
@@ -148,23 +148,23 @@ const pharmMedController = {
     return res.status(200).json({ message: "Medicine deleted successfully" });
   },
 
-  async getTest(req, res, next) {
+  async getMed(req, res, next) {
     try {
-      const testId = req.query.testId;
-      const test = await Tests.findById(testId);
+      const medId = req.query.medId;
+      const medicine = await Medicine.findById(medId);
 
-      if (!test) {
-        const error = new Error("Test not found!");
+      if (!medicine) {
+        const error = new Error("Medicine not found!");
         error.status = 404;
         return next(error);
       }
-      return res.status(200).json({ test });
+      return res.status(200).json({ medicine });
     } catch (error) {
       return next(error);
     }
   },
 
-  async getAllTests(req, res, next) {
+  async getAllMeds(req, res, next) {
     try {
       const tests = await Tests.find();
 

@@ -209,13 +209,21 @@ const labAuthController = {
 
     try {
       // match username
-      lab = await Laboratory.findOne({ email: email });
+      lab = await Laboratory.findOne({ email });
+      if (!lab) {
+        const error = {
+          status: 401,
+          message: "Invalid email",
+        };
+
+        return next(error);
+      }
       if(lab.isVerified==false){
         const error = {
           status: 401,
           message: "User not verified",
         };
-
+        
         return next(error);
       }
       

@@ -163,6 +163,14 @@ const pharmAuthController = {
     try {
       // match username
       pharm = await Pharmacy.findOne({ email: email });
+      if (!pharm) {
+        const error = {
+          status: 401,
+          message: "Invalid email",
+        };
+
+        return next(error);
+      }
       if (pharm.isVerified == false) {
         const error = {
           status: 401,
@@ -172,14 +180,7 @@ const pharmAuthController = {
         return next(error);
       }
 
-      if (!pharm) {
-        const error = {
-          status: 401,
-          message: "Invalid email",
-        };
-
-        return next(error);
-      }
+      
 
       // match password
 
