@@ -166,15 +166,30 @@ const pharmMedController = {
 
   async getAllMeds(req, res, next) {
     try {
-        const pharmId = req.user._id;
-      const medicines = await Medicine.find({pharmId});
 
-      if (!medicines) {
-        const error = new Error("No Medicine Found!");
-        error.status = 404;
-        return next(error);
-      }
-      return res.status(200).json({ medicines, auth: true });
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      const medPerPage = 10;
+      const pharmId = req.user.id;
+      const totalMeds = await Medicine.countDocuments({ pharmId }); // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalMeds / medPerPage); // Calculate the total number of pages
+
+      const skip = (page - 1) * medPerPage; // Calculate the number of posts to skip based on the current page
+
+      const medicines = await Medicine
+        .find({ pharmId })
+        .skip(skip)
+        .limit(medPerPage);
+      let previousPage = page > 1 ? page - 1 : null;
+      let nextPage = page < totalPages ? page + 1 : null;
+      const medDto = new medDTO(medicines);
+      return res
+        .status(200)
+        .json({
+          medicines: medDto,
+          auth: true,
+          previousPage: previousPage,
+          nextPage: nextPage,
+        }); 
     } catch (error) {
       return next(error);
     }

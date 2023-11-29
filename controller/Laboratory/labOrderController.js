@@ -31,10 +31,29 @@ async function getOrderCountsForWeek(labId, startDate, endDate) {
 const labOrderController = {
     async getOrders(req, res) {
         try {
-         const labId = req.user.id
-          const allOrders = await Order.find({labId});
+          const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+          const labPerPage = 10;
+          const labId = req.user.id;
+          const totalPharms = await Order.countDocuments({ labId }); // Get the total number of posts for the user
+          const totalPages = Math.ceil(totalPharms / labPerPage); // Calculate the total number of pages
+    
+          const skip = (page - 1) * labPerPage; // Calculate the number of posts to skip based on the current page
+    
+          const allOrders = await Order
+            .find({ labId })
+            .skip(skip)
+            .limit(labPerPage);
+          let previousPage = page > 1 ? page - 1 : null;
+          let nextPage = page < totalPages ? page + 1 : null;
           const OrderDto = new orderDto(allOrders);
-          return res.status(200).json({ orders: OrderDto, auth: true });
+          return res
+            .status(200)
+            .json({
+              orders: OrderDto,
+              auth: true,
+              previousPage: previousPage,
+              nextPage: nextPage,
+            }); 
         } catch (error) {
           res.status(500).json({
             status: "Failure",

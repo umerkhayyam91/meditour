@@ -148,15 +148,29 @@ const labTestController = {
 
   async getAllTests(req, res, next) {
     try {
-      const labId = req.user._id;
-      const tests = await Tests.find({labId});
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      const testPerPage = 10;
+      const labId = req.user.id;
+      const totalTests = await Tests.countDocuments({ labId }); // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalTests / testPerPage); // Calculate the total number of pages
 
-      if (!tests) {
-        const error = new Error("No Test Found!");
-        error.status = 404;
-        return next(error);
-      }
-      return res.status(200).json({ tests, auth: true });
+      const skip = (page - 1) * testPerPage; // Calculate the number of posts to skip based on the current page
+
+      const tests = await Tests
+        .find({ labId })
+        .skip(skip)
+        .limit(testPerPage);
+      let previousPage = page > 1 ? page - 1 : null;
+      let nextPage = page < totalPages ? page + 1 : null;
+      const testDto = new TestDTO(tests);
+      return res
+        .status(200)
+        .json({
+          tests: testDto,
+          auth: true,
+          previousPage: previousPage,
+          nextPage: nextPage,
+        }); 
     } catch (error) {
       return next(error);
     }

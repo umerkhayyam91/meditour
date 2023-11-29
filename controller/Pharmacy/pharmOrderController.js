@@ -13,10 +13,12 @@ async function getOrderCountsForWeek(labId, startDate, endDate) {
   while (currentDate.isSameOrBefore(endDate)) {
     const nextDate = moment(currentDate).endOf("day");
     // Modify this query based on your actual data structure
-    const ordersCount = await pharmOrder.find({
-      createdAt: { $gte: currentDate, $lt: nextDate },
-      labId: labId,
-    }).countDocuments();
+    const ordersCount = await pharmOrder
+      .find({
+        createdAt: { $gte: currentDate, $lt: nextDate },
+        labId: labId,
+      })
+      .countDocuments();
 
     days.push({
       date: currentDate.format("YYYY-MM-DD"),
@@ -32,10 +34,50 @@ async function getOrderCountsForWeek(labId, startDate, endDate) {
 const pharmOrderController = {
   async getOrders(req, res) {
     try {
-        const pharmId = req.user.id
-      const allOrders = await pharmOrder.find({pharmId});
+      // const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      // const usersPerPage = 10;
+      // const totalUsers = await User.countDocuments(); // Get the total number of posts for the user
+      // const totalPages = Math.ceil(totalUsers / usersPerPage); // Calculate the total number of pages
+
+      // const skip = (page - 1) * usersPerPage; // Calculate the number of posts to skip based on the current page
+
+      // // Fetch the posts for the specified page
+      // const users = await User.find().skip(skip).limit(usersPerPage);
+
+      // let previousPage = page > 1 ? page - 1 : null;
+      // let nextPage = page < totalPages ? page + 1 : null;
+
+      // res.json({
+      //     status: true,
+      //     message: "Below are all the users",
+      //     users: users,
+      //     previousPage: previousPage,
+      //     nextPage: nextPage
+      // });
+
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      const pharmPerPage = 10;
+      const pharmId = req.user.id;
+      const totalPharms = await pharmOrder.countDocuments({ pharmId }); // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalPharms / pharmPerPage); // Calculate the total number of pages
+
+      const skip = (page - 1) * pharmPerPage; // Calculate the number of posts to skip based on the current page
+
+      const allOrders = await pharmOrder
+        .find({ pharmId })
+        .skip(skip)
+        .limit(pharmPerPage);
+      let previousPage = page > 1 ? page - 1 : null;
+      let nextPage = page < totalPages ? page + 1 : null;
       const OrderDto = new orderDto(allOrders);
-      return res.status(200).json({ orders: OrderDto, auth: true });
+      return res
+        .status(200)
+        .json({
+          orders: OrderDto,
+          auth: true,
+          previousPage: previousPage,
+          nextPage: nextPage,
+        }); 
     } catch (error) {
       res.status(500).json({
         status: "Failure",
