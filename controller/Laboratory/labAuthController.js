@@ -161,15 +161,15 @@ const labAuthController = {
     await JWTService.storeRefreshToken(refreshToken, lab._id);
 
     // send tokens in cookie
-    res.cookie("accessToken", accessToken, {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-    });
+    // res.cookie("accessToken", accessToken, {
+    //   maxAge: 1000 * 60 * 60 * 24,
+    //   httpOnly: true,
+    // });
 
-    res.cookie("refreshToken", refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-    });
+    // res.cookie("refreshToken", refreshToken, {
+    //   maxAge: 1000 * 60 * 60 * 24,
+    //   httpOnly: true,
+    // });
 
     // 6. response send
 
@@ -177,7 +177,7 @@ const labAuthController = {
 
     return res
       .status(201)
-      .json({ lab: labDto, auth: true, token: accessToken });
+      .json({ lab: labDto, auth: true, refreshToken: refreshToken, token: accessToken });
   },
 
   async login(req, res, next) {
@@ -267,21 +267,21 @@ const labAuthController = {
       return next(error);
     }
 
-    res.cookie("accessToken", accessToken, {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-    });
+    // res.cookie("accessToken", accessToken, {
+    //   maxAge: 1000 * 60 * 60 * 24,
+    //   httpOnly: true,
+    // });
 
-    res.cookie("refreshToken", refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-    });
+    // res.cookie("refreshToken", refreshToken, {
+    //   maxAge: 1000 * 60 * 60 * 24,
+    //   httpOnly: true,
+    // });
 
     const labDto = new LabDTO(lab);
 
     return res
       .status(200)
-      .json({ lab: labDto, auth: true, token: accessToken });
+      .json({ lab: labDto, auth: true, token: accessToken, refreshToken: refreshToken });
   },
 
   async completeSignup(req, res, next) {
@@ -402,7 +402,9 @@ const labAuthController = {
     // 3. generate new tokens
     // 4. update db, return response
 
-    const originalRefreshToken = req.cookies.refreshToken;
+    // const originalRefreshToken = req.cookies.refreshToken;
+    const authHeader = req.headers["refreshToken"]
+    const originalRefreshToken = authHeader && authHeader.split(" ")[1]  
 
     let id;
 
@@ -442,15 +444,18 @@ const labAuthController = {
 
       await RefreshToken.updateOne({ _id: id }, { token: refreshToken });
 
-      res.cookie("accessToken", accessToken, {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-      });
+      // res.cookie("accessToken", accessToken, {
+      //   maxAge: 1000 * 60 * 60 * 24,
+      //   httpOnly: true,
+      // });
 
-      res.cookie("refreshToken", refreshToken, {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-      });
+      // res.cookie("refreshToken", refreshToken, {
+      //   maxAge: 1000 * 60 * 60 * 24,
+      //   httpOnly: true,
+      // });
+
+    
+
     } catch (e) {
       return next(e);
     }
@@ -459,7 +464,7 @@ const labAuthController = {
 
     const labDto = new LabDTO(lab);
 
-    return res.status(200).json({ lab: labDto, auth: true });
+    return res.status(200).json({ lab: labDto, auth: true, accessToken, refreshToken });
   },
 }
 

@@ -8,8 +8,9 @@ const Pharmacy = require("../models/Pharmacy/pharmacy");
 const auth = async (req, res, next) => {
   try {
     // 1. refresh, access token validation
-    const { refreshToken, accessToken } = req.cookies;
-    if (!refreshToken || !accessToken) {
+    const authHeader = req.headers["authorization"]
+    const accessToken = authHeader && authHeader.split(" ")[1]  
+      if (!accessToken) {
       const error = {
         status: 401,
         message: "Unauthorized",

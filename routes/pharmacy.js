@@ -32,4 +32,9 @@ router.put("/pharm/changeStatus", auth, pharmOrderController.changeStatus)
 router.get("/pharm/dashDetails", auth, pharmOrderController.dashDetails)
 router.get("/pharm/graph", auth, pharmOrderController.graph)
 
+
+//..............verification.........
+router.post("/pharm/sendCodeToEmail", VerificationController.sendCodeToEmail);
+router.post("/pharm/confirmEmail", VerificationController.confirmEmail);
+
 module.exports = router;
