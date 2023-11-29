@@ -2,7 +2,7 @@ const Tests = require("../../models/Laboratory/tests.js");
 const Joi = require("joi");
 const TestDTO = require("../../dto/test.js");
 const JWTService = require("../../services/JWTService.js");
-const Order = require("../../models/Laboratory/order.js");
+const Order = require("../../models/Laboratory/labOrder.js");
 
 
 
@@ -148,7 +148,8 @@ const labTestController = {
 
   async getAllTests(req, res, next) {
     try {
-      const tests = await Tests.find();
+      const labId = req.user._id;
+      const tests = await Tests.find({labId});
 
       if (!tests) {
         const error = new Error("No Test Found!");

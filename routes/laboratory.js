@@ -18,7 +18,7 @@ router.put("/lab/updateProfile", auth, labAuthController.updateProfile);
 
 
 //.....Orders................
-router.get("/lab/getOrders", labOrderController.getOrders);
+router.get("/lab/getOrders", auth, labOrderController.getOrders);
 router.put("/lab/changeStatus", auth, labOrderController.changeStatus);
 router.get("/lab/dashDetails", auth, labOrderController.dashDetails);
 router.get("/lab/graph", auth, labOrderController.graph);

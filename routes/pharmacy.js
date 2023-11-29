@@ -1,7 +1,7 @@
 const express = require("express");
 const pharmAuthController = require("../controller/Pharmacy/pharmAuthController");
 const pharmMedController = require("../controller/Pharmacy/pharmMedController");
-const labOrderController = require("../controller/Laboratory/labOrderController");
+const pharmOrderController = require("../controller/Pharmacy/pharmOrderController");
 const labTestController = require("../controller/Laboratory/labTestController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
@@ -23,5 +23,11 @@ router.put("/pharm/editMed", auth, pharmMedController.editMed)
 router.delete("/pharm/deleteMed", auth, pharmMedController.deleteMed)
 router.get("/pharm/getMed", auth, pharmMedController.getMed)
 router.get("/pharm/getAllMeds", auth, pharmMedController.getAllMeds)
+
+//............orders................
+router.get("/pharm/getOrders", auth, pharmOrderController.getOrders)
+router.put("/pharm/changeStatus", auth, pharmOrderController.changeStatus)
+router.get("/pharm/dashDetails", auth, pharmOrderController.dashDetails)
+router.get("/pharm/graph", auth, pharmOrderController.graph)
 
 module.exports = router;

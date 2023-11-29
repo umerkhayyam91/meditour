@@ -79,7 +79,6 @@ const pharmAuthController = {
     let refreshToken;
 
     let pharm;
-    const randomNumber = Math.floor(Math.random() * 1000000); // Generate a random number between 0 and 99999999
     try {
       const pharmToRegister = new Pharmacy({
         pharmFirstName,
@@ -108,7 +107,6 @@ const pharmAuthController = {
         ownerImage,
         taxFileImage,
         taxExemptImage,
-        MR_NO: randomNumber,
       });
 
       pharm = await pharmToRegister.save();
@@ -198,9 +196,8 @@ const pharmAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: pharm._id }, "30m");
-    const refreshToken = JWTService.signRefreshToken({ _id: pharm._id }, "60m");
-
+    const accessToken = JWTService.signAccessToken({ _id: pharm._id }, "365d");
+    const refreshToken = JWTService.signRefreshToken({ _id: pharm._id }, "365d");
     // update refresh token in database
     try {
       await RefreshToken.updateOne(

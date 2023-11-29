@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
-const Order = require("../../models/Laboratory/order.js");
-const orderDto = require("../../dto/order.js");
+const Order = require("../../models/Laboratory/labOrder.js");
+const orderDto = require("../../dto/labOrder.js");
 const moment = require("moment")
 const Tests = require("../../models/Laboratory/tests.js")
 
@@ -31,7 +31,8 @@ async function getOrderCountsForWeek(labId, startDate, endDate) {
 const labOrderController = {
     async getOrders(req, res) {
         try {
-          const allOrders = await Order.find();
+         const labId = req.user.id
+          const allOrders = await Order.find({labId});
           const OrderDto = new orderDto(allOrders);
           return res.status(200).json({ orders: OrderDto, auth: true });
         } catch (error) {
@@ -56,7 +57,7 @@ const labOrderController = {
           const id = req.query.id;
           const result = await Laboratory.findOneAndUpdate(
             { _id: ObjectId(id) },
-            { $set: { labFirstName: newStatus } },
+            { $set: { status: newStatus } },
             { returnDocument: "after" } // Optional: Specify 'after' to return the updated document
           );
           console.log(result)

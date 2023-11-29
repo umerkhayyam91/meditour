@@ -166,14 +166,15 @@ const pharmMedController = {
 
   async getAllMeds(req, res, next) {
     try {
-      const tests = await Tests.find();
+        const pharmId = req.user._id;
+      const medicines = await Medicine.find({pharmId});
 
-      if (!tests) {
-        const error = new Error("No Test Found!");
+      if (!medicines) {
+        const error = new Error("No Medicine Found!");
         error.status = 404;
         return next(error);
       }
-      return res.status(200).json({ tests, auth: true });
+      return res.status(200).json({ medicines, auth: true });
     } catch (error) {
       return next(error);
     }

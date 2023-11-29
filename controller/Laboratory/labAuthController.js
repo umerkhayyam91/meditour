@@ -3,7 +3,7 @@ const app = express();
 const Laboratory = require("../../models/Laboratory/laboratory.js");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
-const Order = require("../../models/Laboratory/order.js");
+const Order = require("../../models/Laboratory/labOrder.js");
 const serviceAccount = require("../../serviceAccountKey.json");
 const multer = require("multer");
 const fs = require("fs");
@@ -12,7 +12,7 @@ const bodyParser = require("body-parser");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
 const LabDTO = require("../../dto/lab.js");
-const orderDto = require("../../dto/order.js");
+const orderDto = require("../../dto/labOrder.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 
@@ -114,7 +114,6 @@ const labAuthController = {
     let refreshToken;
 
     let lab;
-    const randomNumber = Math.floor(Math.random() * 1000000); // Generate a random number between 0 and 99999999
     // const sixDigitId = randomNumber.toString().padStart(8, '0'); // Ensure it is eight digits long
     try {
       const labToRegister = new Laboratory({
@@ -146,7 +145,6 @@ const labAuthController = {
         taxFileImage,
         cnicImage,
         // password: hashedPassword,
-        MR_NO: randomNumber,
       });
 
       lab = await labToRegister.save();
@@ -253,8 +251,8 @@ const labAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: lab._id }, "30m");
-    const refreshToken = JWTService.signRefreshToken({ _id: lab._id }, "60m");
+    const accessToken = JWTService.signAccessToken({ _id: lab._id }, "'365d'");
+    const refreshToken = JWTService.signRefreshToken({ _id: lab._id }, "'365d'");
 
     // update refresh token in database
     try {

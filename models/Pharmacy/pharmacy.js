@@ -111,11 +111,6 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    MR_NO: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     isVerified: {
       type: Boolean,
       default: false,
