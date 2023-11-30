@@ -17,7 +17,6 @@ const pharmAuthController = {
       pharmImage: Joi.string().required(),
       ownerImage: Joi.string().required(),
       taxFileImage: Joi.string().required(),
-      taxExemptImage: Joi.string().required(),
       pharmFirstName: Joi.string().required(),
       pharmLogo: Joi.string().required(),
       pharmLastName: Joi.string().required(),
@@ -74,7 +73,6 @@ const pharmAuthController = {
       pharmImage,
       ownerImage,
       taxFileImage,
-      taxExemptImage,
     } = req.body;
 
     let accessToken;
@@ -108,7 +106,6 @@ const pharmAuthController = {
         pharmImage,
         ownerImage,
         taxFileImage,
-        taxExemptImage,
       });
 
       pharm = await pharmToRegister.save();

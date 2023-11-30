@@ -15,10 +15,6 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    pharmLogo: {
-      type: String,
-      required: true,
-    },
     pharmLastName: {
       type: String,
       required: true,
@@ -104,10 +100,6 @@ const labSchema = new mongoose.Schema(
       required: true,
     },
     taxFileImage: {
-      type: String,
-      required: true,
-    },
-    taxExemptImage: {
       type: String,
       required: true,
     },

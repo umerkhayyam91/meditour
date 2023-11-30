@@ -2,7 +2,6 @@ class PharmDTO {
     constructor(pharm) {
       this._id = pharm._id;
       this.pharmFirstName = pharm.pharmFirstName;
-      this.pharmMiddleName = pharm.pharmMiddleName;
       this.pharmLastName = pharm.pharmLastName;
       this.pharmLicenseNumber = pharm.pharmLicenseNumber;
       this.licenceExpiryDate = pharm.licenceExpiryDate;
@@ -26,7 +25,6 @@ class PharmDTO {
       this.pharmImage = pharm.pharmImage;
       this.ownerImage = pharm.ownerImage;
       this.taxFileImage = pharm.taxFileImage;
-      this.taxExemptImage = pharm.taxExemptImage;
     }
   }
   module.exports = PharmDTO;
