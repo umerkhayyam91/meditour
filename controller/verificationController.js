@@ -2,6 +2,7 @@ const VerificationCode = require("../models/verificationCode");
 const nodemailer = require("nodemailer");
 const Laboratory = require("../models/Laboratory/laboratory");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
+const Doctor = require("../models/Doctor/doctors");
 
 const verificationController = {
   async sendCodeToEmail(req, res, next) {
@@ -11,6 +12,8 @@ const verificationController = {
        emailExists = await Laboratory.exists({ email });
     } else if (req.originalUrl.includes("/pharm")) {
        emailExists = await Pharmacy.exists({ email });
+    } else if(req.originalUrl.includes("/doc")){
+      emailExists = await Doctor.exists({ email });
     }
     if (emailExists) {
       const error = new Error("Email already exists!");

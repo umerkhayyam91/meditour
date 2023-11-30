@@ -11,9 +11,11 @@ app.use(express.json({ limit: "50mb" }));
 
 const labRouter = require("./routes/laboratory");
 const pharmRouter = require("./routes/pharmacy");
+const docRouter = require("./routes/doctor");
 
 app.use(labRouter);
 app.use(pharmRouter);
+app.use(docRouter);
 
 dbConnect();
 app.use(ErrorHandler);

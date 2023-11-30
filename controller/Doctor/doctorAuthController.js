@@ -1,32 +1,28 @@
 const express = require("express");
 const app = express();
-const Pharmacy = require("../../models/Pharmacy/pharmacy.js");
+const Doctor = require("../../models/Doctor/doctors.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
-const PharmDTO = require("../../dto/pharm.js");
+const doctorDto = require("../../dto/doctor.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 const AccessToken = require("../../models/accessToken.js");
-const LabDTO = require("../../dto/lab.js")
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const pharmAuthController = {
+const docAuthController = {
   async register(req, res, next) {
-    const pharmRegisterSchema = Joi.object({
-      pharmImage: Joi.string().required(),
-      ownerImage: Joi.string().required(),
-      taxFileImage: Joi.string().required(),
-      pharmFirstName: Joi.string().required(),
-      pharmLastName: Joi.string().required(),
-      pharmLicenseNumber: Joi.string().required(),
+    const docRegisterSchema = Joi.object({
+      name: Joi.string().required(),
+      fatherName: Joi.string().required(),
+      DOB: Joi.string().required(),
+      cnicOrPassNo: Joi.string().required(),
+      qualification: Joi.string().required(),
+      speciality: Joi.string().required(),
+      clinicName: Joi.string().required(),
+      clinicLicense: Joi.string().required(),
       licenceExpiryDate: Joi.string().required(),
-      OwnerFirstName: Joi.string().required(),
-      OwnerMiddleName: Joi.string().required(),
-      OwnerLastName: Joi.string().required(),
-      cnicOrPassportNo: Joi.string().required(),
-      cnicOrPassportExpiry: Joi.string().required(),
-      pharmAddress: Joi.string().required(),
+      clinicAddress: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -38,57 +34,28 @@ const pharmAuthController = {
       bankName: Joi.string().required(),
       accountHolderName: Joi.string().required(),
       accountNumber: Joi.string().required(),
+      doctorImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
-    const { error } = pharmRegisterSchema.validate(req.body);
+    const { error } = docRegisterSchema.validate(req.body);
 
     if (error) {
       return next(error);
     }
 
     const {
-      pharmFirstName,
-      pharmLastName,
-      pharmLicenseNumber,
-      licenceExpiryDate,
-      OwnerFirstName,
-      OwnerMiddleName,
-      OwnerLastName,
-      cnicOrPassportNo,
-      cnicOrPassportExpiry,
-      pharmAddress,
-      state,
-      country,
-      website,
-      twitter,
-      facebook,
-      instagram,
-      incomeTaxNo,
-      salesTaxNo,
-      bankName,
-      accountHolderName,
-      accountNumber,
-      pharmImage,
-      ownerImage,
-      taxFileImage,
-    } = req.body;
-
-    let accessToken;
-    let refreshToken;
-
-    let pharm;
-    try {
-      const pharmToRegister = new Pharmacy({
-        pharmFirstName,
-        pharmLastName,
-        pharmLicenseNumber,
+        name,
+        fatherName,
+        DOB,
+        cnicOrPassNo,
+        qualification,
+        speciality,
+        clinicName,
+        clinicLicense,
         licenceExpiryDate,
-        OwnerFirstName,
-        OwnerMiddleName,
-        OwnerLastName,
-        cnicOrPassportNo,
-        cnicOrPassportExpiry,
-        pharmAddress,
+        clinicAddress,
         state,
         country,
         website,
@@ -100,52 +67,73 @@ const pharmAuthController = {
         bankName,
         accountHolderName,
         accountNumber,
-        pharmImage,
-        ownerImage,
-        taxFileImage,
+        doctorImage,
+        cnicImage,
+        taxFileImage
+    } = req.body;
+
+    let accessToken;
+    let refreshToken;
+
+    let doc;
+    try {
+      const docToRegister = new Doctor({
+        name,
+        fatherName,
+        DOB,
+        cnicOrPassNo,
+        qualification,
+        speciality,
+        clinicName,
+        clinicLicense,
+        licenceExpiryDate,
+        clinicAddress,
+        state,
+        country,
+        website,
+        twitter,
+        facebook,
+        instagram,
+        incomeTaxNo,
+        salesTaxNo,
+        bankName,
+        accountHolderName,
+        accountNumber,
+        doctorImage,
+        cnicImage,
+        taxFileImage
       });
 
-      pharm = await pharmToRegister.save();
+      doc = await docToRegister.save();
 
       // token generation
-      accessToken = JWTService.signAccessToken({ _id: pharm._id }, "90m");
+      accessToken = JWTService.signAccessToken({ _id: doc._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken({ _id: pharm._id }, "120m");
+      refreshToken = JWTService.signRefreshToken({ _id: doc._id }, "365d");
     } catch (error) {
       return next(error);
     }
 
     // store refresh token in db
-    await JWTService.storeRefreshToken(refreshToken, pharm._id);
-    await JWTService.storeAccessToken(accessToken, pharm._id);
-
-    // send tokens in cookie
-    // res.cookie("accessToken", accessToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
-
-    // res.cookie("refreshToken", refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
+    await JWTService.storeRefreshToken(refreshToken, doc._id);
+    await JWTService.storeAccessToken(accessToken, doc._id);
 
     // 6. response send
 
-    const pharmDTO = new PharmDTO(pharm);
+    const docDto = new doctorDto(doc);
 
     return res
       .status(201)
-      .json({ pharmacy: pharmDTO, auth: true, token: accessToken });
+      .json({ doctor: docDto, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
-    const pharmLoginSchema = Joi.object({
+    const docLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
     });
 
-    const { error } = pharmLoginSchema.validate(req.body);
+    const { error } = docLoginSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -153,12 +141,12 @@ const pharmAuthController = {
 
     const { email, password } = req.body;
 
-    let pharm;
+    let doc;
 
     try {
       // match username
-      pharm = await Pharmacy.findOne({ email: email });
-      if (!pharm) {
+      doc = await Doctor.findOne({ email: email });
+      if (!doc) {
         const error = {
           status: 401,
           message: "Invalid email",
@@ -166,7 +154,7 @@ const pharmAuthController = {
 
         return next(error);
       }
-      if (pharm.isVerified == false) {
+      if (doc.isVerified == false) {
         const error = {
           status: 401,
           message: "User not verified",
@@ -179,7 +167,7 @@ const pharmAuthController = {
 
       // match password
 
-      const match = await bcrypt.compare(password, pharm.password);
+      const match = await bcrypt.compare(password, doc.password);
 
       if (!match) {
         const error = {
@@ -193,13 +181,13 @@ const pharmAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: pharm._id }, "365d");
-    const refreshToken = JWTService.signRefreshToken({ _id: pharm._id }, "365d");
+    const accessToken = JWTService.signAccessToken({ _id: doc._id }, "365d");
+    const refreshToken = JWTService.signRefreshToken({ _id: doc._id }, "365d");
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
         {
-          userId: pharm._id,
+          userId: doc._id,
         },
         { token: refreshToken },
         { upsert: true }
@@ -211,7 +199,7 @@ const pharmAuthController = {
     try {
       await AccessToken.updateOne(
         {
-          userId: pharm._id,
+          userId: doc._id,
         },
         { token: accessToken },
         { upsert: true }
@@ -220,32 +208,22 @@ const pharmAuthController = {
       return next(error);
     }
 
-    // res.cookie("accessToken", accessToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
-
-    // res.cookie("refreshToken", refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
-
-    const pharmDTO = new PharmDTO(pharm);
+    const docDto = new doctorDto(doc);
 
     return res
       .status(200)
-      .json({ pharm: pharmDTO, auth: true, token: accessToken });
+      .json({ doctor: docDto, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
-    const pharmRegisterSchema = Joi.object({
+    const docRegisterSchema = Joi.object({
       phoneNumber: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().pattern(passwordPattern).required(),
       confirmPassword: Joi.ref("password"),
     });
 
-    const { error } = pharmRegisterSchema.validate(req.body);
+    const { error } = docRegisterSchema.validate(req.body);
 
     // 2. if error in validation -> return error via middleware
     if (error) {
@@ -255,7 +233,7 @@ const pharmAuthController = {
     const { password, email, phoneNumber } = req.body;
 
     const userId = req.query.id;
-    const existingUser = await Pharmacy.findById(userId);
+    const existingUser = await Doctor.findById(userId);
 
     if (!existingUser) {
       const error = new Error("User not found!");
@@ -275,11 +253,11 @@ const pharmAuthController = {
 
     return res
       .status(200)
-      .json({ message: "User updated successfully", pharmacy: existingUser });
+      .json({ message: "User updated successfully", doctor: existingUser });
   },
 
   async updateProfile(req, res, next) {
-    const pharmSchema = Joi.object({
+    const docSchema = Joi.object({
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
@@ -289,7 +267,7 @@ const pharmAuthController = {
       accountNumber: Joi.string(),
     });
 
-    const { error } = pharmSchema.validate(req.body);
+    const { error } = docSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -303,31 +281,31 @@ const pharmAuthController = {
       accountHolderName,
       accountNumber,
     } = req.body;
-    const pharmId = req.user._id;
+    const docId = req.user._id;
 
-    const pharm = await Pharmacy.findById(pharmId);
+    const doc = await Doctor.findById(docId);
 
-    if (!pharm) {
-      const error = new Error("Pharmacy not found!");
+    if (!doc) {
+      const error = new Error("Doctor not found!");
       error.status = 404;
       return next(error);
     }
 
     // Update only the provided fields
-    if (website) pharm.website = website;
-    if (facebook) pharm.facebook = facebook;
-    if (twitter) pharm.twitter = twitter;
-    if (instagram) pharm.instagram = instagram;
-    if (bankName) pharm.bankName = bankName;
-    if (accountHolderName) pharm.accountHolderName = accountHolderName;
-    if (accountNumber) pharm.accountNumber = accountNumber;
+    if (website) doc.website = website;
+    if (facebook) doc.facebook = facebook;
+    if (twitter) doc.twitter = twitter;
+    if (instagram) doc.instagram = instagram;
+    if (bankName) doc.bankName = bankName;
+    if (accountHolderName) doc.accountHolderName = accountHolderName;
+    if (accountNumber) doc.accountNumber = accountNumber;
 
     // Save the updated test
-    await pharm.save();
+    await doc.save();
 
     return res
       .status(200)
-      .json({ message: "Laboratory updated successfully", Pharmacy: pharm });
+      .json({ message: "Doctor updated successfully", Doctor: doc });
   },
 
   async logout(req, res, next) {
@@ -335,9 +313,7 @@ const pharmAuthController = {
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
     const refreshToken = authHeader && authHeader.split(" ")[2];
-    // console.log("object");
-    // console.log(accessToken);
-    // console.log(refreshToken);
+   
     try {
       await RefreshToken.deleteOne({ token: refreshToken });
     } catch (error) {
@@ -359,7 +335,6 @@ const pharmAuthController = {
     // 3. generate new tokens
     // 4. update db, return response
 
-    // const originalRefreshToken = req.cookies.refreshToken;
     const authHeader = req.headers["authorization"];
     const originalRefreshToken = authHeader && authHeader.split(" ")[2];
     const accessToken = authHeader && authHeader.split(" ")[1];
@@ -376,7 +351,6 @@ const pharmAuthController = {
 
       return next(error);
     }
-    // console.log(id)
 
     try {
       const match = RefreshToken.findOne({
@@ -431,25 +405,15 @@ const pharmAuthController = {
       let accessToken = JWTService.signAccessToken({ _id: id }, "365d");
 
       let refreshToken = JWTService.signRefreshToken({ _id: id }, "365d");
-      // console.log(accessToken);
-      // console.log(refreshToken);
       await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
       await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
-      // res.cookie("accessToken", accessToken, {
-      //   maxAge: 1000 * 60 * 60 * 24,
-      //   httpOnly: true,
-      // });
 
-      // res.cookie("refreshToken", refreshToken, {
-      //   maxAge: 1000 * 60 * 60 * 24,
-      //   httpOnly: true,
-      // });
-      const pharm = await Pharmacy.findOne({ _id: id });
+      const doc = await Doctor.findOne({ _id: id });
   
-      const pharmDto = new PharmDTO(pharm);
+      const doctorDTO = new doctorDto(doc);
   
-      return res.status(200).json({ pharm: pharmDto, auth: true, accessToken: accessToken });
+      return res.status(200).json({ doctor: doctorDTO, auth: true, accessToken: accessToken });
     } catch (e) {
       return next(e);
     }
@@ -457,4 +421,4 @@ const pharmAuthController = {
   },
 };
 
-module.exports = pharmAuthController;
+module.exports = docAuthController;
