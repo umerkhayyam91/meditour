@@ -123,15 +123,15 @@ const pharmAuthController = {
     await JWTService.storeRefreshToken(refreshToken, pharm._id);
 
     // send tokens in cookie
-    res.cookie("accessToken", accessToken, {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-    });
+    // res.cookie("accessToken", accessToken, {
+    //   maxAge: 1000 * 60 * 60 * 24,
+    //   httpOnly: true,
+    // });
 
-    res.cookie("refreshToken", refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-    });
+    // res.cookie("refreshToken", refreshToken, {
+    //   maxAge: 1000 * 60 * 60 * 24,
+    //   httpOnly: true,
+    // });
 
     // 6. response send
 
@@ -211,15 +211,15 @@ const pharmAuthController = {
       return next(error);
     }
 
-    res.cookie("accessToken", accessToken, {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-    });
+    // res.cookie("accessToken", accessToken, {
+    //   maxAge: 1000 * 60 * 60 * 24,
+    //   httpOnly: true,
+    // });
 
-    res.cookie("refreshToken", refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-    });
+    // res.cookie("refreshToken", refreshToken, {
+    //   maxAge: 1000 * 60 * 60 * 24,
+    //   httpOnly: true,
+    // });
 
     const pharmDTO = new PharmDTO(pharm);
 

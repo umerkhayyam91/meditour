@@ -15,6 +15,7 @@ const LabDTO = require("../../dto/lab.js");
 const orderDto = require("../../dto/labOrder.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
+const AccessToken = require("../../models/accessToken.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
@@ -159,6 +160,7 @@ const labAuthController = {
 
     // store refresh token in db
     await JWTService.storeRefreshToken(refreshToken, lab._id);
+    await JWTService.storeAccessToken(accessToken, lab._id);
 
     // send tokens in cookie
     // res.cookie("accessToken", accessToken, {
@@ -177,7 +179,7 @@ const labAuthController = {
 
     return res
       .status(201)
-      .json({ lab: labDto, auth: true, refreshToken: refreshToken, token: accessToken });
+      .json({ lab: labDto, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
@@ -216,15 +218,14 @@ const labAuthController = {
 
         return next(error);
       }
-      if(lab.isVerified==false){
+      if (lab.isVerified == false) {
         const error = {
           status: 401,
           message: "User not verified",
         };
-        
+
         return next(error);
       }
-      
 
       if (!lab) {
         const error = {
@@ -253,14 +254,26 @@ const labAuthController = {
 
     const accessToken = JWTService.signAccessToken({ _id: lab._id }, "365d");
     const refreshToken = JWTService.signRefreshToken({ _id: lab._id }, "365d");
-
+    console.log(lab._id);
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
         {
-          _id: lab._id,
+          userId: lab._id,
         },
         { token: refreshToken },
+        { upsert: true }
+      );
+    } catch (error) {
+      return next(error);
+    }
+
+    try {
+      await AccessToken.updateOne(
+        {
+          userId: lab._id,
+        },
+        { token: accessToken },
         { upsert: true }
       );
     } catch (error) {
@@ -281,7 +294,7 @@ const labAuthController = {
 
     return res
       .status(200)
-      .json({ lab: labDto, auth: true, token: accessToken, refreshToken: refreshToken });
+      .json({ lab: labDto, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
@@ -292,14 +305,13 @@ const labAuthController = {
       confirmPassword: Joi.ref("password"),
     });
 
-    
     const { error } = labRegisterSchema.validate(req.body);
-    
+
     // 2. if error in validation -> return error via middleware
     if (error) {
       return next(error);
     }
-    
+
     const { password, email, phoneNumber } = req.body;
     const emailExists = await Laboratory.exists({ email });
     if (emailExists) {
@@ -319,10 +331,10 @@ const labAuthController = {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Update only the provided fields
-     existingUser.email = email;
-     existingUser.password = hashedPassword;
-     existingUser.phoneNumber = phoneNumber;
-     existingUser.isVerified = true;
+    existingUser.email = email;
+    existingUser.password = hashedPassword;
+    existingUser.phoneNumber = phoneNumber;
+    existingUser.isVerified = true;
 
     // Save the updated test
     await existingUser.save();
@@ -330,10 +342,9 @@ const labAuthController = {
     return res
       .status(200)
       .json({ message: "User updated successfully", lab: existingUser });
-
   },
 
-  async updateProfile(req,res,next){
+  async updateProfile(req, res, next) {
     const labSchema = Joi.object({
       website: Joi.string(),
       twitter: Joi.string(),
@@ -349,7 +360,15 @@ const labAuthController = {
     if (error) {
       return next(error);
     }
-    const { website, twitter, facebook, instagram, bankName, accountHolderName, accountNumber } = req.body;
+    const {
+      website,
+      twitter,
+      facebook,
+      instagram,
+      bankName,
+      accountHolderName,
+      accountNumber,
+    } = req.body;
     const labId = req.user._id;
     console.log(labId);
 
@@ -380,17 +399,22 @@ const labAuthController = {
 
   async logout(req, res, next) {
     // 1. delete refresh token from db
-    const { refreshToken } = req.cookies;
+    const refHeader = req.headers["refreshToken"];
+    const refreshToken = refHeader && refHeader.split(" ")[1];
+
+    const authHeader = req.headers["Authorization"];
+    const accessToken = authHeader && authHeader.split(" ")[1];
 
     try {
       await RefreshToken.deleteOne({ token: refreshToken });
     } catch (error) {
       return next(error);
     }
-
-    // delete cookies
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    try {
+      await AccessToken.deleteOne({ token: accessToken });
+    } catch (error) {
+      return next(error);
+    }
 
     // 2. response
     res.status(200).json({ user: null, auth: false });
@@ -403,8 +427,8 @@ const labAuthController = {
     // 4. update db, return response
 
     // const originalRefreshToken = req.cookies.refreshToken;
-    const authHeader = req.headers["refreshToken"]
-    const originalRefreshToken = authHeader && authHeader.split(" ")[1]  
+    const authHeader = req.headers["refreshToken"];
+    const originalRefreshToken = authHeader && authHeader.split(" ")[1];
 
     let id;
 
@@ -453,9 +477,6 @@ const labAuthController = {
       //   maxAge: 1000 * 60 * 60 * 24,
       //   httpOnly: true,
       // });
-
-    
-
     } catch (e) {
       return next(e);
     }
@@ -464,8 +485,10 @@ const labAuthController = {
 
     const labDto = new LabDTO(lab);
 
-    return res.status(200).json({ lab: labDto, auth: true, accessToken, refreshToken });
+    return res
+      .status(200)
+      .json({ lab: labDto, auth: true, accessToken, refreshToken });
   },
-}
+};
 
 module.exports = labAuthController;

@@ -45,11 +45,11 @@ const labOrderController = {
             .limit(labPerPage);
           let previousPage = page > 1 ? page - 1 : null;
           let nextPage = page < totalPages ? page + 1 : null;
-          const OrderDto = new orderDto(allOrders);
+          // const OrderDto = new orderDto(allOrders);
           return res
             .status(200)
             .json({
-              orders: OrderDto,
+              orders: allOrders,
               auth: true,
               previousPage: previousPage,
               nextPage: nextPage,

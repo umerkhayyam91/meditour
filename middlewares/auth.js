@@ -10,6 +10,9 @@ const auth = async (req, res, next) => {
     // 1. refresh, access token validation
     const authHeader = req.headers["authorization"]
     const accessToken = authHeader && authHeader.split(" ")[1]  
+    // if (accessToken && invalidatedTokens.has(accessToken)) {
+    //   return res.status(401).json({ error: 'Invalid access token' });
+    // }
       if (!accessToken) {
       const error = {
         status: 401,
