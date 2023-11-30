@@ -399,12 +399,15 @@ const labAuthController = {
 
   async logout(req, res, next) {
     // 1. delete refresh token from db
-    const refHeader = req.headers["refreshToken"];
-    const refreshToken = refHeader && refHeader.split(" ")[1];
+    // const refHeader = req.headers["refreshToken"];
+    // const refreshToken = refHeader && refHeader.split(" ")[1];
 
-    const authHeader = req.headers["Authorization"];
+    const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
-
+    const refreshToken = authHeader && authHeader.split(" ")[2];
+    console.log("object");
+    console.log(accessToken);
+    console.log(refreshToken);
     try {
       await RefreshToken.deleteOne({ token: refreshToken });
     } catch (error) {
@@ -427,8 +430,9 @@ const labAuthController = {
     // 4. update db, return response
 
     // const originalRefreshToken = req.cookies.refreshToken;
-    const authHeader = req.headers["refreshToken"];
-    const originalRefreshToken = authHeader && authHeader.split(" ")[1];
+    const authHeader = req.headers["authorization"];
+    const originalRefreshToken = authHeader && authHeader.split(" ")[2];
+    const accessToken = authHeader && authHeader.split(" ")[1];
 
     let id;
 
@@ -442,10 +446,11 @@ const labAuthController = {
 
       return next(error);
     }
+    // console.log(id)
 
     try {
       const match = RefreshToken.findOne({
-        _id: id,
+        userId: id,
         token: originalRefreshToken,
       });
 
@@ -461,12 +466,45 @@ const labAuthController = {
       return next(e);
     }
 
+    let accessId;
     try {
-      const accessToken = JWTService.signAccessToken({ _id: id }, "365d");
+      accessId = JWTService.verifyAccessToken(accessToken)._id;
+      console.log(accessId)
+    } catch (e) {
+      const error = {
+        status: 401,
+        message: "Unauthorized",
+      };
 
-      const refreshToken = JWTService.signRefreshToken({ _id: id }, "365d");
+      return next(error);
+    }
 
-      await RefreshToken.updateOne({ _id: id }, { token: refreshToken });
+    try {
+      const match = AccessToken.findOne({
+        userId: accessId,
+        token: accessToken,
+      });
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Unauthorized",
+        };
+
+        return next(error);
+      }
+    } catch (e) {
+      return next(e);
+    }
+
+    try {
+      let accessToken = JWTService.signAccessToken({ _id: id }, "365d");
+
+      let refreshToken = JWTService.signRefreshToken({ _id: id }, "365d");
+      // console.log(accessToken);
+      // console.log(refreshToken);
+      await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
+      await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
       // res.cookie("accessToken", accessToken, {
       //   maxAge: 1000 * 60 * 60 * 24,
@@ -477,17 +515,15 @@ const labAuthController = {
       //   maxAge: 1000 * 60 * 60 * 24,
       //   httpOnly: true,
       // });
+      const lab = await Laboratory.findOne({ _id: id });
+  
+      const labDto = new LabDTO(lab);
+  
+      return res.status(200).json({ lab: labDto, auth: true, accessToken: accessToken });
     } catch (e) {
       return next(e);
     }
 
-    const lab = await Laboratory.findOne({ _id: id });
-
-    const labDto = new LabDTO(lab);
-
-    return res
-      .status(200)
-      .json({ lab: labDto, auth: true, accessToken, refreshToken });
   },
 };
 

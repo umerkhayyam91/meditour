@@ -4,16 +4,24 @@ const labDto = require("../dto/lab");
 const pharmDto = require("../dto/pharm");
 const Laboratory = require("../models/Laboratory/laboratory");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
+const AccessToken = require("../models/accessToken");
 
 const auth = async (req, res, next) => {
   try {
     // 1. refresh, access token validation
-    const authHeader = req.headers["authorization"]
-    const accessToken = authHeader && authHeader.split(" ")[1]  
-    // if (accessToken && invalidatedTokens.has(accessToken)) {
-    //   return res.status(401).json({ error: 'Invalid access token' });
-    // }
-      if (!accessToken) {
+    const authHeader = req.headers["authorization"];
+    const accessToken = authHeader && authHeader.split(" ")[1];
+    const ifTokenExists = await AccessToken.find({ token: accessToken });
+    if (ifTokenExists == "") {
+      const error = {
+        status: 401,
+        message: "Unauthorized",
+      };
+
+      return next(error);
+    }
+
+    if (!accessToken) {
       const error = {
         status: 401,
         message: "Unauthorized",
@@ -37,28 +45,27 @@ const auth = async (req, res, next) => {
         return next(error);
       }
       const LabDto = new labDto(user);
-      
+
       req.user = LabDto;
-      
+
       next();
       return;
-    }else if (req.originalUrl.includes("/pharm")) {
+    } else if (req.originalUrl.includes("/pharm")) {
       try {
         user = await Pharmacy.findOne({ _id: _id });
       } catch (error) {
         return next(error);
       }
       const PharmDto = new pharmDto(user);
-      
+
       req.user = PharmDto;
-      
+
       next();
       return;
     }
   } catch (error) {
     return next(error);
   }
-  
 };
 
 module.exports = auth;
