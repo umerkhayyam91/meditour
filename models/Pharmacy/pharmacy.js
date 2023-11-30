@@ -2,20 +2,20 @@ const mongoose = require("mongoose");
 
 const labSchema = new mongoose.Schema(
   {
-      email: {
-        type: String,
-      },
-      password: {
-        type: String,
-      },
-      phoneNumber: {
-        type: String,
-      },
+    email: {
+      type: String,
+    },
+    password: {
+      type: String,
+    },
+    phoneNumber: {
+      type: String,
+    },
     pharmFirstName: {
       type: String,
       required: true,
     },
-    pharmMiddleName: {
+    pharmLogo: {
       type: String,
       required: true,
     },
@@ -35,7 +35,7 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    OwnerMiddleName: {
+    pharmLogo: {
       type: String,
       required: true,
     },
