@@ -1,11 +1,17 @@
 const VerificationCode = require("../models/verificationCode");
 const nodemailer = require("nodemailer");
-const Laboratory = require("../models/Laboratory/laboratory")
+const Laboratory = require("../models/Laboratory/laboratory");
+const Pharmacy = require("../models/Pharmacy/pharmacy");
 
 const verificationController = {
   async sendCodeToEmail(req, res, next) {
+    let emailExists;
     const { email } = req.body;
-    const emailExists = await Laboratory.exists({ email });
+    if (req.originalUrl.includes("/lab")) {
+       emailExists = await Laboratory.exists({ email });
+    } else if (req.originalUrl.includes("/pharm")) {
+       emailExists = await Pharmacy.exists({ email });
+    }
     if (emailExists) {
       const error = new Error("Email already exists!");
       error.status = 400;
@@ -39,14 +45,11 @@ const verificationController = {
           return next(err);
         }
 
-        return res
-        .status(200)
-        .json({
-          "status": true,
-          "message": ` A verification email has been sent to ${email}`
-        }
-          );
-    });
+        return res.status(200).json({
+          status: true,
+          message: ` A verification email has been sent to ${email}`,
+        });
+      });
     } catch (error) {
       return next(error);
     }
@@ -56,24 +59,22 @@ const verificationController = {
     const { code, email } = req.body;
     VerificationCode.findOne({ code: code }, function (err, cod) {
       if (!cod) {
-        const error = new Error("Incorrect verification code. Please double-check the code and try again.");
+        const error = new Error(
+          "Incorrect verification code. Please double-check the code and try again."
+        );
         error.status = 400;
         return next(error);
       } else {
         if (email == cod.email) {
-          return res
-          .status(200)
-          .json({
-            "status": true,
-            "message": "Your account has been successfully verified"
-          }
-          );
+          return res.status(200).json({
+            status: true,
+            message: "Your account has been successfully verified",
+          });
         } else {
-            return res
-            .status(200)
-            .json({
-              "status": true,
-              "message": "We were unable to find a user for this verification. Please enter a correct email!"
+          return res.status(200).json({
+            status: true,
+            message:
+              "We were unable to find a user for this verification. Please enter a correct email!",
           });
         }
       }
