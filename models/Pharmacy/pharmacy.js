@@ -31,10 +31,6 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    pharmLogo: {
-      type: String,
-      required: true,
-    },
     OwnerLastName: {
       type: String,
       required: true,
