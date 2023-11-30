@@ -227,15 +227,6 @@ const labAuthController = {
         return next(error);
       }
 
-      if (!lab) {
-        const error = {
-          status: 401,
-          message: "Invalid email",
-        };
-
-        return next(error);
-      }
-
       // match password
 
       const match = await bcrypt.compare(password, lab.password);
@@ -405,9 +396,9 @@ const labAuthController = {
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
     const refreshToken = authHeader && authHeader.split(" ")[2];
-    console.log("object");
-    console.log(accessToken);
-    console.log(refreshToken);
+    // console.log("object");
+    // console.log(accessToken);
+    // console.log(refreshToken);
     try {
       await RefreshToken.deleteOne({ token: refreshToken });
     } catch (error) {

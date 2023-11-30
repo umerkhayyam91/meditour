@@ -6,6 +6,8 @@ const bcrypt = require("bcryptjs");
 const PharmDTO = require("../../dto/pharm.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
+const AccessToken = require("../../models/accessToken.js");
+const LabDTO = require("../../dto/lab.js")
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
@@ -121,6 +123,7 @@ const pharmAuthController = {
 
     // store refresh token in db
     await JWTService.storeRefreshToken(refreshToken, pharm._id);
+    await JWTService.storeAccessToken(accessToken, pharm._id);
 
     // send tokens in cookie
     // res.cookie("accessToken", accessToken, {
@@ -202,9 +205,21 @@ const pharmAuthController = {
     try {
       await RefreshToken.updateOne(
         {
-          _id: pharm._id,
+          userId: pharm._id,
         },
         { token: refreshToken },
+        { upsert: true }
+      );
+    } catch (error) {
+      return next(error);
+    }
+
+    try {
+      await AccessToken.updateOne(
+        {
+          userId: lab._id,
+        },
+        { token: accessToken },
         { upsert: true }
       );
     } catch (error) {
@@ -228,7 +243,7 @@ const pharmAuthController = {
       .json({ pharm: pharmDTO, auth: true, token: accessToken });
   },
 
-  async verify(req, res, next) {
+  async completeSignup(req, res, next) {
     const pharmRegisterSchema = Joi.object({
       phoneNumber: Joi.string().required(),
       email: Joi.string().email().required(),
@@ -323,17 +338,22 @@ const pharmAuthController = {
 
   async logout(req, res, next) {
     // 1. delete refresh token from db
-    const { refreshToken } = req.cookies;
-
+    const authHeader = req.headers["authorization"];
+    const accessToken = authHeader && authHeader.split(" ")[1];
+    const refreshToken = authHeader && authHeader.split(" ")[2];
+    // console.log("object");
+    // console.log(accessToken);
+    // console.log(refreshToken);
     try {
       await RefreshToken.deleteOne({ token: refreshToken });
     } catch (error) {
       return next(error);
     }
-
-    // delete cookies
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    try {
+      await AccessToken.deleteOne({ token: accessToken });
+    } catch (error) {
+      return next(error);
+    }
 
     // 2. response
     res.status(200).json({ user: null, auth: false });
@@ -345,7 +365,10 @@ const pharmAuthController = {
     // 3. generate new tokens
     // 4. update db, return response
 
-    const originalRefreshToken = req.cookies.refreshToken;
+    // const originalRefreshToken = req.cookies.refreshToken;
+    const authHeader = req.headers["authorization"];
+    const originalRefreshToken = authHeader && authHeader.split(" ")[2];
+    const accessToken = authHeader && authHeader.split(" ")[1];
 
     let id;
 
@@ -359,10 +382,11 @@ const pharmAuthController = {
 
       return next(error);
     }
+    // console.log(id)
 
     try {
       const match = RefreshToken.findOne({
-        _id: id,
+        userId: id,
         token: originalRefreshToken,
       });
 
@@ -378,31 +402,64 @@ const pharmAuthController = {
       return next(e);
     }
 
+    let accessId;
     try {
-      const accessToken = JWTService.signAccessToken({ _id: id }, "365d");
+      accessId = JWTService.verifyAccessToken(accessToken)._id;
+      console.log(accessId)
+    } catch (e) {
+      const error = {
+        status: 401,
+        message: "Unauthorized",
+      };
 
-      const refreshToken = JWTService.signRefreshToken({ _id: id }, "365d");
+      return next(error);
+    }
 
-      await RefreshToken.updateOne({ _id: id }, { token: refreshToken });
-
-      res.cookie("accessToken", accessToken, {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
+    try {
+      const match = AccessToken.findOne({
+        userId: accessId,
+        token: accessToken,
       });
 
-      res.cookie("refreshToken", refreshToken, {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-      });
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Unauthorized",
+        };
+
+        return next(error);
+      }
     } catch (e) {
       return next(e);
     }
 
-    const pharmacy = await Pharmacy.findOne({ _id: id });
+    try {
+      let accessToken = JWTService.signAccessToken({ _id: id }, "365d");
 
-    const pharmDTO = new PharmDTO(pharmacy);
+      let refreshToken = JWTService.signRefreshToken({ _id: id }, "365d");
+      // console.log(accessToken);
+      // console.log(refreshToken);
+      await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
+      await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
-    return res.status(200).json({ pharmacy: pharmDTO, auth: true });
+      // res.cookie("accessToken", accessToken, {
+      //   maxAge: 1000 * 60 * 60 * 24,
+      //   httpOnly: true,
+      // });
+
+      // res.cookie("refreshToken", refreshToken, {
+      //   maxAge: 1000 * 60 * 60 * 24,
+      //   httpOnly: true,
+      // });
+      const pharm = await Pharmacy.findOne({ _id: id });
+  
+      const pharmDto = new PharmDTO(pharm);
+  
+      return res.status(200).json({ pharm: pharmDto, auth: true, accessToken: accessToken });
+    } catch (e) {
+      return next(e);
+    }
+
   },
 };
 

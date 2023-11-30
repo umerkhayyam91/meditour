@@ -318,7 +318,6 @@ const authController = {
       .status(200)
       .json({ user: userDto, auth: true, token: accessToken });
   },
-  
   async logout(req, res, next) {
     // 1. delete refresh token from db
     const { refreshToken } = req.cookies;
@@ -336,7 +335,6 @@ const authController = {
     // 2. response
     res.status(200).json({ user: null, auth: false });
   },
-
   async refresh(req, res, next) {
     // 1. get refreshToken from cookies
     // 2. verify refreshToken

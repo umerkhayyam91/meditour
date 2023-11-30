@@ -14,7 +14,7 @@ const upload = multer({ dest: "temp/" });
 //............auth...............
 router.post("/pharm/register", pharmAuthController.register);
 router.post("/pharm/login", pharmAuthController.login);
-router.post("/pharm/verify", pharmAuthController.verify);
+router.post("/pharm/completeSignup", pharmAuthController.completeSignup);
 router.put("/pharm/updateProfile", auth, pharmAuthController.updateProfile);
 router.post("/pharm/logout", auth, pharmAuthController.logout);
 router.post("/pharm/refresh", auth, pharmAuthController.refresh);
