@@ -18,7 +18,6 @@ const pharmAuthController = {
       ownerImage: Joi.string().required(),
       taxFileImage: Joi.string().required(),
       pharmFirstName: Joi.string().required(),
-      pharmLogo: Joi.string().required(),
       pharmLastName: Joi.string().required(),
       pharmLicenseNumber: Joi.string().required(),
       licenceExpiryDate: Joi.string().required(),
@@ -49,7 +48,6 @@ const pharmAuthController = {
 
     const {
       pharmFirstName,
-      pharmLogo,
       pharmLastName,
       pharmLicenseNumber,
       licenceExpiryDate,
@@ -82,7 +80,6 @@ const pharmAuthController = {
     try {
       const pharmToRegister = new Pharmacy({
         pharmFirstName,
-        pharmLogo,
         pharmLastName,
         pharmLicenseNumber,
         licenceExpiryDate,
