@@ -108,9 +108,9 @@ const pharmAuthController = {
       pharm = await pharmToRegister.save();
 
       // token generation
-      accessToken = JWTService.signAccessToken({ _id: pharm._id }, "90m");
+      accessToken = JWTService.signAccessToken({ _id: pharm._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken({ _id: pharm._id }, "120m");
+      refreshToken = JWTService.signRefreshToken({ _id: pharm._id }, "365d");
     } catch (error) {
       return next(error);
     }

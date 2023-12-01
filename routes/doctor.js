@@ -4,6 +4,7 @@ const pharmMedController = require("../controller/Pharmacy/pharmMedController");
 const pharmOrderController = require("../controller/Pharmacy/pharmOrderController");
 const labTestController = require("../controller/Laboratory/labTestController");
 const VerificationController = require("../controller/verificationController");
+const docAvailabilityController = require("../controller/Doctor/doctorAvailabilityController")
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -19,6 +20,9 @@ router.post("/doc/completeSignup", docAuthController.completeSignup);
 router.put("/doc/updateProfile", auth, docAuthController.updateProfile);
 router.post("/doc/logout", auth, docAuthController.logout);
 router.post("/doc/refresh", auth, docAuthController.refresh);
+
+//............availability............
+router.post("/doc/addAvailability", auth, docAvailabilityController.addAvailability);
 
 
 //..............verification.........
