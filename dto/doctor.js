@@ -7,9 +7,14 @@ class PharmDTO {
       this.cnicOrPassNo = pharm.cnicOrPassNo;
       this.qualification = pharm.qualification;
       this.speciality = pharm.speciality;
+      this.services = pharm.services;
       this.clinicName = pharm.clinicName;
       this.clinicLicense = pharm.clinicLicense;
       this.licenceExpiryDate = pharm.licenceExpiryDate;
+      this.availability = pharm.availability;
+      this.time = pharm.time;
+      this.videoConsultFee = pharm.videoConsultFee;
+      this.onClinicFee = pharm.onClinicFee;
       this.clinicAddress = pharm.clinicAddress;
       this.state = pharm.state;
       this.country = pharm.country;

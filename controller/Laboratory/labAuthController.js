@@ -151,9 +151,9 @@ const labAuthController = {
       lab = await labToRegister.save();
 
       // token generation
-      accessToken = JWTService.signAccessToken({ _id: lab._id }, "90m");
+      accessToken = JWTService.signAccessToken({ _id: lab._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken({ _id: lab._id }, "120m");
+      refreshToken = JWTService.signRefreshToken({ _id: lab._id }, "365d");
     } catch (error) {
       return next(error);
     }

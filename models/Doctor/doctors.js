@@ -33,8 +33,12 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    clinicName: {
+    services: {
       type: String,
+      required: true,
+    },
+    clinicName: {
+      type: String, 
       required: true,
     },
     clinicLicense: {
@@ -42,6 +46,22 @@ const labSchema = new mongoose.Schema(
       required: true,
     },
     licenceExpiryDate: {
+      type: String,
+      required: true,
+    },
+    availability: {
+      type: String,
+      required: true,
+    },
+    time: {
+      type: String,
+      required: true,
+    },
+    videoConsultFee: {
+      type: String,
+      required: true,
+    },
+    onClinicFee: {
       type: String,
       required: true,
     },
