@@ -166,10 +166,12 @@ const pharmMedController = {
 
   async getAllMeds(req, res, next) {
     try {
+      console.log(req)
 
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const medPerPage = 10;
-      const pharmId = req.user.id;
+      const pharmId = req.user._id;
+      console.log("pharmId", pharmId)
       const totalMeds = await Medicine.countDocuments({ pharmId }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalMeds / medPerPage); // Calculate the total number of pages
 
@@ -181,11 +183,11 @@ const pharmMedController = {
         .limit(medPerPage);
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
-      const medDto = new medDTO(medicines);
+      // const medDto = new medDTO(medicines);
       return res
         .status(200)
         .json({
-          medicines: medDto,
+          medicines: medicines,
           auth: true,
           previousPage: previousPage,
           nextPage: nextPage,

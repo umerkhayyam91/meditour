@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+const availabilityPeriodSchema = new mongoose.Schema({
+  startTime: {
+    type: String, // Format: 'HH:mm'
+    required: true,
+  },
+  endTime: {
+    type: String, // Format: 'HH:mm'
+    required: true,
+  },
+});
+
 const doctorAvailabilitySchema = new mongoose.Schema({
   doctorId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -12,14 +23,7 @@ const doctorAvailabilitySchema = new mongoose.Schema({
         type: Number, // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
         required: true,
       },
-      startTime: {
-        type: String, // Format: 'HH:mm'
-        required: true,
-      },
-      endTime: {
-        type: String, // Format: 'HH:mm'
-        required: true,
-      },
+      periods: [availabilityPeriodSchema],
     },
   ],
 });

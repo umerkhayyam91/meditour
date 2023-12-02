@@ -23,7 +23,7 @@ router.post("/doc/refresh", auth, docAuthController.refresh);
 
 //............availability............
 router.post("/doc/addAvailability", auth, docAvailabilityController.addAvailability);
-
+router.get("/doc/getAvailability", auth, docAvailabilityController.getAvailability);
 
 //..............verification.........
 router.post("/doc/sendCodeToEmail", VerificationController.sendCodeToEmail);

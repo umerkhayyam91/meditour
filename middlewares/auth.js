@@ -2,8 +2,10 @@ const JWTService = require("../services/JWTService");
 const User = require("../models/user");
 const labDto = require("../dto/lab");
 const pharmDto = require("../dto/pharm");
+const docDto = require("../dto/doctor");
 const Laboratory = require("../models/Laboratory/laboratory");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
+const Doctor = require("../models/Doctor/doctors");
 const AccessToken = require("../models/accessToken");
 
 const auth = async (req, res, next) => {
@@ -17,18 +19,18 @@ const auth = async (req, res, next) => {
         status: 401,
         message: "Unauthorized",
       };
-
       return next(error);
     }
-
+    
     if (!accessToken) {
       const error = {
         status: 401,
         message: "Unauthorized",
       };
-
+      
       return next(error);
     }
+    console.log(accessToken)
 
     let _id;
 
@@ -53,12 +55,24 @@ const auth = async (req, res, next) => {
     } else if (req.originalUrl.includes("/pharm")) {
       try {
         user = await Pharmacy.findOne({ _id: _id });
+        console.log(user)
       } catch (error) {
         return next(error);
       }
       const PharmDto = new pharmDto(user);
 
       req.user = PharmDto;
+      next();
+      return
+    } else if (req.originalUrl.includes("/doc")) {
+      try {
+        user = await Doctor.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const docDTO = new docDto(user);
+
+      req.user = docDTO;
 
       next();
       return;
