@@ -39,7 +39,7 @@ const docAppointController = {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const patientPerPage = 10;
       const doctorId = req.user._id;
-      const allAppointments = await Appointment.find({ doctorId })
+      const allAppointments = await Appointment.find({ doctorId , status:completed})
       const patientsSet = new Set(allAppointments.map(appoint => appoint.patientId));
       const uniquePatients = Array.from(patientsSet);
       const totalPatients = uniquePatients.length; 

@@ -22,6 +22,10 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      required: true,
+    },
     ePrescription: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
