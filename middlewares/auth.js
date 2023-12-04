@@ -30,7 +30,7 @@ const auth = async (req, res, next) => {
       
       return next(error);
     }
-    console.log(accessToken)
+    // console.log(accessToken)
 
     let _id;
 
