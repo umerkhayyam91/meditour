@@ -29,6 +29,8 @@ router.get("/doc/getAvailability", auth, docAvailabilityController.getAvailabili
 //............appointments..............
 router.get("/doc/getAllAppointments", auth, docAppointController.getAllAppointments);
 router.get("/doc/getAllPatients", auth, docAppointController.getAllPatients);
+router.get("/doc/patientHistory", auth, docAppointController.patientHistory);
+router.get("/doc/getRequests", auth, docAppointController.getRequests);
 // router.post("/doc/addAppoints", auth, docAppointController.addAppoints);
 
 
