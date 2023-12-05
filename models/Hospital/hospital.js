@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const labSchema = new mongoose.Schema(
+const hospitalSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -11,64 +11,43 @@ const labSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
-    name: {
-      type: String,
-    },
-    fatherName: {
-      type: String,
-    },
-    gender: {
-      type: String,
-    },
-    DOB: {
+    hospitalFirstName: {
       type: String,
       required: true,
     },
-    cnicOrPassNo: {
+    hospitalLastName: {
       type: String,
       required: true,
     },
-    qualification: {
+    pmdcNumber: {
       type: String,
       required: true,
     },
-    speciality: {
+    pmdcExpiryDate: {
       type: String,
       required: true,
     },
-    services: {
+    authFirstName: {
       type: String,
       required: true,
     },
-    clinicName: {
-      type: String, 
-      required: true,
-    },
-    clinicLicense: {
+    authMiddleName: {
       type: String,
       required: true,
     },
-    licenceExpiryDate: {
+    authLastName: {
       type: String,
       required: true,
     },
-    availability: {
+    cnicOrPassportNo: {
       type: String,
       required: true,
     },
-    time: {
+    cnicOrPassportExpiry: {
       type: String,
       required: true,
     },
-    videoConsultFee: {
-      type: String,
-      required: true,
-    },
-    onClinicFee: {
-      type: String,
-      required: true,
-    },
-    clinicAddress: {
+    hospitalAddress: {
       type: String,
       required: true,
     },
@@ -112,7 +91,11 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    doctorImage: {
+    hospitalLogo: {
+      type: String,
+      required: true,
+    },
+    pmdcImage: {
       type: String,
       required: true,
     },
@@ -124,9 +107,14 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isVerified: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,
   }
 );
-module.exports = mongoose.model("Doctor", labSchema, "doctors");
+
+module.exports = mongoose.model("Hospital", hospitalSchema, "hospitals");

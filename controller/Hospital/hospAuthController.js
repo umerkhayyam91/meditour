@@ -1,29 +1,33 @@
 const express = require("express");
 const app = express();
-const Doctor = require("../../models/Doctor/doctors.js");
+const Hospital = require("../../models/Hospital/hospital.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
-const doctorDto = require("../../dto/doctor.js");
+const HospDTO = require("../../dto/hospital.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 const AccessToken = require("../../models/accessToken.js");
+const LabDTO = require("../../dto/lab.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const docAuthController = {
+const hospAuthController = {
   async register(req, res, next) {
-    const docRegisterSchema = Joi.object({
-      name: Joi.string().required(),
-      fatherName: Joi.string().required(),
-      gender: Joi.string().required(),
-      DOB: Joi.string().required(),
-      cnicOrPassNo: Joi.string().required(),
-      qualification: Joi.string().required(),
-      speciality: Joi.string().required(),
-      clinicName: Joi.string().required(),
-      clinicLicense: Joi.string().required(),
-      licenceExpiryDate: Joi.string().required(),
-      clinicAddress: Joi.string().required(),
+    const pharmRegisterSchema = Joi.object({
+      hospitalLogo: Joi.string().required(),
+      pmdcImage: Joi.string().required(),
+      taxFileImage: Joi.string().required(),
+      cnicImage: Joi.string().required(),
+      hospitalFirstName: Joi.string().required(),
+      hospitalLastName: Joi.string().required(),
+      pmdcNumber: Joi.string().required(),
+      pmdcExpiryDate: Joi.string().required(),
+      authFirstName: Joi.string().required(),
+      authMiddleName: Joi.string().required(),
+      authLastName: Joi.string().required(),
+      cnicOrPassportNo: Joi.string().required(),
+      cnicOrPassportExpiry: Joi.string().required(),
+      hospitalAddress: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -35,29 +39,29 @@ const docAuthController = {
       bankName: Joi.string().required(),
       accountHolderName: Joi.string().required(),
       accountNumber: Joi.string().required(),
-      doctorImage: Joi.string(),
-      cnicImage: Joi.string(),
-      taxFileImage: Joi.string(),
     });
 
-    const { error } = docRegisterSchema.validate(req.body);
+    const { error } = pharmRegisterSchema.validate(req.body);
 
     if (error) {
       return next(error);
     }
 
     const {
-        name,
-        fatherName,
-        gender,
-        DOB,
-        cnicOrPassNo,
-        qualification,
-        speciality,
-        clinicName,
-        clinicLicense,
-        licenceExpiryDate,
-        clinicAddress,
+        hospitalLogo,
+        pmdcImage,
+        taxFileImage,
+        cnicImage,
+        hospitalFirstName,
+        hospitalLastName,
+        pmdcNumber,
+        pmdcExpiryDate,
+        authFirstName,
+        authMiddleName,
+        authLastName,
+        cnicOrPassportNo,
+        cnicOrPassportExpiry,
+        hospitalAddress,
         state,
         country,
         website,
@@ -68,29 +72,29 @@ const docAuthController = {
         salesTaxNo,
         bankName,
         accountHolderName,
-        accountNumber,
-        doctorImage,
-        cnicImage,
-        taxFileImage
+        accountNumber
     } = req.body;
 
     let accessToken;
     let refreshToken;
 
-    let doc;
+    let hospital;
     try {
-      const docToRegister = new Doctor({
-        name,
-        fatherName,
-        gender,
-        DOB,
-        cnicOrPassNo,
-        qualification,
-        speciality,
-        clinicName,
-        clinicLicense,
-        licenceExpiryDate,
-        clinicAddress,
+      const hospToRegister = new Hospital({
+        hospitalLogo,
+        pmdcImage,
+        taxFileImage,
+        cnicImage,
+        hospitalFirstName,
+        hospitalLastName,
+        pmdcNumber,
+        pmdcExpiryDate,
+        authFirstName,
+        authMiddleName,
+        authLastName,
+        cnicOrPassportNo,
+        cnicOrPassportExpiry,
+        hospitalAddress,
         state,
         country,
         website,
@@ -101,42 +105,38 @@ const docAuthController = {
         salesTaxNo,
         bankName,
         accountHolderName,
-        accountNumber,
-        doctorImage,
-        cnicImage,
-        taxFileImage
+        accountNumber
       });
 
-      doc = await docToRegister.save();
+      hospital = await hospToRegister.save();
 
       // token generation
-      accessToken = JWTService.signAccessToken({ _id: doc._id }, "365d");
+      accessToken = JWTService.signAccessToken({ _id: hospital._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken({ _id: doc._id }, "365d");
+      refreshToken = JWTService.signRefreshToken({ _id: hospital._id }, "365d");
     } catch (error) {
       return next(error);
     }
 
     // store refresh token in db
-    await JWTService.storeRefreshToken(refreshToken, doc._id);
-    await JWTService.storeAccessToken(accessToken, doc._id);
+    await JWTService.storeRefreshToken(refreshToken, hospital._id);
+    await JWTService.storeAccessToken(accessToken, hospital._id);
 
-    // 6. response send
 
-    const docDto = new doctorDto(doc);
+    const hospDto = new HospDTO(hospital);
 
     return res
       .status(201)
-      .json({ doctor: docDto, auth: true, token: accessToken });
+      .json({ Hospital: hospDto, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
-    const docLoginSchema = Joi.object({
+    const hospLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
     });
 
-    const { error } = docLoginSchema.validate(req.body);
+    const { error } = hospLoginSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -144,12 +144,12 @@ const docAuthController = {
 
     const { email, password } = req.body;
 
-    let doc;
+    let hosp;
 
     try {
       // match username
-      doc = await Doctor.findOne({ email: email });
-      if (!doc) {
+      hosp = await Hospital.findOne({ email: email });
+      if (!hosp) {
         const error = {
           status: 401,
           message: "Invalid email",
@@ -157,7 +157,7 @@ const docAuthController = {
 
         return next(error);
       }
-      if (doc.isVerified == false) {
+      if (hosp.isVerified == false) {
         const error = {
           status: 401,
           message: "User not verified",
@@ -166,11 +166,9 @@ const docAuthController = {
         return next(error);
       }
 
-      
-
       // match password
 
-      const match = await bcrypt.compare(password, doc.password);
+      const match = await bcrypt.compare(password, hosp.password);
 
       if (!match) {
         const error = {
@@ -184,13 +182,16 @@ const docAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: doc._id }, "365d");
-    const refreshToken = JWTService.signRefreshToken({ _id: doc._id }, "365d");
+    const accessToken = JWTService.signAccessToken({ _id: hosp._id }, "365d");
+    const refreshToken = JWTService.signRefreshToken(
+      { _id: hosp._id },
+      "365d"
+    );
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
         {
-          userId: doc._id,
+          userId: hosp._id,
         },
         { token: refreshToken },
         { upsert: true }
@@ -202,7 +203,7 @@ const docAuthController = {
     try {
       await AccessToken.updateOne(
         {
-          userId: doc._id,
+          userId: hosp._id,
         },
         { token: accessToken },
         { upsert: true }
@@ -211,22 +212,32 @@ const docAuthController = {
       return next(error);
     }
 
-    const docDto = new doctorDto(doc);
+    // res.cookie("accessToken", accessToken, {
+    //   maxAge: 1000 * 60 * 60 * 24,
+    //   httpOnly: true,
+    // });
+
+    // res.cookie("refreshToken", refreshToken, {
+    //   maxAge: 1000 * 60 * 60 * 24,
+    //   httpOnly: true,
+    // });
+
+    const hospDto = new HospDTO(hosp);
 
     return res
       .status(200)
-      .json({ doctor: docDto, auth: true, token: accessToken });
+      .json({ Hospital: hospDto, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
-    const docRegisterSchema = Joi.object({
+    const hospRegisterSchema = Joi.object({
       phoneNumber: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().pattern(passwordPattern).required(),
       confirmPassword: Joi.ref("password"),
     });
 
-    const { error } = docRegisterSchema.validate(req.body);
+    const { error } = hospRegisterSchema.validate(req.body);
 
     // 2. if error in validation -> return error via middleware
     if (error) {
@@ -236,7 +247,7 @@ const docAuthController = {
     const { password, email, phoneNumber } = req.body;
 
     const userId = req.query.id;
-    const existingUser = await Doctor.findById(userId);
+    const existingUser = await Hospital.findById(userId);
 
     if (!existingUser) {
       const error = new Error("User not found!");
@@ -256,11 +267,11 @@ const docAuthController = {
 
     return res
       .status(200)
-      .json({ message: "User updated successfully", doctor: existingUser });
+      .json({ message: "User updated successfully", hospital: existingUser });
   },
 
   async updateProfile(req, res, next) {
-    const docSchema = Joi.object({
+    const hospSchema = Joi.object({
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
@@ -270,7 +281,7 @@ const docAuthController = {
       accountNumber: Joi.string(),
     });
 
-    const { error } = docSchema.validate(req.body);
+    const { error } = hospSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -284,31 +295,31 @@ const docAuthController = {
       accountHolderName,
       accountNumber,
     } = req.body;
-    const docId = req.user._id;
+    const hospId = req.user._id;
 
-    const doc = await Doctor.findById(docId);
+    const hosp = await Pharmacy.findById(hospId);
 
-    if (!doc) {
-      const error = new Error("Doctor not found!");
+    if (!hosp) {
+      const error = new Error("Hospital not found!");
       error.status = 404;
       return next(error);
     }
 
     // Update only the provided fields
-    if (website) doc.website = website;
-    if (facebook) doc.facebook = facebook;
-    if (twitter) doc.twitter = twitter;
-    if (instagram) doc.instagram = instagram;
-    if (bankName) doc.bankName = bankName;
-    if (accountHolderName) doc.accountHolderName = accountHolderName;
-    if (accountNumber) doc.accountNumber = accountNumber;
+    if (website) hosp.website = website;
+    if (facebook) hosp.facebook = facebook;
+    if (twitter) hosp.twitter = twitter;
+    if (instagram) hosp.instagram = instagram;
+    if (bankName) hosp.bankName = bankName;
+    if (accountHolderName) hosp.accountHolderName = accountHolderName;
+    if (accountNumber) hosp.accountNumber = accountNumber;
 
     // Save the updated test
-    await doc.save();
+    await hosp.save();
 
     return res
       .status(200)
-      .json({ message: "Doctor updated successfully", Doctor: doc });
+      .json({ message: "Hospital updated successfully", Hospital: hosp });
   },
 
   async logout(req, res, next) {
@@ -316,7 +327,9 @@ const docAuthController = {
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
     const refreshToken = authHeader && authHeader.split(" ")[2];
-   
+    // console.log("object");
+    // console.log(accessToken);
+    // console.log(refreshToken);
     try {
       await RefreshToken.deleteOne({ token: refreshToken });
     } catch (error) {
@@ -338,6 +351,7 @@ const docAuthController = {
     // 3. generate new tokens
     // 4. update db, return response
 
+    // const originalRefreshToken = req.cookies.refreshToken;
     const authHeader = req.headers["authorization"];
     const originalRefreshToken = authHeader && authHeader.split(" ")[2];
     const accessToken = authHeader && authHeader.split(" ")[1];
@@ -354,6 +368,7 @@ const docAuthController = {
 
       return next(error);
     }
+    // console.log(id)
 
     try {
       const match = RefreshToken.findOne({
@@ -376,7 +391,7 @@ const docAuthController = {
     let accessId;
     try {
       accessId = JWTService.verifyAccessToken(accessToken)._id;
-      console.log(accessId)
+      console.log(accessId);
     } catch (e) {
       const error = {
         status: 401,
@@ -408,20 +423,31 @@ const docAuthController = {
       let accessToken = JWTService.signAccessToken({ _id: id }, "365d");
 
       let refreshToken = JWTService.signRefreshToken({ _id: id }, "365d");
+      // console.log(accessToken);
+      // console.log(refreshToken);
       await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
       await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
+      // res.cookie("accessToken", accessToken, {
+      //   maxAge: 1000 * 60 * 60 * 24,
+      //   httpOnly: true,
+      // });
 
-      const doc = await Doctor.findOne({ _id: id });
-  
-      const doctorDTO = new doctorDto(doc);
-  
-      return res.status(200).json({ doctor: doctorDTO, auth: true, accessToken: accessToken });
+      // res.cookie("refreshToken", refreshToken, {
+      //   maxAge: 1000 * 60 * 60 * 24,
+      //   httpOnly: true,
+      // });
+      const hosp = await Hospital.findOne({ _id: id });
+
+      const hospDto = new HospDTO(hosp);
+
+      return res
+        .status(200)
+        .json({ hospital: hospDto, auth: true, accessToken: accessToken });
     } catch (e) {
       return next(e);
     }
-
   },
 };
 
-module.exports = docAuthController;
+module.exports = hospAuthController;

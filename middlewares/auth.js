@@ -3,9 +3,13 @@ const User = require("../models/user");
 const labDto = require("../dto/lab");
 const pharmDto = require("../dto/pharm");
 const docDto = require("../dto/doctor");
+const hospDto = require("../dto/hospital");
+const ambulanceDto = require("../dto/ambulance");
 const Laboratory = require("../models/Laboratory/laboratory");
+const Ambulance = require("../models/Ambulance/ambulance");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
 const Doctor = require("../models/Doctor/doctors");
+const Hospital = require("../models/Hospital/hospital");
 const AccessToken = require("../models/accessToken");
 
 const auth = async (req, res, next) => {
@@ -73,6 +77,30 @@ const auth = async (req, res, next) => {
       const docDTO = new docDto(user);
 
       req.user = docDTO;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/hosp")) {
+      try {
+        user = await Hospital.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const hospDTO = new hospDto(user);
+
+      req.user = hospDTO;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/ambulance")) {
+      try {
+        user = await Ambulance.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const ambulanceDTO = new ambulanceDto(user);
+
+      req.user = ambulanceDTO;
 
       next();
       return;

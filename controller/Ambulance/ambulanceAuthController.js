@@ -1,29 +1,28 @@
 const express = require("express");
 const app = express();
-const Doctor = require("../../models/Doctor/doctors.js");
+const Ambulance = require("../../models/Ambulance/ambulance.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
-const doctorDto = require("../../dto/doctor.js");
+const ambulanceDto = require("../../dto/ambulance.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 const AccessToken = require("../../models/accessToken.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const docAuthController = {
+const ambulanceAuthController = {
   async register(req, res, next) {
-    const docRegisterSchema = Joi.object({
-      name: Joi.string().required(),
-      fatherName: Joi.string().required(),
-      gender: Joi.string().required(),
-      DOB: Joi.string().required(),
-      cnicOrPassNo: Joi.string().required(),
+    const ambulanceRegisterSchema = Joi.object({
+      companyName: Joi.string().required(),
+      companyDetail: Joi.string().required(),
+      authorizedName: Joi.string().required(),
+      authorizedDetail: Joi.string().required(),
+      authorizedCnic: Joi.string().required(),
       qualification: Joi.string().required(),
-      speciality: Joi.string().required(),
-      clinicName: Joi.string().required(),
-      clinicLicense: Joi.string().required(),
-      licenceExpiryDate: Joi.string().required(),
-      clinicAddress: Joi.string().required(),
+      emergencyContact: Joi.string().required(),
+      registrationNumber: Joi.string().required(),
+      cellNo: Joi.string().required(),
+      ambulanceEquipDetail: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -35,62 +34,58 @@ const docAuthController = {
       bankName: Joi.string().required(),
       accountHolderName: Joi.string().required(),
       accountNumber: Joi.string().required(),
-      doctorImage: Joi.string(),
       cnicImage: Joi.string(),
       taxFileImage: Joi.string(),
     });
 
-    const { error } = docRegisterSchema.validate(req.body);
+    const { error } = ambulanceRegisterSchema.validate(req.body);
 
     if (error) {
       return next(error);
     }
 
     const {
-        name,
-        fatherName,
-        gender,
-        DOB,
-        cnicOrPassNo,
-        qualification,
-        speciality,
-        clinicName,
-        clinicLicense,
-        licenceExpiryDate,
-        clinicAddress,
-        state,
-        country,
-        website,
-        twitter,
-        facebook,
-        instagram,
-        incomeTaxNo,
-        salesTaxNo,
-        bankName,
-        accountHolderName,
-        accountNumber,
-        doctorImage,
-        cnicImage,
-        taxFileImage
+      companyName,
+      companyDetail,
+      authorizedName,
+      authorizedDetail,
+      authorizedCnic,
+      qualification,
+      emergencyContact,
+      registrationNumber,
+      cellNo,
+      ambulanceEquipDetail,
+      state,
+      country,
+      website,
+      twitter,
+      facebook,
+      instagram,
+      incomeTaxNo,
+      salesTaxNo,
+      bankName,
+      accountHolderName,
+      accountNumber,
+      cnicImage,
+      taxFileImage,
     } = req.body;
 
     let accessToken;
     let refreshToken;
 
-    let doc;
+    let ambulance;
     try {
-      const docToRegister = new Doctor({
-        name,
-        fatherName,
-        gender,
-        DOB,
-        cnicOrPassNo,
+      const ambulanceToRegister = new Ambulance({
+        companyName,
+        companyDetail,
+        authorizedName,
+        authorizedDetail,
+        authorizedCnic,
         qualification,
-        speciality,
-        clinicName,
-        clinicLicense,
-        licenceExpiryDate,
-        clinicAddress,
+        emergencyContact,
+        registrationNumber,
+        cellNo,
+        ambulanceEquipDetail,
         state,
         country,
         website,
@@ -102,41 +97,43 @@ const docAuthController = {
         bankName,
         accountHolderName,
         accountNumber,
-        doctorImage,
         cnicImage,
-        taxFileImage
+        taxFileImage,
       });
 
-      doc = await docToRegister.save();
+      ambulance = await ambulanceToRegister.save();
 
       // token generation
-      accessToken = JWTService.signAccessToken({ _id: doc._id }, "365d");
+      accessToken = JWTService.signAccessToken({ _id: ambulance._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken({ _id: doc._id }, "365d");
+      refreshToken = JWTService.signRefreshToken(
+        { _id: ambulance._id },
+        "365d"
+      );
     } catch (error) {
       return next(error);
     }
 
     // store refresh token in db
-    await JWTService.storeRefreshToken(refreshToken, doc._id);
-    await JWTService.storeAccessToken(accessToken, doc._id);
+    await JWTService.storeRefreshToken(refreshToken, ambulance._id);
+    await JWTService.storeAccessToken(accessToken, ambulance._id);
 
     // 6. response send
 
-    const docDto = new doctorDto(doc);
+    const ambulanceDto = new ambulanceDto(ambulance);
 
     return res
       .status(201)
-      .json({ doctor: docDto, auth: true, token: accessToken });
+      .json({ ambulance: ambulanceDto, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
-    const docLoginSchema = Joi.object({
+    const ambulanceLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
     });
 
-    const { error } = docLoginSchema.validate(req.body);
+    const { error } = ambulanceLoginSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -144,12 +141,12 @@ const docAuthController = {
 
     const { email, password } = req.body;
 
-    let doc;
+    let ambulance;
 
     try {
       // match username
-      doc = await Doctor.findOne({ email: email });
-      if (!doc) {
+      ambulance = await Ambulance.findOne({ email: email });
+      if (!ambulance) {
         const error = {
           status: 401,
           message: "Invalid email",
@@ -157,7 +154,7 @@ const docAuthController = {
 
         return next(error);
       }
-      if (doc.isVerified == false) {
+      if (ambulance.isVerified == false) {
         const error = {
           status: 401,
           message: "User not verified",
@@ -166,11 +163,9 @@ const docAuthController = {
         return next(error);
       }
 
-      
-
       // match password
 
-      const match = await bcrypt.compare(password, doc.password);
+      const match = await bcrypt.compare(password, ambulance.password);
 
       if (!match) {
         const error = {
@@ -184,13 +179,19 @@ const docAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: doc._id }, "365d");
-    const refreshToken = JWTService.signRefreshToken({ _id: doc._id }, "365d");
+    const accessToken = JWTService.signAccessToken(
+      { _id: ambulance._id },
+      "365d"
+    );
+    const refreshToken = JWTService.signRefreshToken(
+      { _id: ambulance._id },
+      "365d"
+    );
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
         {
-          userId: doc._id,
+          userId: ambulance._id,
         },
         { token: refreshToken },
         { upsert: true }
@@ -202,7 +203,7 @@ const docAuthController = {
     try {
       await AccessToken.updateOne(
         {
-          userId: doc._id,
+          userId: ambulance._id,
         },
         { token: accessToken },
         { upsert: true }
@@ -211,22 +212,22 @@ const docAuthController = {
       return next(error);
     }
 
-    const docDto = new doctorDto(doc);
+    const ambulanceDTO = new ambulanceDto(ambulance);
 
     return res
       .status(200)
-      .json({ doctor: docDto, auth: true, token: accessToken });
+      .json({ ambulance: ambulanceDTO, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
-    const docRegisterSchema = Joi.object({
+    const ambulanceRegisterSchema = Joi.object({
       phoneNumber: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().pattern(passwordPattern).required(),
       confirmPassword: Joi.ref("password"),
     });
 
-    const { error } = docRegisterSchema.validate(req.body);
+    const { error } = ambulanceRegisterSchema.validate(req.body);
 
     // 2. if error in validation -> return error via middleware
     if (error) {
@@ -236,7 +237,7 @@ const docAuthController = {
     const { password, email, phoneNumber } = req.body;
 
     const userId = req.query.id;
-    const existingUser = await Doctor.findById(userId);
+    const existingUser = await Ambulance.findById(userId);
 
     if (!existingUser) {
       const error = new Error("User not found!");
@@ -256,11 +257,11 @@ const docAuthController = {
 
     return res
       .status(200)
-      .json({ message: "User updated successfully", doctor: existingUser });
+      .json({ message: "User updated successfully", Ambulance: existingUser });
   },
 
   async updateProfile(req, res, next) {
-    const docSchema = Joi.object({
+    const ambulanceSchema = Joi.object({
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
@@ -270,7 +271,7 @@ const docAuthController = {
       accountNumber: Joi.string(),
     });
 
-    const { error } = docSchema.validate(req.body);
+    const { error } = ambulanceSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -284,31 +285,34 @@ const docAuthController = {
       accountHolderName,
       accountNumber,
     } = req.body;
-    const docId = req.user._id;
+    const ambulanceId = req.user._id;
 
-    const doc = await Doctor.findById(docId);
+    const ambulance = await Ambulance.findById(ambulanceId);
 
-    if (!doc) {
-      const error = new Error("Doctor not found!");
+    if (!ambulance) {
+      const error = new Error("Ambulance not found!");
       error.status = 404;
       return next(error);
     }
 
     // Update only the provided fields
-    if (website) doc.website = website;
-    if (facebook) doc.facebook = facebook;
-    if (twitter) doc.twitter = twitter;
-    if (instagram) doc.instagram = instagram;
-    if (bankName) doc.bankName = bankName;
-    if (accountHolderName) doc.accountHolderName = accountHolderName;
-    if (accountNumber) doc.accountNumber = accountNumber;
+    if (website) ambulance.website = website;
+    if (facebook) ambulance.facebook = facebook;
+    if (twitter) ambulance.twitter = twitter;
+    if (instagram) ambulance.instagram = instagram;
+    if (bankName) ambulance.bankName = bankName;
+    if (accountHolderName) ambulance.accountHolderName = accountHolderName;
+    if (accountNumber) ambulance.accountNumber = accountNumber;
 
     // Save the updated test
-    await doc.save();
+    await ambulance.save();
 
     return res
       .status(200)
-      .json({ message: "Doctor updated successfully", Doctor: doc });
+      .json({
+        message: "Ambulance updated successfully",
+        Ambulance: ambulance,
+      });
   },
 
   async logout(req, res, next) {
@@ -316,7 +320,7 @@ const docAuthController = {
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
     const refreshToken = authHeader && authHeader.split(" ")[2];
-   
+
     try {
       await RefreshToken.deleteOne({ token: refreshToken });
     } catch (error) {
@@ -376,7 +380,6 @@ const docAuthController = {
     let accessId;
     try {
       accessId = JWTService.verifyAccessToken(accessToken)._id;
-      console.log(accessId)
     } catch (e) {
       const error = {
         status: 401,
@@ -411,17 +414,21 @@ const docAuthController = {
       await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
       await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
+      const ambulance = await Ambulance.findOne({ _id: id });
 
-      const doc = await Doctor.findOne({ _id: id });
-  
-      const doctorDTO = new doctorDto(doc);
-  
-      return res.status(200).json({ doctor: doctorDTO, auth: true, accessToken: accessToken });
+      const ambulanceDTO = new ambulanceDto(ambulance);
+
+      return res
+        .status(200)
+        .json({
+          Ambulance: ambulanceDTO,
+          auth: true,
+          accessToken: accessToken,
+        });
     } catch (e) {
       return next(e);
     }
-
   },
 };
 
-module.exports = docAuthController;
+module.exports = ambulanceAuthController;

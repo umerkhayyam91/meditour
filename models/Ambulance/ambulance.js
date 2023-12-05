@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const labSchema = new mongoose.Schema(
+const ambulanceSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -11,20 +11,20 @@ const labSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
-    name: {
+    companyName: {
       type: String,
     },
-    fatherName: {
+    companyDetail: {
       type: String,
     },
-    gender: {
+    authorizedName: {
       type: String,
     },
-    DOB: {
+    authorizedDetail: {
       type: String,
       required: true,
     },
-    cnicOrPassNo: {
+    authorizedCnic: {
       type: String,
       required: true,
     },
@@ -32,43 +32,19 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    speciality: {
+    emergencyContact: {
       type: String,
       required: true,
     },
-    services: {
+    registrationNumber: {
       type: String,
       required: true,
     },
-    clinicName: {
+    cellNo: {
       type: String, 
       required: true,
     },
-    clinicLicense: {
-      type: String,
-      required: true,
-    },
-    licenceExpiryDate: {
-      type: String,
-      required: true,
-    },
-    availability: {
-      type: String,
-      required: true,
-    },
-    time: {
-      type: String,
-      required: true,
-    },
-    videoConsultFee: {
-      type: String,
-      required: true,
-    },
-    onClinicFee: {
-      type: String,
-      required: true,
-    },
-    clinicAddress: {
+    ambulanceEquipDetail: {
       type: String,
       required: true,
     },
@@ -112,10 +88,6 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    doctorImage: {
-      type: String,
-      required: true,
-    },
     cnicImage: {
       type: String,
       required: true,
@@ -129,4 +101,4 @@ const labSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-module.exports = mongoose.model("Doctor", labSchema, "doctors");
+module.exports = mongoose.model("Ambulance", ambulanceSchema, "ambulance");

@@ -327,7 +327,7 @@ const pharmAuthController = {
 
     return res
       .status(200)
-      .json({ message: "Laboratory updated successfully", Pharmacy: pharm });
+      .json({ message: "Pharmacy updated successfully", Pharmacy: pharm });
   },
 
   async logout(req, res, next) {
