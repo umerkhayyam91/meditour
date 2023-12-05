@@ -52,14 +52,6 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    availability: {
-      type: String,
-      required: true,
-    },
-    time: {
-      type: String,
-      required: true,
-    },
     clinicAddress: {
       type: String,
       required: true,
