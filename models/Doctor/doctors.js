@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const labSchema = new mongoose.Schema(
+const doctorSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -57,14 +57,6 @@ const labSchema = new mongoose.Schema(
       required: true,
     },
     time: {
-      type: String,
-      required: true,
-    },
-    videoConsultFee: {
-      type: String,
-      required: true,
-    },
-    onClinicFee: {
       type: String,
       required: true,
     },
@@ -129,4 +121,4 @@ const labSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-module.exports = mongoose.model("Doctor", labSchema, "doctors");
+module.exports = mongoose.model("Doctor", doctorSchema, "doctors");
