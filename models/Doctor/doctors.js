@@ -36,10 +36,6 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    services: {
-      type: String,
-      required: true,
-    },
     clinicName: {
       type: String, 
       required: true,
