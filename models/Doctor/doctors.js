@@ -2,6 +2,13 @@ const mongoose = require("mongoose");
 
 const doctorSchema = new mongoose.Schema(
   {
+    hospitalIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Hospital",
+        default: []
+      },
+    ],
     email: {
       type: String,
     },
@@ -37,7 +44,7 @@ const doctorSchema = new mongoose.Schema(
       required: true,
     },
     clinicName: {
-      type: String, 
+      type: String,
       required: true,
     },
     clinicLicense: {
