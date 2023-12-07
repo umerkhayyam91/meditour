@@ -123,11 +123,11 @@ const hospAuthController = {
     await JWTService.storeAccessToken(accessToken, hospital._id);
 
 
-    const hospDto = new HospDTO(hospital);
+    // const hospDto = new HospDTO(hospital);
 
     return res
       .status(201)
-      .json({ Hospital: hospDto, auth: true, token: accessToken });
+      .json({ Hospital: hospital, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {

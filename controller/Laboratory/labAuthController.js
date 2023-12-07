@@ -175,11 +175,11 @@ const labAuthController = {
 
     // 6. response send
 
-    const labDto = new LabDTO(lab);
+    // const labDto = new LabDTO(lab);
 
     return res
       .status(201)
-      .json({ lab: labDto, auth: true, token: accessToken });
+      .json({ lab: lab, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {

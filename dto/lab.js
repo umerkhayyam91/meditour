@@ -1,6 +1,9 @@
 class LabDTO {
   constructor(lab) {
     this._id = lab._id;
+    this.email = lab.email;
+    this.phoneNumber = lab.phoneNumber;
+    this.password = lab.password;
     this.labFirstName = lab.labFirstName;
     this.labLastName = lab.labLastName;
     this.labLicenseNumber = lab.labLicenseNumber;
@@ -13,7 +16,7 @@ class LabDTO {
     this.labAddress = lab.labAddress;
     this.state = lab.state;
     this.country = lab.country;
-    this.website = lab.email;
+    this.website = lab.website;
     this.twitter = lab.twitter;
     this.facebook = lab.facebook;
     this.instagram = lab.instagram;

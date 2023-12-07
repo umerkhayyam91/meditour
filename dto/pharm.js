@@ -1,6 +1,9 @@
 class PharmDTO {
     constructor(pharm) {
       this._id = pharm._id;
+      this.email = pharm.email;
+      this.phoneNumber = pharm.phoneNumber;
+      this.password = pharm.password;
       this.pharmFirstName = pharm.pharmFirstName;
       this.pharmLastName = pharm.pharmLastName;
       this.pharmLicenseNumber = pharm.pharmLicenseNumber;
@@ -13,7 +16,7 @@ class PharmDTO {
       this.pharmAddress = pharm.pharmAddress;
       this.state = pharm.state;
       this.country = pharm.country;
-      this.website = pharm.email;
+      this.website = pharm.website;
       this.twitter = pharm.twitter;
       this.facebook = pharm.facebook;
       this.instagram = pharm.instagram;

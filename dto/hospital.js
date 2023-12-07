@@ -1,6 +1,9 @@
 class hospitalDTO {
     constructor(hospital) {
       this._id = hospital._id;
+      this.email = hospital.email;
+      this.phoneNumber = hospital.phoneNumber;
+      this.password = hospital.password;
       this.hospitalFirstName = hospital.hospitalFirstName;
       this.hospitalLastName = hospital.hospitalLastName;
       this.pmdcNumber = hospital.pmdcNumber;
@@ -13,7 +16,7 @@ class hospitalDTO {
       this.hospitalAddress = hospital.hospitalAddress;
       this.state = hospital.state;
       this.country = hospital.country;
-      this.website = hospital.email;
+      this.website = hospital.website;
       this.twitter = hospital.twitter;
       this.facebook = hospital.facebook;
       this.instagram = hospital.instagram;

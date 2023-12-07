@@ -132,11 +132,11 @@ const pharmAuthController = {
 
     // 6. response send
 
-    const pharmDTO = new PharmDTO(pharm);
+    // const pharmDTO = new PharmDTO(pharm);
 
     return res
       .status(201)
-      .json({ pharmacy: pharmDTO, auth: true, token: accessToken });
+      .json({ pharmacy: pharm, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {

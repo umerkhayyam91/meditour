@@ -1,6 +1,9 @@
 class ambulanceDTO {
     constructor(ambulance) {
       this._id = ambulance._id;
+      this.email = ambulance.email;
+      this.phoneNumber = ambulance.phoneNumber;
+      this.password = ambulance.password;
       this.companyName = ambulance.companyName;
       this.companyDetail = ambulance.companyDetail;
       this.authorizedName = ambulance.authorizedName;
@@ -13,7 +16,7 @@ class ambulanceDTO {
       this.ambulanceEquipDetail = ambulance.ambulanceEquipDetail;
       this.state = ambulance.state;
       this.country = ambulance.country;
-      this.website = ambulance.email;
+      this.website = ambulance.website;
       this.twitter = ambulance.twitter;
       this.facebook = ambulance.facebook;
       this.instagram = ambulance.instagram;
