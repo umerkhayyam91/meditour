@@ -392,15 +392,15 @@ const labAuthController = {
     // 1. delete refresh token from db
     // const refHeader = req.headers["refreshToken"];
     // const refreshToken = refHeader && refHeader.split(" ")[1];
-
+    const userId = req.user._id;
+    // console.log(userId)
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
-    const refreshToken = authHeader && authHeader.split(" ")[2];
     // console.log("object");
     // console.log(accessToken);
     // console.log(refreshToken);
     try {
-      await RefreshToken.deleteOne({ token: refreshToken });
+      await RefreshToken.deleteOne({ userId });
     } catch (error) {
       return next(error);
     }
@@ -460,7 +460,7 @@ const labAuthController = {
     let accessId;
     try {
       accessId = JWTService.verifyAccessToken(accessToken)._id;
-      console.log(accessId)
+      console.log(accessId);
     } catch (e) {
       const error = {
         status: 401,
@@ -507,14 +507,15 @@ const labAuthController = {
       //   httpOnly: true,
       // });
       const lab = await Laboratory.findOne({ _id: id });
-  
+
       const labDto = new LabDTO(lab);
-  
-      return res.status(200).json({ lab: labDto, auth: true, accessToken: accessToken });
+
+      return res
+        .status(200)
+        .json({ lab: labDto, auth: true, accessToken: accessToken });
     } catch (e) {
       return next(e);
     }
-
   },
 };
 

@@ -11,6 +11,35 @@ const availabilityPeriodSchema = new mongoose.Schema({
   },
 });
 
+const hospitalAvailabilitySchema = new mongoose.Schema({
+  hospitalId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false, // Make hospitalId optional
+  },
+  availability: [
+    {
+      dayOfWeek: {
+        type: Number,
+        required: true,
+      },
+      periods: [availabilityPeriodSchema],
+    },
+  ],
+});
+
+
+const clinicAvailabilitySchema = new mongoose.Schema({
+  availability: [
+    {
+      dayOfWeek: {
+        type: Number, // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+        required: true,
+      },
+      periods: [availabilityPeriodSchema],
+    },
+  ],
+});
+
 const doctorAvailabilitySchema = new mongoose.Schema(
   {
     doctorId: {
@@ -18,15 +47,8 @@ const doctorAvailabilitySchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    availability: [
-      {
-        dayOfWeek: {
-          type: Number, // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
-          required: true,
-        },
-        periods: [availabilityPeriodSchema],
-      },
-    ],
+    hospitalAvailabilities: [hospitalAvailabilitySchema],
+    clinicAvailability: clinicAvailabilitySchema,
   },
   {
     timestamps: true,
@@ -39,4 +61,6 @@ const DoctorAvailability = mongoose.model(
   "availability"
 );
 
-module.exports = DoctorAvailability;
+const HospitalAvailability = mongoose.model("HospitalAvailability", hospitalAvailabilitySchema, "hospital availabilities");
+
+module.exports = { DoctorAvailability, HospitalAvailability };
