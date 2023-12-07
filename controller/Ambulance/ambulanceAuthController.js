@@ -120,11 +120,11 @@ const ambulanceAuthController = {
 
     // 6. response send
 
-    const ambulanceDto = new ambulanceDto(ambulance);
+    const ambulanceDTO = new ambulanceDto(ambulance);
 
     return res
       .status(201)
-      .json({ ambulance: ambulanceDto, auth: true, token: accessToken });
+      .json({ ambulance: ambulanceDTO, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
@@ -212,11 +212,11 @@ const ambulanceAuthController = {
       return next(error);
     }
 
-    const ambulanceDTO = new ambulanceDto(ambulance);
+    // const ambulanceDTO = new ambulanceDto(ambulance);
 
     return res
       .status(200)
-      .json({ ambulance: ambulanceDTO, auth: true, token: accessToken });
+      .json({ ambulance: ambulance, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
