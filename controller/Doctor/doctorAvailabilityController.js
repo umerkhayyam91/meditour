@@ -81,7 +81,7 @@ const docAvailabilityController = {
             doctorAvailability.clinicAvailability.availability.find(
               (day) => day.dayOfWeek === dayAvailability.dayOfWeek
             );
-
+            
           if (existingDay) {
             // Update existing day's availability
             existingDay.periods = dayAvailability.periods;

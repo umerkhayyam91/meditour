@@ -211,11 +211,11 @@ const docAuthController = {
       return next(error);
     }
 
-    const docDto = new doctorDto(doc);
+    // const docDto = new doctorDto(doc);
 
     return res
       .status(200)
-      .json({ doctor: docDto, auth: true, token: accessToken });
+      .json({ doctor: doc, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
