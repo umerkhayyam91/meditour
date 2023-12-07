@@ -22,7 +22,6 @@ class ambulanceDTO {
       this.bankName = ambulance.bankName;
       this.accountHolderName = ambulance.accountHolderName;
       this.accountNumber = ambulance.accountNumber;
-      this.cnicImage = ambulance.cnicImage;
       this.taxFileImage = ambulance.taxFileImage;
     }
   }

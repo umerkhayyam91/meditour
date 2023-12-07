@@ -88,10 +88,6 @@ const ambulanceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    cnicImage: {
-      type: String,
-      required: true,
-    },
     taxFileImage: {
       type: String,
       required: true,
