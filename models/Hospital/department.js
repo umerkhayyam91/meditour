@@ -6,6 +6,13 @@ const departmentSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
+    doctorIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Doctor",
+        default: []
+      },
+    ],
     departmentName: {
       type: String,
       required: true,
@@ -24,4 +31,4 @@ const departmentSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Dapartment", departmentSchema, "dapartments")
+module.exports = mongoose.model("Department", departmentSchema, "departments")

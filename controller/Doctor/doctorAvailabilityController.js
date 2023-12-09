@@ -37,7 +37,8 @@ const docAvailabilityController = {
             hospitalId: hospitalId,
             availability: [],
           });
-          console.log(hospitalAvailability);
+          // hospitalAvailability = doctorAvailability
+          console.log("hospitalAvailability", hospitalAvailability);
           // Add the new hospitalAvailability to the hospitalAvailabilities array
           // doctorAvailability.hospitalAvailabilities.push(hospitalAvailability);
           // console.log(doctorAvailability);
@@ -46,7 +47,7 @@ const docAvailabilityController = {
         // Initialize hospitalAvailability.availability as an empty array if it's undefined or null
         hospitalAvailability.availability =
           hospitalAvailability.availability || [];
-        console.log(hospitalAvailability.availability);
+        console.log("hospitalAvailability.availability", hospitalAvailability.availability);
         // console.log(hospitalAvailability)
         // Update or add new availability for each day
         availability.forEach((dayAvailability) => {
@@ -54,7 +55,7 @@ const docAvailabilityController = {
             (day) => day.dayOfWeek === dayAvailability.dayOfWeek
           );
 
-          console.log("object");
+          // console.log("object");
 
           if (existingDay) {
             // Update existing day's availability
@@ -64,13 +65,20 @@ const docAvailabilityController = {
             // console.log("dayAvailability", dayAvailability)
             // hospitalAvailability.availability.push(dayAvailability);
             // console.log("hospitalAvailability.availability", hospitalAvailability.availability)
+            // let doctorAvailability =  DoctorAvailability.findOne({ doctorId });
 
             console.log("dayAvailability", dayAvailability);
             // Add new day's availability
             hospitalAvailability.availability.push(dayAvailability);
             console.log("hospitalAvailability.availability", hospitalAvailability.availability);
-            doctorAvailability.hospitalAvailabilities.push(dayAvailability);
-            console.log("doctorAvailability", doctorAvailability);
+            console.log("object")
+            console.log(doctorAvailability)
+            // const hospitalAvailabilit = doctorAvailability.hospitalAvailabilities.find(
+            //   (hospital) => String(hospital.hospitalId) === String(hospitalId)
+            // );
+  // console.log(hospitalAvailabilit)
+            // hospitalAvailabilit.availability.push(dayAvailability);
+            // console.log("doctorAvailability", doctorAvailability);
           }
         });
         // });
@@ -81,7 +89,7 @@ const docAvailabilityController = {
             doctorAvailability.clinicAvailability.availability.find(
               (day) => day.dayOfWeek === dayAvailability.dayOfWeek
             );
-            
+
           if (existingDay) {
             // Update existing day's availability
             existingDay.periods = dayAvailability.periods;

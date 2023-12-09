@@ -4,6 +4,8 @@ class doctorDTO {
       this.email = doc.email;
       this.phoneNumber = doc.phoneNumber;
       this.password = doc.password;
+      this.departmentIds = doc.departmentIds;
+      this.hospitalIds = doc.hospitalIds;
       this.name = doc.name;
       this.fatherName = doc.fatherName;
       this.DOB = doc.DOB;

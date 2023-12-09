@@ -9,6 +9,13 @@ const doctorSchema = new mongoose.Schema(
         default: []
       },
     ],
+    departmentIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Dapartment",
+        default: []
+      },
+    ],
     email: {
       type: String,
     },

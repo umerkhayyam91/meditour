@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const Doctor = require("../../models/Doctor/doctors.js");
 const Hospital = require("../../models/Hospital/hospital.js");
-const Department = require("../../models/Hospital/dapartment.js");
+const Department = require("../../models/Hospital/department.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
 const departDTO = require("../../dto/department.js");
@@ -93,6 +93,7 @@ const hospDocController = {
     try {
       const { code, email } = req.body;
       const hospitalId = req.user._id;
+      const departmentId = req.query.id;
     //   console.log(hospitalId)
   
       const cod = await VerificationCode.findOne({ code: code });
@@ -119,8 +120,13 @@ const hospDocController = {
         // Check if the hospitalId is not already in the array before pushing
         if (!user.hospitalIds.includes(hospitalId)) {
           user.hospitalIds.push(hospitalId);
+          user.departmentIds.push(departmentId)
+          const department = await Department.findOne({_id: departmentId})
+          department.doctorIds.push(user._id)
+          await department.save()
           await user.save(); // Await the save operation
-  
+        //   const userId = user._id;
+        //   department.doctorIds.push(userId)
           return res.status(200).json({
             status: true,
             message: "Your account has been successfully verified",
@@ -142,7 +148,6 @@ const hospDocController = {
       return next(error);
     }
   }
-  
   
 };
 module.exports = hospDocController;
