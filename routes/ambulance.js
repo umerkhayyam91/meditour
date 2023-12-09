@@ -1,5 +1,6 @@
 const express = require("express");
 const ambulanceAuthController = require("../controller/Ambulance/ambulanceAuthController");
+const ambulanceCrudController = require("../controller/Ambulance/ambulanceCrudController");
 const hospDepartController = require("../controller/Hospital/hospDepartController");
 const pharmMedController = require("../controller/Pharmacy/pharmMedController");
 const pharmOrderController = require("../controller/Pharmacy/pharmOrderController");
@@ -26,6 +27,13 @@ router.post("/ambulance/refresh", auth, ambulanceAuthController.refresh);
 //..............verification.........
 router.post("/ambulance/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/ambulance/confirmEmail", VerificationController.confirmEmail);
+
+//.............ambulance CRUD...............
+router.post("/ambulance/addAmbulance", auth, ambulanceCrudController.addAmbulance);
+router.put("/ambulance/editAmbulance", auth, ambulanceCrudController.editAmbulance);
+router.delete("/ambulance/deleteAmbulance", auth, ambulanceCrudController.deleteAmbulance);
+router.get("/ambulance/getAmbulance", auth, ambulanceCrudController.getAmbulance);
+router.get("/ambulance/getAllAmbulances", auth, ambulanceCrudController.getAllAmbulances);
 
 
 

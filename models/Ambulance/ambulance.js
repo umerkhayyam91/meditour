@@ -1,94 +1,44 @@
 const mongoose = require("mongoose");
+const AmbulanceCompany = require("../../models/Ambulance/ambulanceCompany")
 
 const ambulanceSchema = new mongoose.Schema(
   {
-    email: {
+    ambulanceCompanyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Ambulance Company"
+    },
+    vehicleType: {
       type: String,
     },
-    password: {
+    vehicleName: {
       type: String,
     },
-    phoneNumber: {
+    vehicleModel: {
       type: String,
     },
-    companyName: {
+    vehicleYear: {
       type: String,
     },
-    companyDetail: {
+    vehicleColor: {
       type: String,
     },
-    authorizedName: {
-      type: String,
-    },
-    authorizedDetail: {
-      type: String,
-      required: true,
-    },
-    authorizedCnic: {
+    vehicleFacilities: {
       type: String,
       required: true,
     },
-    qualification: {
+    registrationNo: {
       type: String,
       required: true,
     },
-    emergencyContact: {
+    registrationDate: {
       type: String,
       required: true,
     },
-    registrationNumber: {
+    actualPrice: {
       type: String,
       required: true,
     },
-    cellNo: {
-      type: String, 
-      required: true,
-    },
-    ambulanceEquipDetail: {
-      type: String,
-      required: true,
-    },
-    state: {
-      type: String,
-      required: true,
-    },
-    country: {
-      type: String,
-      required: true,
-    },
-    website: {
-      type: String,
-    },
-    twitter: {
-      type: String,
-    },
-    facebook: {
-      type: String,
-    },
-    instagram: {
-      type: String,
-    },
-    incomeTaxNo: {
-      type: String,
-      required: true,
-    },
-    salesTaxNo: {
-      type: String,
-      required: true,
-    },
-    bankName: {
-      type: String,
-      required: true,
-    },
-    accountHolderName: {
-      type: String,
-      required: true,
-    },
-    accountNumber: {
-      type: String,
-      required: true,
-    },
-    taxFileImage: {
+    priceForMeditour: {
       type: String,
       required: true,
     },

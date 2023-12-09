@@ -4,6 +4,8 @@ const Laboratory = require("../models/Laboratory/laboratory");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
 const Doctor = require("../models/Doctor/doctors");
 const Hospital = require("../models/Hospital/hospital");
+const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
+const Physiotherapist = require("../models/Physiotherapist/physiotherapist");
 
 const verificationController = {
   async sendCodeToEmail(req, res, next) {
@@ -17,6 +19,10 @@ const verificationController = {
       emailExists = await Doctor.exists({ email });
     } else if(req.originalUrl.includes("/hosp")){
       emailExists = await Hospital.exists({ email });
+    } else if(req.originalUrl.includes("/ambulance")){
+      emailExists = await AmbulanceCompany.exists({ email });
+    } else if(req.originalUrl.includes("/physio")){
+      emailExists = await Physiotherapist.exists({ email });
     }
     if (emailExists) {
       const error = new Error("Email already exists!");

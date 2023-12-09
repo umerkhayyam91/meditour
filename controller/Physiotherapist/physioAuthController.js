@@ -1,136 +1,146 @@
-const express = require("express");
-const app = express();
-const Ambulance = require("../../models/Ambulance/ambulanceCompany.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
-const ambulanceDto = require("../../dto/ambulanceCompany.js");
+const physioDTO = require("../../dto/physio.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 const AccessToken = require("../../models/accessToken.js");
+const Physiotherapist = require("../../models/Physiotherapist/physiotherapist.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const ambulanceAuthController = {
+const physioAuthController = {
   async register(req, res, next) {
-    const ambulanceRegisterSchema = Joi.object({
-      companyName: Joi.string().required(),
-      companyDetail: Joi.string().required(),
-      authorizedName: Joi.string().required(),
-      authorizedDetail: Joi.string().required(),
-      authorizedCnic: Joi.string().required(),
+    const physioRegisterSchema = Joi.object({
+      name: Joi.string().required(),
+      fatherOrHusbandName: Joi.string().required(),
+      gender: Joi.string().required(),
+      DOB: Joi.string().required(),
+      cnicOrPassNo: Joi.string().required(),
       qualification: Joi.string().required(),
-      emergencyContact: Joi.string().required(),
-      registrationNumber: Joi.string().required(),
-      cellNo: Joi.string().required(),
-      ambulanceEquipDetail: Joi.string().required(),
+      speciality: Joi.string().required(),
+      services: Joi.string().required(),
+      clinicName: Joi.string().required(),
+      clinicLicense: Joi.string().required(),
+      licenceExpiryDate: Joi.string().required(),
+      emergencyNo: Joi.string().required(),
+      clinicAddress: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
       twitter: Joi.string(),
-      facebook: Joi.string(),
+      youtube: Joi.string(),
       instagram: Joi.string(),
       incomeTaxNo: Joi.string().required(),
       salesTaxNo: Joi.string().required(),
       bankName: Joi.string().required(),
       accountHolderName: Joi.string().required(),
       accountNumber: Joi.string().required(),
+      physioImage: Joi.string(),
+      cnicImage: Joi.string(),
       taxFileImage: Joi.string(),
     });
 
-    const { error } = ambulanceRegisterSchema.validate(req.body);
+    const { error } = physioRegisterSchema.validate(req.body);
 
     if (error) {
       return next(error);
     }
 
     const {
-      companyName,
-      companyDetail,
-      authorizedName,
-      authorizedDetail,
-      authorizedCnic,
-      qualification,
-      emergencyContact,
-      registrationNumber,
-      cellNo,
-      ambulanceEquipDetail,
-      state,
-      country,
-      website,
-      twitter,
-      facebook,
-      instagram,
-      incomeTaxNo,
-      salesTaxNo,
-      bankName,
-      accountHolderName,
-      accountNumber,
-      taxFileImage,
-    } = req.body;
-
-    let accessToken;
-    let refreshToken;
-
-    let ambulance;
-    try {
-      const ambulanceToRegister = new Ambulance({
-        companyName,
-        companyDetail,
-        authorizedName,
-        authorizedDetail,
-        authorizedCnic,
+        name,
+        fatherOrHusbandName,
+        gender,
+        DOB,
+        cnicOrPassNo,
         qualification,
-        emergencyContact,
-        registrationNumber,
-        cellNo,
-        ambulanceEquipDetail,
+        speciality,
+        services,
+        clinicName,
+        clinicLicense,
+        licenceExpiryDate,
+        emergencyNo,
+        clinicAddress,
         state,
         country,
         website,
         twitter,
-        facebook,
+        youtube,
         instagram,
         incomeTaxNo,
         salesTaxNo,
         bankName,
         accountHolderName,
         accountNumber,
+        physioImage,
+        cnicImage,
+        taxFileImage
+    } = req.body;
+
+    let accessToken;
+    let refreshToken;
+
+    let physio;
+    try {
+      const physioToRegister = new Physiotherapist({
+        name,
+        fatherOrHusbandName,
+        gender,
+        DOB,
+        cnicOrPassNo,
+        qualification,
+        speciality,
+        services,
+        clinicName,
+        clinicLicense,
+        licenceExpiryDate,
+        emergencyNo,
+        clinicAddress,
+        state,
+        country,
+        website,
+        twitter,
+        youtube,
+        instagram,
+        incomeTaxNo,
+        salesTaxNo,
+        bankName,
+        accountHolderName,
+        accountNumber,
+        physioImage,
+        cnicImage,
         taxFileImage,
       });
 
-      ambulance = await ambulanceToRegister.save();
+      physio = await physioToRegister.save();
 
       // token generation
-      accessToken = JWTService.signAccessToken({ _id: ambulance._id }, "365d");
+      accessToken = JWTService.signAccessToken({ _id: physio._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken(
-        { _id: ambulance._id },
-        "365d"
-      );
+      refreshToken = JWTService.signRefreshToken({ _id: physio._id }, "365d");
     } catch (error) {
       return next(error);
     }
 
     // store refresh token in db
-    await JWTService.storeRefreshToken(refreshToken, ambulance._id);
-    await JWTService.storeAccessToken(accessToken, ambulance._id);
+    await JWTService.storeRefreshToken(refreshToken, physio._id);
+    await JWTService.storeAccessToken(accessToken, physio._id);
 
     // 6. response send
 
-    // const ambulanceDTO = new ambulanceDto(ambulance);
+    // const docDto = new doctorDto(doc);
 
     return res
       .status(201)
-      .json({ ambulance: ambulance, auth: true, token: accessToken });
+      .json({ physiotherapist: physio, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
-    const ambulanceLoginSchema = Joi.object({
+    const physioLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
     });
 
-    const { error } = ambulanceLoginSchema.validate(req.body);
+    const { error } = physioLoginSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -138,12 +148,12 @@ const ambulanceAuthController = {
 
     const { email, password } = req.body;
 
-    let ambulance;
+    let physio;
 
     try {
       // match username
-      ambulance = await Ambulance.findOne({ email: email });
-      if (!ambulance) {
+      physio = await Physiotherapist.findOne({ email: email });
+      if (!physio) {
         const error = {
           status: 401,
           message: "Invalid email",
@@ -151,7 +161,7 @@ const ambulanceAuthController = {
 
         return next(error);
       }
-      if (ambulance.isVerified == false) {
+      if (physio.isVerified == false) {
         const error = {
           status: 401,
           message: "User not verified",
@@ -160,9 +170,11 @@ const ambulanceAuthController = {
         return next(error);
       }
 
+      
+
       // match password
 
-      const match = await bcrypt.compare(password, ambulance.password);
+      const match = await bcrypt.compare(password, physio.password);
 
       if (!match) {
         const error = {
@@ -176,19 +188,13 @@ const ambulanceAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken(
-      { _id: ambulance._id },
-      "365d"
-    );
-    const refreshToken = JWTService.signRefreshToken(
-      { _id: ambulance._id },
-      "365d"
-    );
+    const accessToken = JWTService.signAccessToken({ _id: physio._id }, "365d");
+    const refreshToken = JWTService.signRefreshToken({ _id: physio._id }, "365d");
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
         {
-          userId: ambulance._id,
+          userId: physio._id,
         },
         { token: refreshToken },
         { upsert: true }
@@ -200,7 +206,7 @@ const ambulanceAuthController = {
     try {
       await AccessToken.updateOne(
         {
-          userId: ambulance._id,
+          userId: physio._id,
         },
         { token: accessToken },
         { upsert: true }
@@ -209,22 +215,22 @@ const ambulanceAuthController = {
       return next(error);
     }
 
-    const ambulanceDTO = new ambulanceDto(ambulance);
+    const physioDto = new physioDTO(physio);
 
     return res
       .status(200)
-      .json({ ambulance: ambulanceDTO, auth: true, token: accessToken });
+      .json({ physiotherapist: physioDto, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
-    const ambulanceRegisterSchema = Joi.object({
+    const physioRegisterSchema = Joi.object({
       phoneNumber: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().pattern(passwordPattern).required(),
       confirmPassword: Joi.ref("password"),
     });
 
-    const { error } = ambulanceRegisterSchema.validate(req.body);
+    const { error } = physioRegisterSchema.validate(req.body);
 
     // 2. if error in validation -> return error via middleware
     if (error) {
@@ -234,7 +240,7 @@ const ambulanceAuthController = {
     const { password, email, phoneNumber } = req.body;
 
     const userId = req.query.id;
-    const existingUser = await Ambulance.findById(userId);
+    const existingUser = await Physiotherapist.findById(userId);
 
     if (!existingUser) {
       const error = new Error("User not found!");
@@ -254,11 +260,11 @@ const ambulanceAuthController = {
 
     return res
       .status(200)
-      .json({ message: "User updated successfully", Ambulance: existingUser });
+      .json({ message: "User updated successfully", Physiotherapist: existingUser });
   },
 
   async updateProfile(req, res, next) {
-    const ambulanceSchema = Joi.object({
+    const physioSchema = Joi.object({
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
@@ -268,7 +274,7 @@ const ambulanceAuthController = {
       accountNumber: Joi.string(),
     });
 
-    const { error } = ambulanceSchema.validate(req.body);
+    const { error } = physioSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -282,34 +288,31 @@ const ambulanceAuthController = {
       accountHolderName,
       accountNumber,
     } = req.body;
-    const ambulanceId = req.user._id;
+    const physioId = req.user._id;
 
-    const ambulance = await Ambulance.findById(ambulanceId);
+    const physio = await Physiotherapist.findById(physioId);
 
-    if (!ambulance) {
-      const error = new Error("Ambulance not found!");
+    if (!physio) {
+      const error = new Error("Physiotherapist not found!");
       error.status = 404;
       return next(error);
     }
 
     // Update only the provided fields
-    if (website) ambulance.website = website;
-    if (facebook) ambulance.facebook = facebook;
-    if (twitter) ambulance.twitter = twitter;
-    if (instagram) ambulance.instagram = instagram;
-    if (bankName) ambulance.bankName = bankName;
-    if (accountHolderName) ambulance.accountHolderName = accountHolderName;
-    if (accountNumber) ambulance.accountNumber = accountNumber;
+    if (website) physio.website = website;
+    if (facebook) physio.facebook = facebook;
+    if (twitter) physio.twitter = twitter;
+    if (instagram) physio.instagram = instagram;
+    if (bankName) physio.bankName = bankName;
+    if (accountHolderName) physio.accountHolderName = accountHolderName;
+    if (accountNumber) physio.accountNumber = accountNumber;
 
     // Save the updated test
-    await ambulance.save();
+    await physio.save();
 
     return res
       .status(200)
-      .json({
-        message: "Ambulance updated successfully",
-        Ambulance: ambulance,
-      });
+      .json({ message: "Physiotherapist updated successfully", Physiotherapist: physio });
   },
 
   async logout(req, res, next) {
@@ -317,7 +320,7 @@ const ambulanceAuthController = {
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
     const refreshToken = authHeader && authHeader.split(" ")[2];
-
+   
     try {
       await RefreshToken.deleteOne({ token: refreshToken });
     } catch (error) {
@@ -377,6 +380,7 @@ const ambulanceAuthController = {
     let accessId;
     try {
       accessId = JWTService.verifyAccessToken(accessToken)._id;
+      console.log(accessId)
     } catch (e) {
       const error = {
         status: 401,
@@ -411,21 +415,17 @@ const ambulanceAuthController = {
       await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
       await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
-      const ambulance = await Ambulance.findOne({ _id: id });
 
-      const ambulanceDTO = new ambulanceDto(ambulance);
-
-      return res
-        .status(200)
-        .json({
-          Ambulance: ambulanceDTO,
-          auth: true,
-          accessToken: accessToken,
-        });
+      const physio = await Physiotherapist.findOne({ _id: id });
+  
+      const physioDto = new physioDTO(physio);
+  
+      return res.status(200).json({ Physiotherapist: physioDto, auth: true, accessToken: accessToken });
     } catch (e) {
       return next(e);
     }
+
   },
 };
 
-module.exports = ambulanceAuthController;
+module.exports = physioAuthController;

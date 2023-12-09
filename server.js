@@ -14,12 +14,14 @@ const pharmRouter = require("./routes/pharmacy");
 const docRouter = require("./routes/doctor");
 const hospRouter = require("./routes/hospital");
 const ambulanceRouter = require("./routes/ambulance");
+const physioRouter = require("./routes/physiotherapist");
 
 app.use(labRouter);
 app.use(pharmRouter);
 app.use(docRouter);
 app.use(hospRouter);
 app.use(ambulanceRouter);
+app.use(physioRouter);
 
 dbConnect();
 app.use(ErrorHandler);
