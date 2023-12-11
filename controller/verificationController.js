@@ -8,6 +8,7 @@ const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Physiotherapist = require("../models/Physiotherapist/physiotherapist");
 const ResetToken = require("../models/resetToken");
 const bcrypt = require('bcrypt');
+const Joi = require("joi");
 const { v4: uuidv4 } = require('uuid');
 const tokens = {};
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
@@ -169,7 +170,7 @@ const verificationController = {
   async resetPassword(req,res,next){
     try {
       const resetSchema = Joi.object({
-        password: Joi.string().pattern(passwordPattern).required()
+        newPassword: Joi.string().pattern(passwordPattern).required()
       });
   
       const { error } = resetSchema.validate(req.body);
