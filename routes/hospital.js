@@ -24,6 +24,8 @@ router.post("/hosp/refresh", auth, hospAuthController.refresh);
 //..............verification.........
 router.post("/hosp/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/hosp/confirmEmail", VerificationController.confirmEmail);
+router.post("/hosp/ResetLink", VerificationController.ResetLink);
+router.post("/hosp/resetPassword", VerificationController.resetPassword);
 
 //..............department..............
 router.post("/hosp/addDepart", auth, hospDepartController.addDepart);

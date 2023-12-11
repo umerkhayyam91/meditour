@@ -36,5 +36,7 @@ router.get("/pharm/graph", auth, pharmOrderController.graph)
 //..............verification.........
 router.post("/pharm/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/pharm/confirmEmail", VerificationController.confirmEmail);
+router.post("/pharm/ResetLink", VerificationController.ResetLink);
+router.post("/pharm/resetPassword", VerificationController.resetPassword);
 
 module.exports = router;

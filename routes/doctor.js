@@ -37,6 +37,8 @@ router.get("/doc/getRequests", auth, docAppointController.getRequests);
 //..............verification.........
 router.post("/doc/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/doc/confirmEmail", VerificationController.confirmEmail);
+router.post("/doc/ResetLink", VerificationController.ResetLink);
+router.post("/doc/resetPassword", VerificationController.resetPassword);
 
 module.exports = router;
  

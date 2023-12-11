@@ -23,6 +23,8 @@ router.post("/physio/refresh", auth, physioAuthController.refresh);
 //..............verification.........
 router.post("/physio/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/physio/confirmEmail", VerificationController.confirmEmail);
+router.post("/physio/ResetLink", VerificationController.ResetLink);
+router.post("/physio/resetPassword", VerificationController.resetPassword);
 
 module.exports = router;
  

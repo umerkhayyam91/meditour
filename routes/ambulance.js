@@ -27,6 +27,8 @@ router.post("/ambulance/refresh", auth, ambulanceAuthController.refresh);
 //..............verification.........
 router.post("/ambulance/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/ambulance/confirmEmail", VerificationController.confirmEmail);
+router.post("/ambulance/ResetLink", VerificationController.ResetLink);
+router.post("/ambulance/resetPassword", VerificationController.resetPassword);
 
 //.............ambulance CRUD...............
 router.post("/ambulance/addAmbulance", auth, ambulanceCrudController.addAmbulance);
