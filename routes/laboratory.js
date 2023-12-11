@@ -37,6 +37,8 @@ router.get("/lab/getAllTests", auth, labTestController.getAllTests);
 //..............verification.........
 router.post("/lab/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/lab/confirmEmail", VerificationController.confirmEmail);
+router.post("/lab/ResetLink", VerificationController.ResetLink);
+router.post("/lab/resetPassword", VerificationController.resetPassword);
 
 // router.post("/logout", auth, authController.logout);
 
