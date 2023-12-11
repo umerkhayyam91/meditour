@@ -25,63 +25,55 @@ const docAvailabilityController = {
 
       // Check if the availability is for the clinic or a specific hospital
       if (hospitalId) {
-        // Update or add new hospital availability
+        // Find or create hospitalAvailability
         let hospitalAvailability =
           doctorAvailability.hospitalAvailabilities.find(
             (hospital) => String(hospital.hospitalId) === String(hospitalId)
           );
 
         if (!hospitalAvailability) {
-          // Create a new Mongoose model for hospitalAvailability
           hospitalAvailability = new HospitalAvailability({
             hospitalId: hospitalId,
             availability: [],
           });
-          // hospitalAvailability = doctorAvailability
-          console.log("hospitalAvailability", hospitalAvailability);
-          // Add the new hospitalAvailability to the hospitalAvailabilities array
-          // doctorAvailability.hospitalAvailabilities.push(hospitalAvailability);
-          // console.log(doctorAvailability);
+          doctorAvailability.hospitalAvailabilities.push(hospitalAvailability);
         }
+        // console.log("hospitalAvailability before update:", hospitalAvailability);
 
-        // Initialize hospitalAvailability.availability as an empty array if it's undefined or null
+        // Ensure hospitalAvailability.availability is initialized
         hospitalAvailability.availability =
           hospitalAvailability.availability || [];
-        console.log("hospitalAvailability.availability", hospitalAvailability.availability);
-        // console.log(hospitalAvailability)
+
         // Update or add new availability for each day
+        console.log("doctorAvailability before loop:", doctorAvailability);
         availability.forEach((dayAvailability) => {
+          // console.log("hospitalAvailability before iteration:", hospitalAvailability);
+
           const existingDay = hospitalAvailability.availability.find(
             (day) => day.dayOfWeek === dayAvailability.dayOfWeek
           );
 
-          // console.log("object");
+          // console.log("Adding new day's availability:", dayAvailability);
 
           if (existingDay) {
             // Update existing day's availability
+            // console.log("Updating existing day's availability:", existingDay);
             existingDay.periods = dayAvailability.periods;
           } else {
             // Add new day's availability
-            // console.log("dayAvailability", dayAvailability)
-            // hospitalAvailability.availability.push(dayAvailability);
-            // console.log("hospitalAvailability.availability", hospitalAvailability.availability)
-            // let doctorAvailability =  DoctorAvailability.findOne({ doctorId });
-
-            console.log("dayAvailability", dayAvailability);
-            // Add new day's availability
-            hospitalAvailability.availability.push(dayAvailability);
-            console.log("hospitalAvailability.availability", hospitalAvailability.availability);
-            console.log("object")
-            console.log(doctorAvailability)
-            // const hospitalAvailabilit = doctorAvailability.hospitalAvailabilities.find(
-            //   (hospital) => String(hospital.hospitalId) === String(hospitalId)
-            // );
-  // console.log(hospitalAvailabilit)
-            // hospitalAvailabilit.availability.push(dayAvailability);
-            // console.log("doctorAvailability", doctorAvailability);
+            // console.log("Adding new day's availability:", dayAvailability);
+            const newAvailability = { ...dayAvailability }; // Create a copy
+            hospitalAvailability.availability.push(newAvailability);
+            // console.log("hospitalAvailability after push:", hospitalAvailability);
           }
         });
-        // });
+
+        console.log("doctorAvailability after loop:", doctorAvailability);
+        await doctorAvailability.save();
+        console.log(
+          "doctorAvailability saved to the database:",
+          doctorAvailability
+        );
       } else {
         // Update or add new clinic availability for each day
         availability.forEach((dayAvailability) => {

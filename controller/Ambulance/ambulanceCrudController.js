@@ -3,7 +3,7 @@ const app = express();
 const Ambulance = require("../../models/Ambulance/ambulance.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
-const ambulanceDTO = require("../../dto/ambulanceCompany.js");
+const ambulanceDTO = require("../../dto/ambulance.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 const AccessToken = require("../../models/accessToken.js");
@@ -65,8 +65,9 @@ const ambulanceCrudController = {
     }
 
     // 6. response send
-
+    console.log(ambulance);
     const ambulanceDto = new ambulanceDTO(ambulance);
+    console.log(ambulanceDto);
 
     return res.status(201).json({ Ambulance: ambulanceDto, auth: true });
   },
@@ -91,16 +92,16 @@ const ambulanceCrudController = {
       return next(error);
     }
     const {
-        vehicleType,
-        vehicleName,
-        vehicleModel,
-        vehicleYear,
-        vehicleColor,
-        vehicleFacilities,
-        registrationNo,
-        registrationDate,
-        priceForMeditour,
-        actualPrice
+      vehicleType,
+      vehicleName,
+      vehicleModel,
+      vehicleYear,
+      vehicleColor,
+      vehicleFacilities,
+      registrationNo,
+      registrationDate,
+      priceForMeditour,
+      actualPrice,
     } = req.body;
     const ambulanceCompanyId = req.user._id;
     // console.log(pharmId);
@@ -131,7 +132,8 @@ const ambulanceCrudController = {
     if (vehicleModel) existingAmbulance.vehicleModel = vehicleModel;
     if (vehicleYear) existingAmbulance.vehicleYear = vehicleYear;
     if (vehicleColor) existingAmbulance.vehicleColor = vehicleColor;
-    if (vehicleFacilities) existingAmbulance.vehicleFacilities = vehicleFacilities;
+    if (vehicleFacilities)
+      existingAmbulance.vehicleFacilities = vehicleFacilities;
     if (registrationNo) existingAmbulance.registrationNo = registrationNo;
     if (registrationDate) existingAmbulance.registrationDate = registrationDate;
     if (priceForMeditour) existingAmbulance.priceForMeditour = priceForMeditour;
@@ -142,7 +144,10 @@ const ambulanceCrudController = {
 
     return res
       .status(200)
-      .json({ message: "Test updated successfully", ambulance: existingAmbulance });
+      .json({
+        message: "Test updated successfully",
+        ambulance: existingAmbulance,
+      });
   },
 
   async deleteAmbulance(req, res, next) {
@@ -176,11 +181,12 @@ const ambulanceCrudController = {
 
   async getAllAmbulances(req, res, next) {
     try {
-
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const ambulancePerPage = 10;
       const ambulanceCompanyId = req.user._id;
-      const totalAmbulance = await Ambulance.countDocuments({ ambulanceCompanyId }); // Get the total number of posts for the user
+      const totalAmbulance = await Ambulance.countDocuments({
+        ambulanceCompanyId,
+      }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalAmbulance / ambulancePerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * ambulancePerPage; // Calculate the number of posts to skip based on the current page

@@ -16,17 +16,19 @@ const hospitalAvailabilitySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: false, // Make hospitalId optional
   },
-  availability: [
-    {
-      dayOfWeek: {
-        type: Number,
-        required: true,
+  availability: {
+    type: [
+      {
+        dayOfWeek: {
+          type: Number,
+          required: true,
+        },
+        periods: [availabilityPeriodSchema],
       },
-      periods: [availabilityPeriodSchema],
-    },
-  ],
+    ],
+    default: [], // Initialize to an empty array if undefined or null
+  },  
 });
-
 
 const clinicAvailabilitySchema = new mongoose.Schema({
   availability: [

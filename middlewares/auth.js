@@ -41,6 +41,7 @@ const auth = async (req, res, next) => {
 
     try {
       _id = JWTService.verifyAccessToken(accessToken)._id;
+      // console.log(_id)
     } catch (error) {
       return next(error);
     }
@@ -95,19 +96,21 @@ const auth = async (req, res, next) => {
       return;
     } else if (req.originalUrl.includes("/ambulance")) {
       try {
-        user = await Ambulance.findOne({ _id: _id });
+        console.log(_id)
+        user = await AmbulanceCompany.findOne({ _id: _id });
       } catch (error) {
         return next(error);
       }
+      console.log(user)
       const ambulanceDTO = new ambulanceDto(user);
-
+      
       req.user = ambulanceDTO;
 
       next();
       return;
     } else if (req.originalUrl.includes("/physio")) {
       try {
-        user = await AmbulanceCompany.findOne({ _id: _id });
+        user = await Physiotherapist.findOne({ _id: _id });
       } catch (error) {
         return next(error);
       }
