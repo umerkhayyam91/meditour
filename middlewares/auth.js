@@ -7,6 +7,7 @@ const hospDto = require("../dto/hospital");
 const ambulanceDto = require("../dto/ambulanceCompany");
 const physioDto = require("../dto/physio");
 const nutritionistDto = require("../dto/nutritionist");
+const paramedicDto = require("../dto/nutritionist");
 const Laboratory = require("../models/Laboratory/laboratory");
 const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
@@ -14,6 +15,7 @@ const Doctor = require("../models/Doctor/doctors");
 const Hospital = require("../models/Hospital/hospital");
 const Physiotherapist = require("../models/Physiotherapist/physiotherapist");
 const Nutritionist = require("../models/Nutritionist/nutritionist");
+const Paramedic = require("../models/Paramedic/paramedic");
 const AccessToken = require("../models/accessToken");
 
 const auth = async (req, res, next) => {
@@ -29,13 +31,13 @@ const auth = async (req, res, next) => {
       };
       return next(error);
     }
-    
+
     if (!accessToken) {
       const error = {
         status: 401,
         message: "Unauthorized",
       };
-      
+
       return next(error);
     }
     // console.log(accessToken)
@@ -64,7 +66,7 @@ const auth = async (req, res, next) => {
     } else if (req.originalUrl.includes("/pharm")) {
       try {
         user = await Pharmacy.findOne({ _id: _id });
-        console.log(user)
+        console.log(user);
       } catch (error) {
         return next(error);
       }
@@ -72,7 +74,7 @@ const auth = async (req, res, next) => {
 
       req.user = PharmDto;
       next();
-      return
+      return;
     } else if (req.originalUrl.includes("/doc")) {
       try {
         user = await Doctor.findOne({ _id: _id });
@@ -99,14 +101,14 @@ const auth = async (req, res, next) => {
       return;
     } else if (req.originalUrl.includes("/ambulance")) {
       try {
-        console.log(_id)
+        console.log(_id);
         user = await AmbulanceCompany.findOne({ _id: _id });
       } catch (error) {
         return next(error);
       }
-      console.log(user)
+      console.log(user);
       const ambulanceDTO = new ambulanceDto(user);
-      
+
       req.user = ambulanceDTO;
 
       next();
@@ -132,6 +134,18 @@ const auth = async (req, res, next) => {
       const nutritionistDTO = new nutritionistDto(user);
 
       req.user = nutritionistDTO;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/paramedic")) {
+      try {
+        user = await Paramedic.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const paramedicDTO = new paramedicDto(user);
+
+      req.user = paramedicDTO;
 
       next();
       return;

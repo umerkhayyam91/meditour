@@ -388,16 +388,9 @@ const labAuthController = {
   },
 
   async logout(req, res, next) {
-    // 1. delete refresh token from db
-    // const refHeader = req.headers["refreshToken"];
-    // const refreshToken = refHeader && refHeader.split(" ")[1];
     const userId = req.user._id;
-    // console.log(userId)
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
-    // console.log("object");
-    // console.log(accessToken);
-    // console.log(refreshToken);
     try {
       await RefreshToken.deleteOne({ userId });
     } catch (error) {

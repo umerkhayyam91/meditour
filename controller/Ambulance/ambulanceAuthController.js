@@ -313,13 +313,11 @@ const ambulanceAuthController = {
   },
 
   async logout(req, res, next) {
-    // 1. delete refresh token from db
+    const userId = req.user._id;
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
-    const refreshToken = authHeader && authHeader.split(" ")[2];
-
     try {
-      await RefreshToken.deleteOne({ token: refreshToken });
+      await RefreshToken.deleteOne({ userId });
     } catch (error) {
       return next(error);
     }

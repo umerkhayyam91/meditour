@@ -229,11 +229,11 @@ const docAuthController = {
       return next(error);
     }
 
-    const Paramedic = new ParamedicDTO(doc);
+    const paramedic = new ParamedicDTO(doc);
 
     return res
       .status(200)
-      .json({ paramedic : Paramedic, auth: true, token: accessToken });
+      .json({ paramedic : paramedic, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {

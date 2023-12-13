@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const nutritionSchema = new mongoose.Schema(
+const paramedicSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -141,4 +141,4 @@ const nutritionSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Nutrition", nutritionSchema, "nutritionists");
+module.exports = mongoose.model("Paramedic", paramedicSchema, "paramedics");

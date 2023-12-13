@@ -323,15 +323,11 @@ const hospAuthController = {
   },
 
   async logout(req, res, next) {
-    // 1. delete refresh token from db
+    const userId = req.user._id;
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
-    const refreshToken = authHeader && authHeader.split(" ")[2];
-    // console.log("object");
-    // console.log(accessToken);
-    // console.log(refreshToken);
     try {
-      await RefreshToken.deleteOne({ token: refreshToken });
+      await RefreshToken.deleteOne({ userId });
     } catch (error) {
       return next(error);
     }
