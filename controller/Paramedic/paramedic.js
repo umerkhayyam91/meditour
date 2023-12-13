@@ -1,47 +1,35 @@
 const express = require("express");
 const app = express();
-const Laboratory = require("../../models/Laboratory/laboratory.js");
-const mongoose = require("mongoose");
-const ObjectId = mongoose.Types.ObjectId;
-const Order = require("../../models/Laboratory/labOrder.js");
-const serviceAccount = require("../../serviceAccountKey.json");
-const multer = require("multer");
-const fs = require("fs");
-const admin = require("firebase-admin");
-const bodyParser = require("body-parser");
+const Paramedic = require("../../models/Paramedic/paramedic.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
-const LabDTO = require("../../dto/lab.js");
-const orderDto = require("../../dto/labOrder.js");
+const ParamedicDTO = require("../../dto/paramedic.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 const AccessToken = require("../../models/accessToken.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const labAuthController = {
+const docAuthController = {
   async register(req, res, next) {
-    // 1. validate user input
-    const labRegisterSchema = Joi.object({
-      // email: Joi.string().email().required(),
-      labLogo: Joi.string().required(),
-      labLicenseImage: Joi.string().required(),
-      cnicImage: Joi.string().required(),
-      taxFileImage: Joi.string().required(),
-      // phoneNumber: Joi.string().required(),
-      // password: Joi.string().pattern(passwordPattern).required(),
-      // confirmPassword: Joi.ref("password"),
-      labFirstName: Joi.string().required(),
-      labLastName: Joi.string().required(),
-      labLicenseNumber: Joi.string().required(),
-      labExpiryDate: Joi.string().required(),
-      OwnerFirstName: Joi.string().required(),
-      OwnerMiddleName: Joi.string().required(),
-      OwnerLastName: Joi.string().required(),
+    const docRegisterSchema = Joi.object({
+      name: Joi.string().required(),
+      fatherName: Joi.string().required(),
+      gender: Joi.string().required(),
+      DOB: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      cnicOrPassportExpiry: Joi.string().required(),
-      labAddress: Joi.string().required(),
+      qualification: Joi.string().required(),
+      speciality: Joi.string().required(),
+      services: Joi.string().required(),
+      clinicName: Joi.string().required(),
+      clinicLastName: Joi.string().required(),
+      clinicExperiences: Joi.string().required(),
+      clinicLiscenceNo: Joi.string().required(),
+      licenceExpiryDate: Joi.string().required(),
+      emergencyNo: Joi.string().required(),
+      clinicAddress: Joi.string().required(),
       state: Joi.string().required(),
+      country: Joi.string(),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
@@ -51,28 +39,36 @@ const labAuthController = {
       bankName: Joi.string().required(),
       accountHolderName: Joi.string().required(),
       accountNumber: Joi.string().required(),
-      country: Joi.string().required(),
+      doctorImage: Joi.string(),
+      cnicImage: Joi.string(),
+      clinicLogo: Joi.string(),
+      liscenceImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
-    const { error } = labRegisterSchema.validate(req.body);
+    const { error } = docRegisterSchema.validate(req.body);
 
-    // 2. if error in validation -> return error via middleware
     if (error) {
       return next(error);
     }
 
-    // 3. if email or username is already registered -> return an error
     const {
-      labFirstName,
-      labLastName,
-      labLicenseNumber,
-      labExpiryDate,
-      OwnerFirstName,
-      OwnerMiddleName,
-      OwnerLastName,
+      name,
+      fatherName,
+      gender,
+      DOB,
+      cnicOrPassNo,
+      qualification,
+      speciality,
+      services,
+      clinicName,
       cnicOrPassportNo,
-      cnicOrPassportExpiry,
-      labAddress,
+      clinicLastName,
+      clinicExperiences,
+      clinicLiscenceNo,
+      licenceExpiryDate,
+      emergencyNo,
+      clinicAddress,
       state,
       country,
       website,
@@ -84,50 +80,35 @@ const labAuthController = {
       bankName,
       accountHolderName,
       accountNumber,
-      // email,
-      // password,
-      // confirmPassword,
-      // phoneNumber,
-      labLogo,
-      labLicenseImage,
-      taxFileImage,
+      doctorImage,
       cnicImage,
+      clinicLogo,
+      liscenceImage,
+      taxFileImage,
     } = req.body;
 
-    // try {
-    //   // Inside your try-catch block
-    //   const emailInUse = await Laboratory.exists({ email });
-
-    //   if (emailInUse) {
-    //     const error = new Error("Email already registered, use another email!");
-    //     error.status = 409;
-    //     return next(error);
-    //   }
-    // } catch (error) {
-    //   return next(error);
-    // }
-
-    // 4. password hash
-    // const hashedPassword = await bcrypt.hash(password, 10);
-
-    // 5. store user data in db
     let accessToken;
     let refreshToken;
 
-    let lab;
-    // const sixDigitId = randomNumber.toString().padStart(8, '0'); // Ensure it is eight digits long
+    let doc;
     try {
-      const labToRegister = new Laboratory({
-        labFirstName,
-        labLastName,
-        labLicenseNumber,
-        labExpiryDate,
-        OwnerFirstName,
-        OwnerMiddleName,
-        OwnerLastName,
+      const docToRegister = new Paramedic({
+        name,
+        fatherName,
+        gender,
+        DOB,
+        cnicOrPassNo,
+        qualification,
+        speciality,
+        services,
+        clinicName,
         cnicOrPassportNo,
-        cnicOrPassportExpiry,
-        labAddress,
+        clinicLastName,
+        clinicExperiences,
+        clinicLiscenceNo,
+        licenceExpiryDate,
+        emergencyNo,
+        clinicAddress,
         state,
         country,
         website,
@@ -139,62 +120,43 @@ const labAuthController = {
         bankName,
         accountHolderName,
         accountNumber,
-        // email,
-        // phoneNumber,
-        labLogo,
-        labLicenseImage,
-        taxFileImage,
+        doctorImage,
         cnicImage,
-        // password: hashedPassword,
+        clinicLogo,
+        liscenceImage,
+        taxFileImage
       });
 
-      lab = await labToRegister.save();
+      doc = await docToRegister.save();
 
       // token generation
-      accessToken = JWTService.signAccessToken({ _id: lab._id }, "365d");
+      accessToken = JWTService.signAccessToken({ _id: doc._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken({ _id: lab._id }, "365d");
+      refreshToken = JWTService.signRefreshToken({ _id: doc._id }, "365d");
     } catch (error) {
       return next(error);
     }
 
     // store refresh token in db
-    await JWTService.storeRefreshToken(refreshToken, lab._id);
-    await JWTService.storeAccessToken(accessToken, lab._id);
-
-    // send tokens in cookie
-    // res.cookie("accessToken", accessToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
-
-    // res.cookie("refreshToken", refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
+    await JWTService.storeRefreshToken(refreshToken, doc._id);
+    await JWTService.storeAccessToken(accessToken, doc._id);
 
     // 6. response send
 
-    // const labDto = new LabDTO(lab);
+    // const docDto = new doctorDto(doc);
 
     return res
       .status(201)
-      .json({ lab: lab, auth: true, token: accessToken });
+      .json({ paramedic: doc, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
-    // 1. validate user input
-    // 2. if validation error, return error
-    // 3. match username and password
-    // 4. return response
-
-    // we expect input data to be in such shape
-    const labLoginSchema = Joi.object({
+    const docLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
     });
 
-    const { error } = labLoginSchema.validate(req.body);
+    const { error } = docLoginSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -202,15 +164,12 @@ const labAuthController = {
 
     const { email, password } = req.body;
 
-    // const username = req.body.username
-    // const password = req.body.password
-
-    let lab;
+    let doc;
 
     try {
       // match username
-      lab = await Laboratory.findOne({ email });
-      if (!lab) {
+      doc = await Paramedic.findOne({ email: email });
+      if (!doc) {
         const error = {
           status: 401,
           message: "Invalid email",
@@ -218,7 +177,7 @@ const labAuthController = {
 
         return next(error);
       }
-      if (lab.isVerified == false) {
+      if (doc.isVerified == false) {
         const error = {
           status: 401,
           message: "User not verified",
@@ -229,7 +188,7 @@ const labAuthController = {
 
       // match password
 
-      const match = await bcrypt.compare(password, lab.password);
+      const match = await bcrypt.compare(password, doc.password);
 
       if (!match) {
         const error = {
@@ -243,13 +202,13 @@ const labAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: lab._id }, "365d");
-    const refreshToken = JWTService.signRefreshToken({ _id: lab._id }, "365d");
+    const accessToken = JWTService.signAccessToken({ _id: doc._id }, "365d");
+    const refreshToken = JWTService.signRefreshToken({ _id: doc._id }, "365d");
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
         {
-          userId: lab._id,
+          userId: doc._id,
         },
         { token: refreshToken },
         { upsert: true }
@@ -261,7 +220,7 @@ const labAuthController = {
     try {
       await AccessToken.updateOne(
         {
-          userId: lab._id,
+          userId: doc._id,
         },
         { token: accessToken },
         { upsert: true }
@@ -270,32 +229,22 @@ const labAuthController = {
       return next(error);
     }
 
-    // res.cookie("accessToken", accessToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
-
-    // res.cookie("refreshToken", refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
-
-    const labDto = new LabDTO(lab);
+    const Paramedic = new ParamedicDTO(doc);
 
     return res
       .status(200)
-      .json({ lab: labDto, auth: true, token: accessToken });
+      .json({ paramedic : Paramedic, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
-    const labRegisterSchema = Joi.object({
+    const docRegisterSchema = Joi.object({
       phoneNumber: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().pattern(passwordPattern).required(),
       confirmPassword: Joi.ref("password"),
     });
 
-    const { error } = labRegisterSchema.validate(req.body);
+    const { error } = docRegisterSchema.validate(req.body);
 
     // 2. if error in validation -> return error via middleware
     if (error) {
@@ -303,15 +252,9 @@ const labAuthController = {
     }
 
     const { password, email, phoneNumber } = req.body;
-    const emailExists = await Laboratory.exists({ email });
-    if (emailExists) {
-      const error = new Error("Email already exists!");
-      error.status = 400;
-      return next(error);
-    }
 
     const userId = req.query.id;
-    const existingUser = await Laboratory.findById(userId);
+    const existingUser = await Paramedic.findById(userId);
 
     if (!existingUser) {
       const error = new Error("User not found!");
@@ -331,11 +274,11 @@ const labAuthController = {
 
     return res
       .status(200)
-      .json({ message: "User updated successfully", lab: existingUser });
+      .json({ message: "User updated successfully", paramedic: existingUser });
   },
 
   async updateProfile(req, res, next) {
-    const labSchema = Joi.object({
+    const docSchema = Joi.object({
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
@@ -345,7 +288,7 @@ const labAuthController = {
       accountNumber: Joi.string(),
     });
 
-    const { error } = labSchema.validate(req.body);
+    const { error } = docSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -359,45 +302,37 @@ const labAuthController = {
       accountHolderName,
       accountNumber,
     } = req.body;
-    const labId = req.user._id;
-    console.log(labId);
+    const docId = req.user._id;
 
-    const lab = await Laboratory.findById(labId);
+    const doc = await Paramedic.findById(docId);
 
-    if (!lab) {
-      const error = new Error("Laboratory not found!");
+    if (!doc) {
+      const error = new Error("Doctor not found!");
       error.status = 404;
       return next(error);
     }
 
     // Update only the provided fields
-    if (website) lab.website = website;
-    if (facebook) lab.facebook = facebook;
-    if (twitter) lab.twitter = twitter;
-    if (instagram) lab.instagram = instagram;
-    if (bankName) lab.bankName = bankName;
-    if (accountHolderName) lab.accountHolderName = accountHolderName;
-    if (accountNumber) lab.accountNumber = accountNumber;
+    if (website) doc.website = website;
+    if (facebook) doc.facebook = facebook;
+    if (twitter) doc.twitter = twitter;
+    if (instagram) doc.instagram = instagram;
+    if (bankName) doc.bankName = bankName;
+    if (accountHolderName) doc.accountHolderName = accountHolderName;
+    if (accountNumber) doc.accountNumber = accountNumber;
 
     // Save the updated test
-    await lab.save();
+    await doc.save();
 
     return res
       .status(200)
-      .json({ message: "Laboratory updated successfully", Laboratory: lab });
+      .json({ message: "Doctor updated successfully", paramedic: doc });
   },
 
   async logout(req, res, next) {
-    // 1. delete refresh token from db
-    // const refHeader = req.headers["refreshToken"];
-    // const refreshToken = refHeader && refHeader.split(" ")[1];
     const userId = req.user._id;
-    // console.log(userId)
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
-    // console.log("object");
-    // console.log(accessToken);
-    // console.log(refreshToken);
     try {
       await RefreshToken.deleteOne({ userId });
     } catch (error) {
@@ -419,7 +354,6 @@ const labAuthController = {
     // 3. generate new tokens
     // 4. update db, return response
 
-    // const originalRefreshToken = req.cookies.refreshToken;
     const authHeader = req.headers["authorization"];
     const originalRefreshToken = authHeader && authHeader.split(" ")[2];
     const accessToken = authHeader && authHeader.split(" ")[1];
@@ -436,7 +370,6 @@ const labAuthController = {
 
       return next(error);
     }
-    // console.log(id)
 
     try {
       const match = RefreshToken.findOne({
@@ -491,31 +424,20 @@ const labAuthController = {
       let accessToken = JWTService.signAccessToken({ _id: id }, "365d");
 
       let refreshToken = JWTService.signRefreshToken({ _id: id }, "365d");
-      // console.log(accessToken);
-      // console.log(refreshToken);
       await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
       await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
-      // res.cookie("accessToken", accessToken, {
-      //   maxAge: 1000 * 60 * 60 * 24,
-      //   httpOnly: true,
-      // });
+      const doc = await Paramedic.findOne({ _id: id });
 
-      // res.cookie("refreshToken", refreshToken, {
-      //   maxAge: 1000 * 60 * 60 * 24,
-      //   httpOnly: true,
-      // });
-      const lab = await Laboratory.findOne({ _id: id });
-
-      const labDto = new LabDTO(lab);
+      const doctorDTO = new ParamedicDTO(doc);
 
       return res
         .status(200)
-        .json({ lab: labDto, auth: true, accessToken: accessToken });
+        .json({ paramedic: doctorDTO, auth: true, accessToken: accessToken });
     } catch (e) {
       return next(e);
     }
   },
 };
 
-module.exports = labAuthController;
+module.exports = docAuthController;

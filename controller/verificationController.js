@@ -28,7 +28,7 @@ const userTypeFunction = async function(userModel, email, newPassword){
     user = await Doctor.find({ email })
   } else if (userModel==="Hospital"){
     user = await Hospital.find({ email })
-  } else if (userModel==="AmbulanceCompany"){
+  } else if (userModel==="Ambulance"){
     user = await AmbulanceCompany.find({ email })
   } else if (userModel==="Physiotherapist"){
     user = await Physiotherapist.find({ email })
@@ -53,7 +53,7 @@ const userTypeFunction = async function(userModel, email, newPassword){
     await Doctor.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   } else if (userModel==="Hospital"){
     await Hospital.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="AmbulanceCompany"){
+  } else if (userModel==="Ambulance"){
     await AmbulanceCompany.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   } else if (userModel==="Physiotherapist"){
     await Physiotherapist.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
