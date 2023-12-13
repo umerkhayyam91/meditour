@@ -285,7 +285,7 @@ const labAuthController = {
 
     return res
       .status(200)
-      .json({ lab: labDto, auth: true, token: accessToken, status: "user logged in" });
+      .json({ lab: labDto, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
