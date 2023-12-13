@@ -118,7 +118,7 @@ const docAvailabilityController = {
           .json({ message: "Doctor availability not found" });
       }
 
-      res.status(200).json({ availability: doctorAvailability.availability });
+      res.status(200).json({ availability: doctorAvailability });
     } catch (error) {
       next(error);
     }

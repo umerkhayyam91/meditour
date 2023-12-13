@@ -5,12 +5,15 @@ const pharmDto = require("../dto/pharm");
 const docDto = require("../dto/doctor");
 const hospDto = require("../dto/hospital");
 const ambulanceDto = require("../dto/ambulanceCompany");
+const physioDto = require("../dto/physio");
+const nutritionistDto = require("../dto/nutritionist");
 const Laboratory = require("../models/Laboratory/laboratory");
 const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
 const Doctor = require("../models/Doctor/doctors");
 const Hospital = require("../models/Hospital/hospital");
 const Physiotherapist = require("../models/Physiotherapist/physiotherapist");
+const Nutritionist = require("../models/Nutritionist/nutritionist");
 const AccessToken = require("../models/accessToken");
 
 const auth = async (req, res, next) => {
@@ -114,9 +117,21 @@ const auth = async (req, res, next) => {
       } catch (error) {
         return next(error);
       }
-      const ambulanceDTO = new ambulanceDto(user);
+      const physioDTO = new physioDto(user);
 
-      req.user = ambulanceDTO;
+      req.user = physioDTO;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/nutritionist")) {
+      try {
+        user = await Nutritionist.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const nutritionistDTO = new nutritionistDto(user);
+
+      req.user = nutritionistDTO;
 
       next();
       return;

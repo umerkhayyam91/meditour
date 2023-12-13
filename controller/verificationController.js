@@ -1,6 +1,5 @@
 const express = require("express")
 const app = express()
-
 const VerificationCode = require("../models/verificationCode");
 const nodemailer = require("nodemailer");
 const Laboratory = require("../models/Laboratory/laboratory");
@@ -9,6 +8,7 @@ const Doctor = require("../models/Doctor/doctors");
 const Hospital = require("../models/Hospital/hospital");
 const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Physiotherapist = require("../models/Physiotherapist/physiotherapist");
+const Nutritionist = require("../models/Nutritionist/nutritionist");
 const ResetToken = require("../models/resetToken");
 const bcrypt = require('bcrypt');
 app.use(express.json())
@@ -32,6 +32,8 @@ const userTypeFunction = async function(userModel, email, newPassword){
     user = await AmbulanceCompany.find({ email })
   } else if (userModel==="Physiotherapist"){
     user = await Physiotherapist.find({ email })
+  } else if (userModel==="Nutritionist"){
+    user = await Nutritionist.find({ email })
   }
   if (!user) {
       return res.status(404).json({ status: 'Failure', message: 'User not found' });
@@ -55,6 +57,8 @@ const userTypeFunction = async function(userModel, email, newPassword){
     await AmbulanceCompany.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   } else if (userModel==="Physiotherapist"){
     await Physiotherapist.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
+  } else if (userModel==="Nutritionist"){
+    await Nutritionist.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   }
 
 }
@@ -76,6 +80,8 @@ const verificationController = {
       emailExists = await AmbulanceCompany.exists({ email });
     } else if(req.originalUrl.includes("/physio")){
       emailExists = await Physiotherapist.exists({ email });
+    } else if(req.originalUrl.includes("/nutritionist")){
+      emailExists = await Nutritionist.exists({ email });
     }
     if (emailExists) {
       const error = new Error("Email already exists!");
@@ -192,7 +198,6 @@ const verificationController = {
           }
         } else if (req.originalUrl.includes("/ambulance")) {
           try {
-            console.log(_id)
             existingUser = await AmbulanceCompany.findOne({ email });
             userType = "Ambulance"
             userTypeInUrl = "ambulance"
@@ -207,8 +212,17 @@ const verificationController = {
         } catch (error) {
           return next(error);
         }
+      } else if (req.originalUrl.includes("/nutritionist")) {
+        try {
+          existingUser = await Nutritionist.findOne({ email });
+          userType = "Nutritionist"
+          userTypeInUrl = "nutritionist"
+        } catch (error) {
+          return next(error);
+        }
       }
-
+      
+      console.log("object")
       if (!existingUser) {
           return res.status(404).json({ status: 'failure', message: 'Email not found' });
       }
