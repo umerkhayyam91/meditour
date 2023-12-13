@@ -222,7 +222,6 @@ const verificationController = {
         }
       }
       
-      console.log("object")
       if (!existingUser) {
           return res.status(404).json({ status: 'failure', message: 'Email not found' });
       }
@@ -235,7 +234,7 @@ const verificationController = {
       tokens[resetToken] = { email, userType };
       console.log(tokens);
       // Create a reset link with the token
-      const resetLink = `http://localhost:5001/${userTypeInUrl}/resetPassword?token=${resetToken}`;
+      const resetLink = `http://localhost:3000/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
 
       // Send an email with the reset link using Mailgun
       // const data = {
