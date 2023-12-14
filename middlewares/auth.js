@@ -8,6 +8,7 @@ const ambulanceDto = require("../dto/ambulanceCompany");
 const physioDto = require("../dto/physio");
 const nutritionistDto = require("../dto/nutritionist");
 const paramedicDto = require("../dto/nutritionist");
+const psychologistDto = require("../dto/psychologist");
 const Laboratory = require("../models/Laboratory/laboratory");
 const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
@@ -16,6 +17,7 @@ const Hospital = require("../models/Hospital/hospital");
 const Physiotherapist = require("../models/Physiotherapist/physiotherapist");
 const Nutritionist = require("../models/Nutritionist/nutritionist");
 const Paramedic = require("../models/Paramedic/paramedic");
+const Psychologist = require("../models/Psychologist/psychologist");
 const AccessToken = require("../models/accessToken");
 
 const auth = async (req, res, next) => {
@@ -146,6 +148,18 @@ const auth = async (req, res, next) => {
       const paramedicDTO = new paramedicDto(user);
 
       req.user = paramedicDTO;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/psychologist")) {
+      try {
+        user = await Psychologist.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const psychologistDTO = new psychologistDto(user);
+
+      req.user = psychologistDTO;
 
       next();
       return;

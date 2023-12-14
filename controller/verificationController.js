@@ -9,6 +9,8 @@ const Hospital = require("../models/Hospital/hospital");
 const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Physiotherapist = require("../models/Physiotherapist/physiotherapist");
 const Nutritionist = require("../models/Nutritionist/nutritionist");
+const Paramedic = require("../models/Paramedic/paramedic");
+const Psychologist = require("../models/Psychologist/psychologist");
 const ResetToken = require("../models/resetToken");
 const bcrypt = require('bcrypt');
 app.use(express.json())
@@ -34,6 +36,10 @@ const userTypeFunction = async function(userModel, email, newPassword){
     user = await Physiotherapist.find({ email })
   } else if (userModel==="Nutritionist"){
     user = await Nutritionist.find({ email })
+  } else if (userModel==="Paramedic"){
+    user = await Paramedic.find({ email })
+  } else if (userModel==="Psychologist"){
+    user = await Psychologist.find({ email })
   }
   if (!user) {
       return res.status(404).json({ status: 'Failure', message: 'User not found' });
@@ -59,6 +65,10 @@ const userTypeFunction = async function(userModel, email, newPassword){
     await Physiotherapist.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   } else if (userModel==="Nutritionist"){
     await Nutritionist.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
+  } else if (userModel==="Paramedic"){
+    await Paramedic.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
+  } else if (userModel==="Psychologist"){
+    await Psychologist.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   }
 
 }
@@ -82,6 +92,10 @@ const verificationController = {
       emailExists = await Physiotherapist.exists({ email });
     } else if(req.originalUrl.includes("/nutritionist")){
       emailExists = await Nutritionist.exists({ email });
+    } else if(req.originalUrl.includes("/paramedic")){
+      emailExists = await Paramedic.exists({ email });
+    } else if(req.originalUrl.includes("/psychologist")){
+      emailExists = await Psychologist.exists({ email });
     }
     if (emailExists) {
       const error = new Error("Email already exists!");
@@ -217,6 +231,22 @@ const verificationController = {
           existingUser = await Nutritionist.findOne({ email });
           userType = "Nutritionist"
           userTypeInUrl = "nutritionist"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/paramedic")) {
+        try {
+          existingUser = await Paramedic.findOne({ email });
+          userType = "Paramedic"
+          userTypeInUrl = "paramedic"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/psychologist")) {
+        try {
+          existingUser = await Psychologist.findOne({ email });
+          userType = "Psychologist"
+          userTypeInUrl = "psychologist"
         } catch (error) {
           return next(error);
         }

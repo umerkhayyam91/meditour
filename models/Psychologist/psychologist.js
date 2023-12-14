@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const paramedicSchema = new mongoose.Schema(
+const psychologistSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -23,11 +23,11 @@ const paramedicSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    DOB: {
+    cnicOrPassportNo: {
       type: String,
       required: true,
     },
-    cnicOrPassportNo: {
+    cnicOrPassportExpiry: {
       type: String,
       required: true,
     },
@@ -43,7 +43,7 @@ const paramedicSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    clinicName: {
+    clinicFirstName: {
       type: String,
       required: true,
     },
@@ -51,11 +51,11 @@ const paramedicSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    clinicLicenseNo: {
+    pmdcLiscenceNo: {
       type: String,
       required: true,
     },
-    licenceExpiryDate: {
+    pmdcExpiryDate: {
       type: String,
       required: true,
     },
@@ -123,7 +123,7 @@ const paramedicSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    licenseImage: {
+    pmdcImage: {
       type: String,
       required: true,
     },
@@ -141,4 +141,4 @@ const paramedicSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Paramedic", paramedicSchema, "paramedics");
+module.exports = mongoose.model("Psychologist", psychologistSchema, "psychologists");

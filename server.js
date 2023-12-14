@@ -17,6 +17,7 @@ const ambulanceRouter = require("./routes/ambulance");
 const physioRouter = require("./routes/physiotherapist");
 const nutritionRouter = require("./routes/nutritionist");
 const paramedicRouter = require("./routes/paramedic");
+const psychologistRouter = require("./routes/psychologist");
 
 app.use(labRouter);
 app.use(pharmRouter);
@@ -26,6 +27,7 @@ app.use(ambulanceRouter);
 app.use(physioRouter);
 app.use(nutritionRouter);
 app.use(paramedicRouter);
+app.use(psychologistRouter);
 
 dbConnect();
 app.use(ErrorHandler);

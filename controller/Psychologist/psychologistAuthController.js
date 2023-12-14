@@ -1,31 +1,31 @@
 const express = require("express");
 const app = express();
-const Paramedic = require("../../models/Paramedic/paramedic.js");
+const Psychologist = require("../../models/Psychologist/psychologist.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
-const ParamedicDTO = require("../../dto/paramedic.js");
+const PsychologistDTO = require("../../dto/psychologist.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 const AccessToken = require("../../models/accessToken.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const docAuthController = {
+const psychologistAuthController = {
   async register(req, res, next) {
     const docRegisterSchema = Joi.object({
       name: Joi.string().required(),
       fatherName: Joi.string().required(),
       gender: Joi.string().required(),
-      DOB: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
+      cnicOrPassportExpiry: Joi.string().required(),
       qualification: Joi.string().required(),
       speciality: Joi.string().required(),
       services: Joi.string().required(),
-      clinicName: Joi.string().required(),
+      clinicFirstName: Joi.string().required(),
       clinicLastName: Joi.string().required(),
       clinicExperiences: Joi.string().required(),
-      clinicLicenseNo: Joi.string().required(),
-      licenceExpiryDate: Joi.string().required(),
+      pmdcLiscenceNo: Joi.string().required(),
+      pmdcExpiryDate: Joi.string().required(),
       emergencyNo: Joi.string().required(),
       clinicAddress: Joi.string().required(),
       state: Joi.string().required(),
@@ -42,7 +42,7 @@ const docAuthController = {
       doctorImage: Joi.string(),
       cnicImage: Joi.string(),
       clinicLogo: Joi.string(),
-      licenseImage: Joi.string(),
+      pmdcImage: Joi.string(),
       taxFileImage: Joi.string(),
     });
 
@@ -53,60 +53,19 @@ const docAuthController = {
     }
 
     const {
-      name,
-      fatherName,
-      gender,
-      DOB,
-      cnicOrPassNo,
-      qualification,
-      speciality,
-      services,
-      clinicName,
-      cnicOrPassportNo,
-      clinicLastName,
-      clinicExperiences,
-      clinicLicenseNo,
-      licenceExpiryDate,
-      emergencyNo,
-      clinicAddress,
-      state,
-      country,
-      website,
-      twitter,
-      facebook,
-      instagram,
-      incomeTaxNo,
-      salesTaxNo,
-      bankName,
-      accountHolderName,
-      accountNumber,
-      doctorImage,
-      cnicImage,
-      clinicLogo,
-      licenseImage,
-      taxFileImage,
-    } = req.body;
-
-    let accessToken;
-    let refreshToken;
-
-    let doc;
-    try {
-      const docToRegister = new Paramedic({
         name,
         fatherName,
         gender,
-        DOB,
-        cnicOrPassNo,
+        cnicOrPassportNo,
+        cnicOrPassportExpiry,
         qualification,
         speciality,
         services,
-        clinicName,
-        cnicOrPassportNo,
+        clinicFirstName,
         clinicLastName,
         clinicExperiences,
-        clinicLicenseNo,
-        licenceExpiryDate,
+        pmdcLiscenceNo,
+        pmdcExpiryDate,
         emergencyNo,
         clinicAddress,
         state,
@@ -123,7 +82,46 @@ const docAuthController = {
         doctorImage,
         cnicImage,
         clinicLogo,
-        licenseImage,
+        pmdcImage,
+        taxFileImage
+    } = req.body;
+
+    let accessToken;
+    let refreshToken;
+
+    let doc;
+    try {
+      const docToRegister = new Psychologist({
+        name,
+        fatherName,
+        gender,
+        cnicOrPassportNo,
+        cnicOrPassportExpiry,
+        qualification,
+        speciality,
+        services,
+        clinicFirstName,
+        clinicLastName,
+        clinicExperiences,
+        pmdcLiscenceNo,
+        pmdcExpiryDate,
+        emergencyNo,
+        clinicAddress,
+        state,
+        country,
+        website,
+        twitter,
+        facebook,
+        instagram,
+        incomeTaxNo,
+        salesTaxNo,
+        bankName,
+        accountHolderName,
+        accountNumber,
+        doctorImage,
+        cnicImage,
+        clinicLogo,
+        pmdcImage,
         taxFileImage
       });
 
@@ -147,7 +145,7 @@ const docAuthController = {
 
     return res
       .status(201)
-      .json({ paramedic: doc, auth: true, token: accessToken });
+      .json({ psychologist: doc, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
@@ -168,7 +166,7 @@ const docAuthController = {
 
     try {
       // match username
-      doc = await Paramedic.findOne({ email: email });
+      doc = await Psychologist.findOne({ email: email });
       if (!doc) {
         const error = {
           status: 401,
@@ -229,11 +227,11 @@ const docAuthController = {
       return next(error);
     }
 
-    const paramedic = new ParamedicDTO(doc);
+    const psychologist = new PsychologistDTO(doc);
 
     return res
       .status(200)
-      .json({ paramedic : paramedic, auth: true, token: accessToken });
+      .json({ psychologist : psychologist, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
@@ -254,7 +252,7 @@ const docAuthController = {
     const { password, email, phoneNumber } = req.body;
 
     const userId = req.query.id;
-    const existingUser = await Paramedic.findById(userId);
+    const existingUser = await Psychologist.findById(userId);
 
     if (!existingUser) {
       const error = new Error("User not found!");
@@ -274,7 +272,7 @@ const docAuthController = {
 
     return res
       .status(200)
-      .json({ message: "User updated successfully", paramedic: existingUser });
+      .json({ message: "User updated successfully", psychologist: existingUser });
   },
 
   async updateProfile(req, res, next) {
@@ -304,7 +302,7 @@ const docAuthController = {
     } = req.body;
     const docId = req.user._id;
 
-    const doc = await Paramedic.findById(docId);
+    const doc = await Psychologist.findById(docId);
 
     if (!doc) {
       const error = new Error("Doctor not found!");
@@ -326,7 +324,7 @@ const docAuthController = {
 
     return res
       .status(200)
-      .json({ message: "Doctor updated successfully", paramedic: doc });
+      .json({ message: "Doctor updated successfully", psychologist: doc });
   },
 
   async logout(req, res, next) {
@@ -427,17 +425,17 @@ const docAuthController = {
       await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
       await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
-      const doc = await Paramedic.findOne({ _id: id });
+      const doc = await Psychologist.findOne({ _id: id });
 
-      const doctorDTO = new ParamedicDTO(doc);
+      const doctorDTO = new PsychologistDTO(doc);
 
       return res
         .status(200)
-        .json({ paramedic: doctorDTO, auth: true, accessToken: accessToken });
+        .json({ psychologist: doctorDTO, auth: true, accessToken: accessToken });
     } catch (e) {
       return next(e);
     }
   },
 };
 
-module.exports = docAuthController;
+module.exports = psychologistAuthController;
