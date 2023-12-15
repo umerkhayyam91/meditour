@@ -20,6 +20,7 @@ const paramedicRouter = require("./routes/paramedic");
 const psychologistRouter = require("./routes/psychologist");
 const agencyRouter = require("./routes/travelAgency");
 const rentCarRouter = require("./routes/rentCar");
+const donationRouter = require("./routes/donation");
 
 app.use(labRouter);
 app.use(pharmRouter);
@@ -32,6 +33,7 @@ app.use(paramedicRouter);
 app.use(psychologistRouter);
 app.use(agencyRouter);
 app.use(rentCarRouter);
+app.use(donationRouter);
 
 dbConnect();
 app.use(ErrorHandler);

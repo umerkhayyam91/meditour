@@ -1,29 +1,28 @@
 const express = require("express");
 const app = express();
-const RentCar = require("../../models/Rent A Car/rentCar.js");
+const Donation = require("../../models/Donation/donation.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
-const rentCarDTO = require("../../dto/rentCar.js");
+const donationDTO = require("../../dto/donation.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 const AccessToken = require("../../models/accessToken.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const ambulanceAuthController = {
+const donationAuthController = {
   async register(req, res, next) {
-    const ambulanceRegisterSchema = Joi.object({
-      ownerName: Joi.string().required(),
-      fatherName: Joi.string().required(),
+    const donationRegisterSchema = Joi.object({
+      companyFirstName: Joi.string().required(),
+      companyLastName: Joi.string().required(),
+      companyLicenseNo: Joi.string().required(),
+      licenceExpiry: Joi.string().required(),
+      ownerFirstName: Joi.string().required(),
+      companySecondName: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
       expiryDate: Joi.string().required(),
-      companyName: Joi.string().required(),
-      companyLastName: Joi.string().required(),
-      licenseNo: Joi.string().required(),
-      licenseExpiry: Joi.string().required(),
       companyAddress: Joi.string().required(),
       companyExperiences: Joi.string().required(),
-      emergencyNo: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -42,59 +41,57 @@ const ambulanceAuthController = {
       taxFileImage: Joi.string(),
     });
 
-    const { error } = ambulanceRegisterSchema.validate(req.body);
+    const { error } = donationRegisterSchema.validate(req.body);
 
     if (error) {
       return next(error);
     }
 
     const {
-        ownerName,
-        fatherName,
-        cnicOrPassportNo,
-        expiryDate,
-        companyName,
-        companyLastName,
-        licenseNo,
-        licenseExpiry,
-        companyAddress,
-        companyExperiences,
-        emergencyNo,
-        state,
-        country,
-        website,
-        twitter,
-        facebook,
-        instagram,
-        incomeTaxNo,
-        salesTaxNo,
-        bankName,
-        accountHolderName,
-        accountNumber,
-        companyLogo,
-        licenseImage,
-        ownerImage,
-        cnicImage,
-        taxFileImage
+      companyFirstName,
+      companyLastName,
+      companyLicenseNo,
+      licenceExpiry,
+      ownerFirstName,
+      companySecondName,
+      cnicOrPassportNo,
+      expiryDate,
+      companyAddress,
+      companyExperiences,
+      state,
+      country,
+      website,
+      twitter,
+      facebook,
+      instagram,
+      incomeTaxNo,
+      salesTaxNo,
+      bankName,
+      accountHolderName,
+      accountNumber,
+      companyLogo,
+      licenseImage,
+      ownerImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
 
     let accessToken;
     let refreshToken;
 
-    let rentCar;
+    let donation;
     try {
-      const rentCarToRegister = new RentCar({
-        ownerName,
-        fatherName,
+      const donationToRegister = new Donation({
+        companyFirstName,
+        companyLastName,
+        companyLicenseNo,
+        licenceExpiry,
+        ownerFirstName,
+        companySecondName,
         cnicOrPassportNo,
         expiryDate,
-        companyName,
-        companyLastName,
-        licenseNo,
-        licenseExpiry,
         companyAddress,
         companyExperiences,
-        emergencyNo,
         state,
         country,
         website,
@@ -110,37 +107,37 @@ const ambulanceAuthController = {
         licenseImage,
         ownerImage,
         cnicImage,
-        taxFileImage
+        taxFileImage,
       });
 
-      rentCar = await rentCarToRegister.save();
+      donation = await donationToRegister.save();
 
       // token generation
-      accessToken = JWTService.signAccessToken({ _id: rentCar._id }, "365d");
+      accessToken = JWTService.signAccessToken({ _id: donation._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken({ _id: rentCar._id }, "365d");
+      refreshToken = JWTService.signRefreshToken({ _id: donation._id }, "365d");
     } catch (error) {
       return next(error);
     }
 
     // store refresh token in db
-    await JWTService.storeRefreshToken(refreshToken, rentCar._id);
-    await JWTService.storeAccessToken(accessToken, rentCar._id);
+    await JWTService.storeRefreshToken(refreshToken, donation._id);
+    await JWTService.storeAccessToken(accessToken, donation._id);
 
     // 6. response send
 
     return res
       .status(201)
-      .json({ rentCar: rentCar, auth: true, token: accessToken });
+      .json({ donation: donation, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
-    const rentCarSchema = Joi.object({
+    const donationSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
     });
 
-    const { error } = rentCarSchema.validate(req.body);
+    const { error } = donationSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -148,12 +145,12 @@ const ambulanceAuthController = {
 
     const { email, password } = req.body;
 
-    let rentCar;
+    let donation;
 
     try {
       // match username
-      rentCar = await RentCar.findOne({ email: email });
-      if (!rentCar) {
+      donation = await Donation.findOne({ email: email });
+      if (!donation) {
         const error = {
           status: 401,
           message: "Invalid email",
@@ -161,7 +158,7 @@ const ambulanceAuthController = {
 
         return next(error);
       }
-      if (rentCar.isVerified == false) {
+      if (donation.isVerified == false) {
         const error = {
           status: 401,
           message: "User not verified",
@@ -172,7 +169,7 @@ const ambulanceAuthController = {
 
       // match password
 
-      const match = await bcrypt.compare(password, rentCar.password);
+      const match = await bcrypt.compare(password, donation.password);
 
       if (!match) {
         const error = {
@@ -186,16 +183,16 @@ const ambulanceAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: rentCar._id }, "365d");
+    const accessToken = JWTService.signAccessToken({ _id: donation._id }, "365d");
     const refreshToken = JWTService.signRefreshToken(
-      { _id: rentCar._id },
+      { _id: donation._id },
       "365d"
     );
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
         {
-          userId: rentCar._id,
+          userId: donation._id,
         },
         { token: refreshToken },
         { upsert: true }
@@ -207,7 +204,7 @@ const ambulanceAuthController = {
     try {
       await AccessToken.updateOne(
         {
-          userId: rentCar._id,
+          userId: donation._id,
         },
         { token: accessToken },
         { upsert: true }
@@ -216,22 +213,22 @@ const ambulanceAuthController = {
       return next(error);
     }
 
-    const rentCarDto = new rentCarDTO(rentCar);
+    const donationDto = new donationDTO(donation);
 
     return res
       .status(200)
-      .json({ rentCar: rentCarDto, auth: true, token: accessToken });
+      .json({ donation: donationDto, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
-    const rentCarRegisterSchema = Joi.object({
+    const donationSchema = Joi.object({
       phoneNumber: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().pattern(passwordPattern).required(),
       confirmPassword: Joi.ref("password"),
     });
 
-    const { error } = rentCarRegisterSchema.validate(req.body);
+    const { error } = donationSchema.validate(req.body);
 
     // 2. if error in validation -> return error via middleware
     if (error) {
@@ -241,7 +238,7 @@ const ambulanceAuthController = {
     const { password, email, phoneNumber } = req.body;
 
     const userId = req.query.id;
-    const existingUser = await RentCar.findById(userId);
+    const existingUser = await Donation.findById(userId);
 
     if (!existingUser) {
       const error = new Error("User not found!");
@@ -263,12 +260,12 @@ const ambulanceAuthController = {
       .status(200)
       .json({
         message: "User updated successfully",
-        rentCar: existingUser,
+        donation: existingUser,
       });
   },
 
   async updateProfile(req, res, next) {
-    const rentCarSchema = Joi.object({
+    const donationSchema = Joi.object({
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
@@ -278,7 +275,7 @@ const ambulanceAuthController = {
       accountNumber: Joi.string(),
     });
 
-    const { error } = rentCarSchema.validate(req.body);
+    const { error } = donationSchema.validate(req.body);
 
     if (error) {
       return next(error);
@@ -292,31 +289,31 @@ const ambulanceAuthController = {
       accountHolderName,
       accountNumber,
     } = req.body;
-    const rentCarId = req.user._id;
+    const donationId = req.user._id;
 
-    const rentCar = await RentCar.findById(rentCarId);
+    const donation = await Donation.findById(donationId);
 
-    if (!rentCar) {
-      const error = new Error("Rent Car not found!");
+    if (!donation) {
+      const error = new Error("Donation Company not found!");
       error.status = 404;
       return next(error);
     }
 
     // Update only the provided fields
-    if (website) rentCar.website = website;
-    if (facebook) rentCar.facebook = facebook;
-    if (twitter) rentCar.twitter = twitter;
-    if (instagram) rentCar.instagram = instagram;
-    if (bankName) rentCar.bankName = bankName;
-    if (accountHolderName) rentCar.accountHolderName = accountHolderName;
-    if (accountNumber) rentCar.accountNumber = accountNumber;
+    if (website) donation.website = website;
+    if (facebook) donation.facebook = facebook;
+    if (twitter) donation.twitter = twitter;
+    if (instagram) donation.instagram = instagram;
+    if (bankName) donation.bankName = bankName;
+    if (accountHolderName) donation.accountHolderName = accountHolderName;
+    if (accountNumber) donation.accountNumber = accountNumber;
 
     // Save the updated test
-    await rentCar.save();
+    await donation.save();
 
     return res.status(200).json({
-      message: "Rent Car updated successfully",
-      rentCar: rentCar,
+      message: "Donation Company updated successfully",
+      donation: donation,
     });
   },
 
@@ -360,7 +357,7 @@ const ambulanceAuthController = {
       };
 
       return next(error);
-    } 
+    }
 
     try {
       const match = RefreshToken.findOne({
@@ -417,12 +414,12 @@ const ambulanceAuthController = {
       await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
       await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
-      const rentCar = await RentCar.findOne({ _id: id });
+      const donation = await Donation.findOne({ _id: id });
 
-      const rentCarDto = new rentCarDTO(rentCar);
+      const donationDto = new donationDTO(agency);
 
       return res.status(200).json({
-        rentCar: rentCarDto,
+        donation: donationDto,
         auth: true,
         accessToken: accessToken,
       });
@@ -432,4 +429,4 @@ const ambulanceAuthController = {
   },
 };
 
-module.exports = ambulanceAuthController;
+module.exports = donationAuthController;

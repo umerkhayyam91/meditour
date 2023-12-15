@@ -46,6 +46,8 @@ const userTypeFunction = async function(userModel, email, newPassword){
     user = await Agency.find({ email })
   } else if (userModel==="RentCar"){
     user = await RentCar.find({ email })
+  } else if (userModel==="Donation"){
+    user = await Donation.find({ email })
   }
   if (!user) {
       return res.status(404).json({ status: 'Failure', message: 'User not found' });
@@ -79,10 +81,11 @@ const userTypeFunction = async function(userModel, email, newPassword){
     await Agency.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   } else if (userModel==="RentCar"){
     await RentCar.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
+  } else if (userModel==="Donation"){
+    await Donation.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   }
 
 }
-
 
 const verificationController = {
   async sendCodeToEmail(req, res, next) {
@@ -110,6 +113,8 @@ const verificationController = {
       emailExists = await Agency.exists({ email });
     } else if(req.originalUrl.includes("/rentCar")){
       emailExists = await RentCar.exists({ email });
+    } else if(req.originalUrl.includes("/donation")){
+      emailExists = await Donation.exists({ email });
     }
     if (emailExists) {
       const error = new Error("Email already exists!");
@@ -276,6 +281,14 @@ const verificationController = {
         try {
           existingUser = await RentCar.findOne({ email });
           userType = "RentCar"
+          // userTypeInUrl = "rentCar"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/donation")) {
+        try {
+          existingUser = await Donation.findOne({ email });
+          userType = "Donation"
           // userTypeInUrl = "rentCar"
         } catch (error) {
           return next(error);
