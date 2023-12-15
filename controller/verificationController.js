@@ -11,6 +11,8 @@ const Physiotherapist = require("../models/Physiotherapist/physiotherapist");
 const Nutritionist = require("../models/Nutritionist/nutritionist");
 const Paramedic = require("../models/Paramedic/paramedic");
 const Psychologist = require("../models/Psychologist/psychologist");
+const Agency = require("../models/Travel Agency/travelAgency");
+const RentCar = require("../models/Rent A Car/rentCar");
 const ResetToken = require("../models/resetToken");
 const bcrypt = require('bcrypt');
 app.use(express.json())
@@ -40,6 +42,10 @@ const userTypeFunction = async function(userModel, email, newPassword){
     user = await Paramedic.find({ email })
   } else if (userModel==="Psychologist"){
     user = await Psychologist.find({ email })
+  } else if (userModel==="Agency"){
+    user = await Agency.find({ email })
+  } else if (userModel==="RentCar"){
+    user = await RentCar.find({ email })
   }
   if (!user) {
       return res.status(404).json({ status: 'Failure', message: 'User not found' });
@@ -69,6 +75,10 @@ const userTypeFunction = async function(userModel, email, newPassword){
     await Paramedic.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   } else if (userModel==="Psychologist"){
     await Psychologist.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
+  } else if (userModel==="Agency"){
+    await Agency.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
+  } else if (userModel==="RentCar"){
+    await RentCar.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   }
 
 }
@@ -96,6 +106,10 @@ const verificationController = {
       emailExists = await Paramedic.exists({ email });
     } else if(req.originalUrl.includes("/psychologist")){
       emailExists = await Psychologist.exists({ email });
+    } else if(req.originalUrl.includes("/agency")){
+      emailExists = await Agency.exists({ email });
+    } else if(req.originalUrl.includes("/rentCar")){
+      emailExists = await RentCar.exists({ email });
     }
     if (emailExists) {
       const error = new Error("Email already exists!");
@@ -247,6 +261,22 @@ const verificationController = {
           existingUser = await Psychologist.findOne({ email });
           userType = "Psychologist"
           userTypeInUrl = "psychologist"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/agency")) {
+        try {
+          existingUser = await Agency.findOne({ email });
+          userType = "Agency"
+          userTypeInUrl = "agency"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/rentCar")) {
+        try {
+          existingUser = await RentCar.findOne({ email });
+          userType = "RentCar"
+          // userTypeInUrl = "rentCar"
         } catch (error) {
           return next(error);
         }

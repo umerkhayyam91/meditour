@@ -9,6 +9,8 @@ const physioDto = require("../dto/physio");
 const nutritionistDto = require("../dto/nutritionist");
 const paramedicDto = require("../dto/nutritionist");
 const psychologistDto = require("../dto/psychologist");
+const agencyDto = require("../dto/travelAgency");
+const rentCarDTO = require("../dto/rentCar");
 const Laboratory = require("../models/Laboratory/laboratory");
 const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
@@ -18,6 +20,8 @@ const Physiotherapist = require("../models/Physiotherapist/physiotherapist");
 const Nutritionist = require("../models/Nutritionist/nutritionist");
 const Paramedic = require("../models/Paramedic/paramedic");
 const Psychologist = require("../models/Psychologist/psychologist");
+const Agency = require("../models/Travel Agency/travelAgency");
+const RentCar = require("../models/Rent A Car/rentCar");
 const AccessToken = require("../models/accessToken");
 
 const auth = async (req, res, next) => {
@@ -160,6 +164,30 @@ const auth = async (req, res, next) => {
       const psychologistDTO = new psychologistDto(user);
 
       req.user = psychologistDTO;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/agency")) {
+      try {
+        user = await Agency.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const agencyDTO = new agencyDto(user);
+
+      req.user = agencyDTO;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/rentCar")) {
+      try {
+        user = await RentCar.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const rentCarDto = new rentCarDTO(user);
+
+      req.user = rentCarDto;
 
       next();
       return;
