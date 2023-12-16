@@ -12,6 +12,7 @@ const psychologistDto = require("../dto/psychologist");
 const agencyDto = require("../dto/travelAgency");
 const rentCarDTO = require("../dto/rentCar");
 const donationDTO = require("../dto/donation");
+const hotelDTO = require("../dto/hotel");
 const Laboratory = require("../models/Laboratory/laboratory");
 const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
@@ -24,6 +25,7 @@ const Psychologist = require("../models/Psychologist/psychologist");
 const Agency = require("../models/Travel Agency/travelAgency");
 const RentCar = require("../models/Rent A Car/rentCar");
 const Donation = require("../models/Donation/donation");
+const Hotel = require("../models/Hotel/hotel");
 const AccessToken = require("../models/accessToken");
 
 const auth = async (req, res, next) => {
@@ -202,6 +204,18 @@ const auth = async (req, res, next) => {
       const donationDto = new donationDTO(user);
 
       req.user = donationDto;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/hotel")) {
+      try {
+        user = await Hotel.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const hotelDto = new hotelDTO(user);
+
+      req.user = hotelDto;
 
       next();
       return;

@@ -8,7 +8,7 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     storageBucket: "meditour-33ba8.appspot.com", // Replace with your actual storage bucket URL
   });
-  
+
 const bucket = admin.storage().bucket();
 
 

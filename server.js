@@ -21,6 +21,7 @@ const psychologistRouter = require("./routes/psychologist");
 const agencyRouter = require("./routes/travelAgency");
 const rentCarRouter = require("./routes/rentCar");
 const donationRouter = require("./routes/donation");
+const hotelRouter = require("./routes/hotel");
 
 app.use(labRouter);
 app.use(pharmRouter);
@@ -34,6 +35,7 @@ app.use(psychologistRouter);
 app.use(agencyRouter);
 app.use(rentCarRouter);
 app.use(donationRouter);
+app.use(hotelRouter);
 
 dbConnect();
 app.use(ErrorHandler);

@@ -14,6 +14,7 @@ const Psychologist = require("../models/Psychologist/psychologist");
 const Agency = require("../models/Travel Agency/travelAgency");
 const RentCar = require("../models/Rent A Car/rentCar");
 const Donation = require("../models/Donation/donation");
+const Hotel = require("../models/Hotel/hotel");
 const ResetToken = require("../models/resetToken");
 const bcrypt = require('bcrypt');
 app.use(express.json())
@@ -49,6 +50,8 @@ const userTypeFunction = async function(userModel, email, newPassword){
     user = await RentCar.find({ email })
   } else if (userModel==="Donation"){
     user = await Donation.find({ email })
+  } else if (userModel==="Hotel"){
+    user = await Hotel.find({ email })
   }
   if (!user) {
       return res.status(404).json({ status: 'Failure', message: 'User not found' });
@@ -84,6 +87,8 @@ const userTypeFunction = async function(userModel, email, newPassword){
     await RentCar.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   } else if (userModel==="Donation"){
     await Donation.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
+  } else if (userModel==="Hotel"){
+    await Hotel.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
   }
 
 }
@@ -116,6 +121,8 @@ const verificationController = {
       emailExists = await RentCar.exists({ email });
     } else if(req.originalUrl.includes("/donation")){
       emailExists = await Donation.exists({ email });
+    } else if(req.originalUrl.includes("/hotel")){
+      emailExists = await Hotel.exists({ email });
     }
     if (emailExists) {
       const error = new Error("Email already exists!");
@@ -290,6 +297,14 @@ const verificationController = {
         try {
           existingUser = await Donation.findOne({ email });
           userType = "Donation"
+          // userTypeInUrl = "rentCar"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/hotel")) {
+        try {
+          existingUser = await Hotel.findOne({ email });
+          userType = "Hotel"
           // userTypeInUrl = "rentCar"
         } catch (error) {
           return next(error);
