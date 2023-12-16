@@ -28,7 +28,6 @@ const donationSchema = new mongoose.Schema(
     },
     ownerLastName: {
       type: String,
-      required: true,
     },
     cnicOrPassportNo: {
       type: String,

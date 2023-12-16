@@ -13,6 +13,7 @@ const Paramedic = require("../models/Paramedic/paramedic");
 const Psychologist = require("../models/Psychologist/psychologist");
 const Agency = require("../models/Travel Agency/travelAgency");
 const RentCar = require("../models/Rent A Car/rentCar");
+const Donation = require("../models/Donation/donation");
 const ResetToken = require("../models/resetToken");
 const bcrypt = require('bcrypt');
 app.use(express.json())
