@@ -32,39 +32,33 @@ const docAvailabilityController = {
           );
 
         if (!hospitalAvailability) {
-          hospitalAvailability = new HospitalAvailability({
+          hospitalAvailability = {
             hospitalId: hospitalId,
             availability: [],
-          });
+          }
           doctorAvailability.hospitalAvailabilities.push(hospitalAvailability);
+          await doctorAvailability.save();
+          hospitalAvailability = doctorAvailability.hospitalAvailabilities.find(
+            (hospital) => String(hospital.hospitalId) === String(hospitalId)
+          );
         }
-        // console.log("hospitalAvailability before update:", hospitalAvailability);
 
-        // Ensure hospitalAvailability.availability is initialized
         hospitalAvailability.availability =
           hospitalAvailability.availability || [];
 
-        // Update or add new availability for each day
         console.log("doctorAvailability before loop:", doctorAvailability);
         availability.forEach((dayAvailability) => {
-          // console.log("hospitalAvailability before iteration:", hospitalAvailability);
 
           const existingDay = hospitalAvailability.availability.find(
             (day) => day.dayOfWeek === dayAvailability.dayOfWeek
           );
 
-          // console.log("Adding new day's availability:", dayAvailability);
 
           if (existingDay) {
-            // Update existing day's availability
-            // console.log("Updating existing day's availability:", existingDay);
             existingDay.periods = dayAvailability.periods;
           } else {
-            // Add new day's availability
-            // console.log("Adding new day's availability:", dayAvailability);
             const newAvailability = { ...dayAvailability }; // Create a copy
             hospitalAvailability.availability.push(newAvailability);
-            // console.log("hospitalAvailability after push:", hospitalAvailability);
           }
         });
 
