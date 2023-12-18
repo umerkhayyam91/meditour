@@ -6,17 +6,21 @@ class physioDTO {
       this.password = physio.password;
       this.name = physio.name;
       this.fatherOrHusbandName = physio.fatherOrHusbandName;
-      this.gender = physio.gender;
-      this.DOB = physio.DOB;
+      // this.gender = physio.gender;
+      // this.DOB = physio.DOB;
       this.cnicOrPassNo = physio.cnicOrPassNo;
+      this.expiryDate = physio.expiryDate;
       this.qualification = physio.qualification;
       this.speciality = physio.speciality;
       this.services = physio.services;
       this.clinicName = physio.clinicName;
-      this.clinicLicense = physio.clinicLicense;
+      this.clinicLastName = physio.clinicLastName;
+      this.pmdcNumber = physio.pmdcNumber;
+      // this.clinicLicense = physio.clinicLicense;
       this.licenceExpiryDate = physio.licenceExpiryDate;
       this.emergencyNo = physio.emergencyNo;
       this.clinicAddress = physio.clinicAddress;
+      this.clinicExperiences = physio.clinicExperiences;
       this.state = physio.state;
       this.country = physio.country;
       this.website = physio.website;
@@ -30,6 +34,8 @@ class physioDTO {
       this.accountNumber = physio.accountNumber;
       this.physioImage = physio.physioImage;
       this.cnicImage = physio.cnicImage;
+      this.clinicLogo = physio.clinicLogo;
+      this.pmdcImage = physio.pmdcImage;
       this.taxFileImage = physio.taxFileImage;
     }
   }
