@@ -13,6 +13,7 @@ const agencyDto = require("../dto/travelAgency");
 const rentCarDTO = require("../dto/rentCar");
 const donationDTO = require("../dto/donation");
 const hotelDTO = require("../dto/hotel");
+const insuranceDTO = require("../dto/insurance");
 const Laboratory = require("../models/Laboratory/laboratory");
 const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
@@ -26,6 +27,7 @@ const Agency = require("../models/Travel Agency/travelAgency");
 const RentCar = require("../models/Rent A Car/rentCar");
 const Donation = require("../models/Donation/donation");
 const Hotel = require("../models/Hotel/hotel");
+const Insurance = require("../models/Insurance/insurance");
 const AccessToken = require("../models/accessToken");
 
 const auth = async (req, res, next) => {
@@ -50,13 +52,10 @@ const auth = async (req, res, next) => {
 
       return next(error);
     }
-    // console.log(accessToken)
-
     let _id;
 
     try {
       _id = JWTService.verifyAccessToken(accessToken)._id;
-      // console.log(_id)
     } catch (error) {
       return next(error);
     }
@@ -216,6 +215,18 @@ const auth = async (req, res, next) => {
       const hotelDto = new hotelDTO(user);
 
       req.user = hotelDto;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/insurance")) {
+      try {
+        user = await Insurance.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const insuranceDto = new insuranceDTO(user);
+
+      req.user = insuranceDto;
 
       next();
       return;

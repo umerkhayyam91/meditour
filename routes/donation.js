@@ -1,5 +1,5 @@
 const express = require("express");
-const donationAuthController = require("../controller/Donation/donation");
+const donationAuthController = require("../controller/Donation/donationAuthController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");

@@ -1,5 +1,5 @@
 const express = require("express");
-const hotelAuthController = require("../controller/Hotel/hotel");
+const hotelAuthController = require("../controller/Hotel/hotelAuthController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");

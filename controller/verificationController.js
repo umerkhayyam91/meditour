@@ -1,5 +1,5 @@
-const express = require("express")
-const app = express()
+const express = require("express");
+const app = express();
 const VerificationCode = require("../models/verificationCode");
 const nodemailer = require("nodemailer");
 const Laboratory = require("../models/Laboratory/laboratory");
@@ -15,46 +15,50 @@ const Agency = require("../models/Travel Agency/travelAgency");
 const RentCar = require("../models/Rent A Car/rentCar");
 const Donation = require("../models/Donation/donation");
 const Hotel = require("../models/Hotel/hotel");
+const Insurance = require("../models/Insurance/insurance");
 const ResetToken = require("../models/resetToken");
-const bcrypt = require('bcrypt');
-app.use(express.json())
+const bcrypt = require("bcrypt");
+app.use(express.json());
 const Joi = require("joi");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 const tokens = {};
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const userTypeFunction = async function(userModel, email, newPassword){
-  
+const userTypeFunction = async function (userModel, email, newPassword) {
   let user;
-  if(userModel==="Laboratory"){
-    user = await Laboratory.find({ email })
-  } else if (userModel==="Pharmacy"){
-    user = await Pharmacy.find({ email })
-  } else if (userModel==="Doctor"){
-    user = await Doctor.find({ email })
-  } else if (userModel==="Hospital"){
-    user = await Hospital.find({ email })
-  } else if (userModel==="Ambulance"){
-    user = await AmbulanceCompany.find({ email })
-  } else if (userModel==="Physiotherapist"){
-    user = await Physiotherapist.find({ email })
-  } else if (userModel==="Nutritionist"){
-    user = await Nutritionist.find({ email })
-  } else if (userModel==="Paramedic"){
-    user = await Paramedic.find({ email })
-  } else if (userModel==="Psychologist"){
-    user = await Psychologist.find({ email })
-  } else if (userModel==="Agency"){
-    user = await Agency.find({ email })
-  } else if (userModel==="RentCar"){
-    user = await RentCar.find({ email })
-  } else if (userModel==="Donation"){
-    user = await Donation.find({ email })
-  } else if (userModel==="Hotel"){
-    user = await Hotel.find({ email })
+  if (userModel === "Laboratory") {
+    user = await Laboratory.find({ email });
+  } else if (userModel === "Pharmacy") {
+    user = await Pharmacy.find({ email });
+  } else if (userModel === "Doctor") {
+    user = await Doctor.find({ email });
+  } else if (userModel === "Hospital") {
+    user = await Hospital.find({ email });
+  } else if (userModel === "Ambulance") {
+    user = await AmbulanceCompany.find({ email });
+  } else if (userModel === "Physiotherapist") {
+    user = await Physiotherapist.find({ email });
+  } else if (userModel === "Nutritionist") {
+    user = await Nutritionist.find({ email });
+  } else if (userModel === "Paramedic") {
+    user = await Paramedic.find({ email });
+  } else if (userModel === "Psychologist") {
+    user = await Psychologist.find({ email });
+  } else if (userModel === "Agency") {
+    user = await Agency.find({ email });
+  } else if (userModel === "RentCar") {
+    user = await RentCar.find({ email });
+  } else if (userModel === "Donation") {
+    user = await Donation.find({ email });
+  } else if (userModel === "Hotel") {
+    user = await Hotel.find({ email });
+  } else if (userModel === "Insurance") {
+    user = await Insurance.find({ email });
   }
   if (!user) {
-      return res.status(404).json({ status: 'Failure', message: 'User not found' });
+    return res
+      .status(404)
+      .json({ status: "Failure", message: "User not found" });
   }
   console.log(user);
   // In a real application, you should update the user's password in your database
@@ -63,66 +67,125 @@ const userTypeFunction = async function(userModel, email, newPassword){
 
   // Delete the token from the tokens object after it's used
   const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-  if(userModel==="Laboratory"){
-    await Laboratory.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Pharmacy"){
-    await Pharmacy.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Doctor"){
-    await Doctor.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Hospital"){
-    await Hospital.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Ambulance"){
-    await AmbulanceCompany.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Physiotherapist"){
-    await Physiotherapist.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Nutritionist"){
-    await Nutritionist.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Paramedic"){
-    await Paramedic.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Psychologist"){
-    await Psychologist.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Agency"){
-    await Agency.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="RentCar"){
-    await RentCar.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Donation"){
-    await Donation.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
-  } else if (userModel==="Hotel"){
-    await Hotel.updateOne({ email: email }, { password: hashedNewPassword }, { runValidators: true });
+  if (userModel === "Laboratory") {
+    await Laboratory.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Pharmacy") {
+    await Pharmacy.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Doctor") {
+    await Doctor.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Hospital") {
+    await Hospital.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Ambulance") {
+    await AmbulanceCompany.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Physiotherapist") {
+    await Physiotherapist.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Nutritionist") {
+    await Nutritionist.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Paramedic") {
+    await Paramedic.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Psychologist") {
+    await Psychologist.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Agency") {
+    await Agency.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "RentCar") {
+    await RentCar.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Donation") {
+    await Donation.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Hotel") {
+    await Hotel.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Insurance") {
+    await Insurance.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
   }
-
-}
+};
 
 const verificationController = {
   async sendCodeToEmail(req, res, next) {
     let emailExists;
     const { email } = req.body;
     if (req.originalUrl.includes("/lab")) {
-       emailExists = await Laboratory.exists({ email });
+      emailExists = await Laboratory.exists({ email });
     } else if (req.originalUrl.includes("/pharm")) {
-       emailExists = await Pharmacy.exists({ email });
-    } else if(req.originalUrl.includes("/doc")){
+      emailExists = await Pharmacy.exists({ email });
+    } else if (req.originalUrl.includes("/doc")) {
       emailExists = await Doctor.exists({ email });
-    } else if(req.originalUrl.includes("/hosp")){
+    } else if (req.originalUrl.includes("/hosp")) {
       emailExists = await Hospital.exists({ email });
-    } else if(req.originalUrl.includes("/ambulance")){
+    } else if (req.originalUrl.includes("/ambulance")) {
       emailExists = await AmbulanceCompany.exists({ email });
-    } else if(req.originalUrl.includes("/physio")){
+    } else if (req.originalUrl.includes("/physio")) {
       emailExists = await Physiotherapist.exists({ email });
-    } else if(req.originalUrl.includes("/nutritionist")){
+    } else if (req.originalUrl.includes("/nutritionist")) {
       emailExists = await Nutritionist.exists({ email });
-    } else if(req.originalUrl.includes("/paramedic")){
+    } else if (req.originalUrl.includes("/paramedic")) {
       emailExists = await Paramedic.exists({ email });
-    } else if(req.originalUrl.includes("/psychologist")){
+    } else if (req.originalUrl.includes("/psychologist")) {
       emailExists = await Psychologist.exists({ email });
-    } else if(req.originalUrl.includes("/agency")){
+    } else if (req.originalUrl.includes("/agency")) {
       emailExists = await Agency.exists({ email });
-    } else if(req.originalUrl.includes("/rentCar")){
+    } else if (req.originalUrl.includes("/rentCar")) {
       emailExists = await RentCar.exists({ email });
-    } else if(req.originalUrl.includes("/donation")){
+    } else if (req.originalUrl.includes("/donation")) {
       emailExists = await Donation.exists({ email });
-    } else if(req.originalUrl.includes("/hotel")){
+    } else if (req.originalUrl.includes("/hotel")) {
       emailExists = await Hotel.exists({ email });
+    } else if (req.originalUrl.includes("/insurance")) {
+      emailExists = await Insurance.exists({ email });
     }
     if (emailExists) {
       const error = new Error("Email already exists!");
@@ -193,102 +256,103 @@ const verificationController = {
     });
   },
 
-  async ResetLink(req,res,next){
+  async ResetLink(req, res, next) {
     try {
       let { email } = req.body;
       let existingUser;
       let userType;
       let userTypeInUrl;
       if (!email) {
-          return res.status(404).json({ status: 'failure', message: 'Please enter email' });
+        return res
+          .status(404)
+          .json({ status: "failure", message: "Please enter email" });
       }
       if (req.originalUrl.includes("/lab")) {
         try {
-           existingUser = await Laboratory.findOne({ email });
-           userType = "Laboratory"
-           userTypeInUrl = "lab"
-          } catch (error) {
-            return next(error);
-          }
-          
-        } else if (req.originalUrl.includes("/pharm")) {
-          try {
-            existingUser = await Pharmacy.findOne({ email });
-            userType = "Pharmacy"
-            userTypeInUrl = "pharm"
-          } catch (error) {
-            return next(error);
-          }
-          next();
-          return
-        } else if (req.originalUrl.includes("/doc")) {
-          try {
-            existingUser = await Doctor.findOne({ email });
-            userType = "Doctor"
-            userTypeInUrl = "doc"
-          } catch (error) {
-            return next(error);
-          }
-        } else if (req.originalUrl.includes("/hosp")) {
-          try {
-            existingUser = await Hospital.findOne({ email });
-            userType = "Hospital"
-            userTypeInUrl = "hosp"
-          } catch (error) {
-            return next(error);
-          }
-        } else if (req.originalUrl.includes("/ambulance")) {
-          try {
-            existingUser = await AmbulanceCompany.findOne({ email });
-            userType = "Ambulance"
-            userTypeInUrl = "ambulance"
-          } catch (error) {
-            return next(error);
-          }
-        } else if (req.originalUrl.includes("/physio")) {
-          try {
-            existingUser = await Physiotherapist.findOne({ email });
-            userType = "Physiotherapist"
-            userTypeInUrl = "physio"
+          existingUser = await Laboratory.findOne({ email });
+          userType = "Laboratory";
+          //  userTypeInUrl = "lab"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/pharm")) {
+        try {
+          existingUser = await Pharmacy.findOne({ email });
+          userType = "Pharmacy";
+          // userTypeInUrl = "pharm"
+        } catch (error) {
+          return next(error);
+        }
+        next();
+        return;
+      } else if (req.originalUrl.includes("/doc")) {
+        try {
+          existingUser = await Doctor.findOne({ email });
+          userType = "Doctor";
+          // userTypeInUrl = "doc"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/hosp")) {
+        try {
+          existingUser = await Hospital.findOne({ email });
+          userType = "Hospital";
+          // userTypeInUrl = "hosp"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/ambulance")) {
+        try {
+          existingUser = await AmbulanceCompany.findOne({ email });
+          userType = "Ambulance";
+          // userTypeInUrl = "ambulance"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/physio")) {
+        try {
+          existingUser = await Physiotherapist.findOne({ email });
+          userType = "Physiotherapist";
+          // userTypeInUrl = "physio"
         } catch (error) {
           return next(error);
         }
       } else if (req.originalUrl.includes("/nutritionist")) {
         try {
           existingUser = await Nutritionist.findOne({ email });
-          userType = "Nutritionist"
-          userTypeInUrl = "nutritionist"
+          userType = "Nutritionist";
+          // userTypeInUrl = "nutritionist"
         } catch (error) {
           return next(error);
         }
       } else if (req.originalUrl.includes("/paramedic")) {
         try {
           existingUser = await Paramedic.findOne({ email });
-          userType = "Paramedic"
-          userTypeInUrl = "paramedic"
+          userType = "Paramedic";
+          // userTypeInUrl = "paramedic"
         } catch (error) {
           return next(error);
         }
       } else if (req.originalUrl.includes("/psychologist")) {
         try {
           existingUser = await Psychologist.findOne({ email });
-          userType = "Psychologist"
-          userTypeInUrl = "psychologist"
+          userType = "Psychologist";
+          // userTypeInUrl = "psychologist"
         } catch (error) {
           return next(error);
         }
       } else if (req.originalUrl.includes("/agency")) {
         try {
           existingUser = await Agency.findOne({ email });
-          userType = "Agency"
-          userTypeInUrl = "agency"
+          userType = "Agency";
+          // userTypeInUrl = "agency"
         } catch (error) {
           return next(error);
         }
       } else if (req.originalUrl.includes("/rentCar")) {
         try {
           existingUser = await RentCar.findOne({ email });
-          userType = "RentCar"
+          userType = "RentCar";
           // userTypeInUrl = "rentCar"
         } catch (error) {
           return next(error);
@@ -296,7 +360,7 @@ const verificationController = {
       } else if (req.originalUrl.includes("/donation")) {
         try {
           existingUser = await Donation.findOne({ email });
-          userType = "Donation"
+          userType = "Donation";
           // userTypeInUrl = "rentCar"
         } catch (error) {
           return next(error);
@@ -304,21 +368,31 @@ const verificationController = {
       } else if (req.originalUrl.includes("/hotel")) {
         try {
           existingUser = await Hotel.findOne({ email });
-          userType = "Hotel"
+          userType = "Hotel";
+          // userTypeInUrl = "rentCar"
+        } catch (error) {
+          return next(error);
+        }
+      } else if (req.originalUrl.includes("/insurance")) {
+        try {
+          existingUser = await Insurance.findOne({ email });
+          userType = "Insurance";
           // userTypeInUrl = "rentCar"
         } catch (error) {
           return next(error);
         }
       }
-      
+
       if (!existingUser) {
-          return res.status(404).json({ status: 'failure', message: 'Email not found' });
+        return res
+          .status(404)
+          .json({ status: "failure", message: "Email not found" });
       }
 
       // Generate a random password reset token
       const resetToken = uuidv4();
       // Save the resetToken and associated email in your database
-      const token =  new ResetToken({ token: resetToken, email, userType });
+      const token = new ResetToken({ token: resetToken, email, userType });
 
       tokens[resetToken] = { email, userType };
       console.log(tokens);
@@ -344,7 +418,7 @@ const verificationController = {
         from: "no-reply@example.com",
         to: email,
         subject: "Reset Password",
-        html: `<p>Click the link below to reset your password:</p>${resetLink}`
+        html: `<p>Click the link below to reset your password:</p>${resetLink}`,
       };
       transporter.sendMail(mailOptions, function (err) {
         if (err) {
@@ -355,7 +429,7 @@ const verificationController = {
           status: true,
           message: `Password reset link sent to ${email}`,
         });
-      })
+      });
       // mailgun.messages().send(data, (error, body) => {
       //     if (error) {
       //         console.error('Error sending email:', error);
@@ -364,20 +438,22 @@ const verificationController = {
 
       //     return res.json({ status: 'success', message: 'Password reset link sent to your email' });
       // });
-  } catch (error) {
-      console.error('Error:', error);
-      return res.status(500).json({ status: 'failure', message: 'Internal server error' });
-  }
+    } catch (error) {
+      console.error("Error:", error);
+      return res
+        .status(500)
+        .json({ status: "failure", message: "Internal server error" });
+    }
   },
 
-  async resetPassword(req,res,next){
+  async resetPassword(req, res, next) {
     try {
       const resetSchema = Joi.object({
-        newPassword: Joi.string().pattern(passwordPattern).required()
+        newPassword: Joi.string().pattern(passwordPattern).required(),
       });
-  
+
       const { error } = resetSchema.validate(req.body);
-  
+
       // 2. if error in validation -> return error via middleware
       if (error) {
         return next(error);
@@ -385,33 +461,39 @@ const verificationController = {
       const token = req.query.token;
       const { newPassword } = req.body;
       if (!newPassword) {
-          res.json({
-              'status': 'Failure',
-              'message': `Please enter new password`,
-          });
-          return;
+        res.json({
+          status: "Failure",
+          message: `Please enter new password`,
+        });
+        return;
       }
       // Check if the provided token exists in the tokens object
       const object = tokens[token];
-       if (!object) {
-          return res.status(404).json({ status: 'failure', message: 'Invalid token' });
+      if (!object) {
+        return res
+          .status(404)
+          .json({ status: "failure", message: "Invalid token" });
       }
       const email = object.email;
       const userType = tokens[token];
-      console.log(tokens)
-     
+      console.log(tokens);
+
       userModel = userType.userType;
 
       await userTypeFunction(userModel, email, newPassword);
-      
-      
+
       delete tokens[token];
-      return res.json({ status: 'success', message: 'Password reset successful' });
-  } catch (error) {
-      console.error('Error:', error);
-      return res.status(500).json({ status: 'failure', message: 'Internal server error' });
-  }
-  }
+      return res.json({
+        status: "success",
+        message: "Password reset successful",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      return res
+        .status(500)
+        .json({ status: "failure", message: "Internal server error" });
+    }
+  },
 };
 
 module.exports = verificationController;
