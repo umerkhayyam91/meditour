@@ -1,8 +1,8 @@
 const express = require("express");
 const physioAuthController = require("../controller/Physiotherapist/physioAuthController");
 const VerificationController = require("../controller/verificationController");
-const docAvailabilityController = require("../controller/Doctor/doctorAvailabilityController")
-const docAppointController = require("../controller/Doctor/doctorAppointController")
+const physioAvailabilityController = require("../controller/Physiotherapist/physioAvailabilityController")
+const physioAppointController = require("../controller/Physiotherapist/physioAppointController")
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -18,6 +18,16 @@ router.post("/physio/completeSignup", physioAuthController.completeSignup);
 router.put("/physio/updateProfile", auth, physioAuthController.updateProfile);
 router.post("/physio/logout", auth, physioAuthController.logout);
 router.post("/physio/refresh", auth, physioAuthController.refresh);
+
+//............availability............
+router.post("/physio/addAvailability", auth, physioAvailabilityController.addAvailability);
+router.get("/physio/getAvailability", auth, physioAvailabilityController.getAvailability);
+
+//............appointments..............
+router.get("/physio/getAllAppointments", auth, physioAppointController.getAllAppointments);
+router.get("/physio/getAllPatients", auth, physioAppointController.getAllPatients);
+router.get("/physio/patientHistory", auth, physioAppointController.patientHistory);
+router.get("/physio/getRequests", auth, physioAppointController.getRequests);
 
 
 //..............verification.........

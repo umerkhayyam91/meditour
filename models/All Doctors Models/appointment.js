@@ -24,8 +24,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     appointmentType: {
       type: String,
-      enum: ["videoConsultation", "on"],
-      default: "pending",
+      enum: ["videoConsultation", "inHouse", "clinic"],
     },
     status: {
       type: String,

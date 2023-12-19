@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const Availability = require("../../models/Doctor/availability");
+const Availability = require("../../models/All Doctors Models/availability");
 
 const docRequestController = {
     async requestAppointment(req, res, next) {

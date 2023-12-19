@@ -148,6 +148,5 @@ const hospDocController = {
       return next(error);
     }
   }
-  
 };
 module.exports = hospDocController;

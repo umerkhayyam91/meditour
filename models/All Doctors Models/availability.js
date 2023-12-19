@@ -27,10 +27,22 @@ const hospitalAvailabilitySchema = new mongoose.Schema({
       },
     ],
     default: [], // Initialize to an empty array if undefined or null
-  },  
+  },
 });
 
 const clinicAvailabilitySchema = new mongoose.Schema({
+  availability: [
+    {
+      dayOfWeek: {
+        type: Number, // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+        required: true,
+      },
+      periods: [availabilityPeriodSchema],
+    },
+  ],
+});
+
+const inHouseAvailabilitySchema = new mongoose.Schema({
   availability: [
     {
       dayOfWeek: {
@@ -51,6 +63,7 @@ const doctorAvailabilitySchema = new mongoose.Schema(
     },
     hospitalAvailabilities: [hospitalAvailabilitySchema],
     clinicAvailability: clinicAvailabilitySchema,
+    inHouseAvailability: inHouseAvailabilitySchema,
   },
   {
     timestamps: true,
@@ -63,6 +76,10 @@ const DoctorAvailability = mongoose.model(
   "availability"
 );
 
-const HospitalAvailability = mongoose.model("HospitalAvailability", hospitalAvailabilitySchema, "hospital availabilities");
+const HospitalAvailability = mongoose.model(
+  "HospitalAvailability",
+  hospitalAvailabilitySchema,
+  "hospital availabilities"
+);
 
 module.exports = { DoctorAvailability, HospitalAvailability };

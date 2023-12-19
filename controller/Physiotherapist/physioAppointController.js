@@ -5,7 +5,7 @@ const Patient = require("../../models/user");
 const User = require("../../models/user");
 const AppointmentRequest = require("../../models/Doctor/request");
 
-const docAppointController = {
+const physioAppointController = {
   async getAllAppointments(req, res, next) {
     try {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
@@ -172,4 +172,4 @@ const docAppointController = {
   //   },
 };
 
-module.exports = docAppointController;
+module.exports = physioAppointController;
