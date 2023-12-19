@@ -15,18 +15,18 @@ const nutritionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    gender: {
-      type: String,
-      required: true,
-    },
-    fatherName: {
-      type: String,
-      required: true,
-    },
-    DOB: {
-      type: String,
-      required: true,
-    },
+    // gender: {
+    //   type: String,
+    //   required: true,
+    // },
+    // fatherName: {
+    //   type: String,
+    //   required: true,
+    // },
+    // DOB: {
+    //   type: String,
+    //   required: true,
+    // },
     cnicOrPassportNo: {
       type: String,
       required: true,
@@ -47,18 +47,22 @@ const nutritionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    clinicLastName: {
+    pmdcNumber: {
       type: String,
       required: true,
     },
-    clinicLiscenceNo: {
-      type: String,
-      required: true,
-    },
-    licenceExpiryDate: {
-      type: String,
-      required: true,
-    },
+    // clinicLastName: {
+    //   type: String,
+    //   required: true,
+    // },
+    // clinicLiscenceNo: {
+    //   type: String,
+    //   required: true,
+    // },
+    // licenceExpiryDate: {
+    //   type: String,
+    //   required: true,
+    // },
     clinicAddress: {
       type: String,
       required: true,
@@ -123,7 +127,7 @@ const nutritionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    liscenceImage: {
+    pmdcImage: {
       type: String,
       required: true,
     },

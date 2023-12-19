@@ -5,17 +5,15 @@ class doctorDTO {
     this.phoneNumber = doc.phoneNumber;
     this.password = doc.password;
     this.name = doc.name;
-    this.fatherName = doc.fatherName;
-    this.DOB = doc.DOB;
-    this.gender = doc.gender;
+    // this.fatherName = doc.fatherName;
+    // this.DOB = doc.DOB;
+    // this.gender = doc.gender;
     this.cnicOrPassportNo = doc.cnicOrPassportNo;
     this.qualification = doc.qualification;
     this.speciality = doc.speciality;
     this.services = doc.services;
     this.clinicName = doc.clinicName;
-    this.clinicLastName = doc.clinicLastName;
-    this.clinicLiscenceNo = doc.clinicLiscenceNo;
-    this.licenceExpiryDate = doc.licenceExpiryDate;
+    this.pmdcNumber = doc.pmdcNumber;
     this.clinicExperiences = doc.clinicExperiences;
     this.emergencyNo = doc.emergencyNo;
     this.clinicAddress = doc.clinicAddress;
@@ -32,6 +30,8 @@ class doctorDTO {
     this.accountNumber = doc.accountNumber;
     this.doctorImage = doc.doctorImage;
     this.cnicImage = doc.cnicImage;
+    this.clinicLogo = doc.clinicLogo;
+    this.pmdcImage = doc.pmdcImage;
     this.taxFileImage = doc.taxFileImage;
   }
 }
