@@ -26,133 +26,38 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
 const userTypeFunction = async function (userModel, email, newPassword) {
   let user;
-  if (userModel === "Laboratory") {
-    user = await Laboratory.find({ email });
-  } else if (userModel === "Pharmacy") {
-    user = await Pharmacy.find({ email });
-  } else if (userModel === "Doctor") {
-    user = await Doctor.find({ email });
-  } else if (userModel === "Hospital") {
-    user = await Hospital.find({ email });
-  } else if (userModel === "Ambulance") {
-    user = await AmbulanceCompany.find({ email });
-  } else if (userModel === "Physiotherapist") {
-    user = await Physiotherapist.find({ email });
-  } else if (userModel === "Nutritionist") {
-    user = await Nutritionist.find({ email });
-  } else if (userModel === "Paramedic") {
-    user = await Paramedic.find({ email });
-  } else if (userModel === "Psychologist") {
-    user = await Psychologist.find({ email });
-  } else if (userModel === "Agency") {
-    user = await Agency.find({ email });
-  } else if (userModel === "RentCar") {
-    user = await RentCar.find({ email });
-  } else if (userModel === "Donation") {
-    user = await Donation.find({ email });
-  } else if (userModel === "Hotel") {
-    user = await Hotel.find({ email });
-  } else if (userModel === "Insurance") {
-    user = await Insurance.find({ email });
-  }
-  if (!user) {
-    return res
-      .status(404)
-      .json({ status: "Failure", message: "User not found" });
-  }
-  console.log(user);
-  // In a real application, you should update the user's password in your database
-  // For this demo, we'll just log the new password
-  console.log(`Password for ${email} reset to: ${newPassword}`);
+  let Model;
 
-  // Delete the token from the tokens object after it's used
-  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-  if (userModel === "Laboratory") {
-    await Laboratory.updateOne(
+  try {
+    // Dynamically reference the model based on userModel
+    Model = eval(userModel);
+    user = await Model.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: "Failure", message: "User not found" });
+    }
+
+    console.log(user);
+
+    // In a real application, you should update the user's password in your database
+    // For this demo, we'll just log the new password
+    console.log(`Password for ${email} reset to: ${newPassword}`);
+
+    // Delete the token from the tokens object after it's used
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    await Model.updateOne(
       { email: email },
       { password: hashedNewPassword },
       { runValidators: true }
     );
-  } else if (userModel === "Pharmacy") {
-    await Pharmacy.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Doctor") {
-    await Doctor.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Hospital") {
-    await Hospital.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Ambulance") {
-    await AmbulanceCompany.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Physiotherapist") {
-    await Physiotherapist.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Nutritionist") {
-    await Nutritionist.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Paramedic") {
-    await Paramedic.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Psychologist") {
-    await Psychologist.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Agency") {
-    await Agency.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "RentCar") {
-    await RentCar.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Donation") {
-    await Donation.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Hotel") {
-    await Hotel.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
-  } else if (userModel === "Insurance") {
-    await Insurance.updateOne(
-      { email: email },
-      { password: hashedNewPassword },
-      { runValidators: true }
-    );
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: "Error", message: "Internal Server Error" });
   }
 };
+
 
 const verificationController = {
   async sendCodeToEmail(req, res, next) {
@@ -405,15 +310,9 @@ const verificationController = {
          resetLink = `${baseUrl}/homeservices/physiotherapist/forgot-password2?token=${resetToken}`;
       }else if(userType=="Nutritionist"){
          resetLink = `${baseUrl}/homeservices/nutritionist/forgot-password2?token=${resetToken}`;
+      } else {
+        resetLink = `${baseUrl}/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
       }
-
-      // Send an email with the reset link using Mailgun
-      // const data = {
-      //     from: 'ShareRoom@gmail.com',
-      //     to: "umerkhayyam91@gmail.com",
-      //     subject: 'Payment',
-      //     html: `<p>Click the link below to reset your password:</p>${resetLink}`,
-      // }
 
       var transporter = nodemailer.createTransport({
         service: "gmail",
