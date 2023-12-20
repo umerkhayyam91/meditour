@@ -15,18 +15,14 @@ const hospAuthController = {
   async register(req, res, next) {
     const pharmRegisterSchema = Joi.object({
       hospitalLogo: Joi.string().required(),
-      pmdcImage: Joi.string().required(),
+      registrationImage: Joi.string().required(),
       taxFileImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
-      hospitalFirstName: Joi.string().required(),
-      hospitalLastName: Joi.string().required(),
-      pmdcNumber: Joi.string().required(),
-      pmdcExpiryDate: Joi.string().required(),
-      authFirstName: Joi.string().required(),
-      authMiddleName: Joi.string().required(),
-      authLastName: Joi.string().required(),
+      hospitalName: Joi.string().required(),
+      hospitalRegNo: Joi.string().required(),
+      emergencyNo: Joi.string().required(),
+      ownerName: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      cnicOrPassportExpiry: Joi.string().required(),
       hospitalAddress: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
@@ -48,31 +44,27 @@ const hospAuthController = {
     }
 
     const {
-        hospitalLogo,
-        pmdcImage,
-        taxFileImage,
-        cnicImage,
-        hospitalFirstName,
-        hospitalLastName,
-        pmdcNumber,
-        pmdcExpiryDate,
-        authFirstName,
-        authMiddleName,
-        authLastName,
-        cnicOrPassportNo,
-        cnicOrPassportExpiry,
-        hospitalAddress,
-        state,
-        country,
-        website,
-        twitter,
-        facebook,
-        instagram,
-        incomeTaxNo,
-        salesTaxNo,
-        bankName,
-        accountHolderName,
-        accountNumber
+      hospitalLogo,
+      registrationImage,
+      taxFileImage,
+      cnicImage,
+      hospitalName,
+      hospitalRegNo,
+      emergencyNo,
+      ownerName,
+      cnicOrPassportNo,
+      hospitalAddress,
+      state,
+      country,
+      website,
+      twitter,
+      facebook,
+      instagram,
+      incomeTaxNo,
+      salesTaxNo,
+      bankName,
+      accountHolderName,
+      accountNumber,
     } = req.body;
 
     let accessToken;
@@ -82,18 +74,14 @@ const hospAuthController = {
     try {
       const hospToRegister = new Hospital({
         hospitalLogo,
-        pmdcImage,
+        registrationImage,
         taxFileImage,
         cnicImage,
-        hospitalFirstName,
-        hospitalLastName,
-        pmdcNumber,
-        pmdcExpiryDate,
-        authFirstName,
-        authMiddleName,
-        authLastName,
+        hospitalName,
+        hospitalRegNo,
+        emergencyNo,
+        ownerName,
         cnicOrPassportNo,
-        cnicOrPassportExpiry,
         hospitalAddress,
         state,
         country,
@@ -105,7 +93,7 @@ const hospAuthController = {
         salesTaxNo,
         bankName,
         accountHolderName,
-        accountNumber
+        accountNumber,
       });
 
       hospital = await hospToRegister.save();
@@ -122,12 +110,11 @@ const hospAuthController = {
     await JWTService.storeRefreshToken(refreshToken, hospital._id);
     await JWTService.storeAccessToken(accessToken, hospital._id);
 
-
     // const hospDto = new HospDTO(hospital);
 
     return res
       .status(201)
-      .json({ Hospital: hospital, auth: true, token: accessToken });
+      .json({ hospital: hospital, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
@@ -183,10 +170,7 @@ const hospAuthController = {
     }
 
     const accessToken = JWTService.signAccessToken({ _id: hosp._id }, "365d");
-    const refreshToken = JWTService.signRefreshToken(
-      { _id: hosp._id },
-      "365d"
-    );
+    const refreshToken = JWTService.signRefreshToken({ _id: hosp._id }, "365d");
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
@@ -226,7 +210,7 @@ const hospAuthController = {
 
     return res
       .status(200)
-      .json({ Hospital: hospDto, auth: true, token: accessToken });
+      .json({ hospital: hospDto, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
@@ -319,7 +303,7 @@ const hospAuthController = {
 
     return res
       .status(200)
-      .json({ message: "Hospital updated successfully", Hospital: hosp });
+      .json({ message: "Hospital updated successfully", hospital: hosp });
   },
 
   async logout(req, res, next) {

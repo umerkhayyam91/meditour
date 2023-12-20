@@ -11,39 +11,23 @@ const hospitalSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
-    hospitalFirstName: {
+    hospitalName: {
       type: String,
       required: true,
     },
-    hospitalLastName: {
+    hospitalRegNo: {
       type: String,
       required: true,
     },
-    pmdcNumber: {
+    emergencyNo: {
       type: String,
       required: true,
     },
-    pmdcExpiryDate: {
-      type: String,
-      required: true,
-    },
-    authFirstName: {
-      type: String,
-      required: true,
-    },
-    authMiddleName: {
-      type: String,
-      required: true,
-    },
-    authLastName: {
+    ownerName: {
       type: String,
       required: true,
     },
     cnicOrPassportNo: {
-      type: String,
-      required: true,
-    },
-    cnicOrPassportExpiry: {
       type: String,
       required: true,
     },
@@ -95,7 +79,7 @@ const hospitalSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    pmdcImage: {
+    registrationImage: {
       type: String,
       required: true,
     },

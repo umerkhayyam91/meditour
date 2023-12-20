@@ -40,7 +40,7 @@ const docAuthController = {
       pmdcImage: Joi.string(),
       taxFileImage: Joi.string(),
     });
-
+    
     const { error } = docRegisterSchema.validate(req.body);
 
     if (error) {
