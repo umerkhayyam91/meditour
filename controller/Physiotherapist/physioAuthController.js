@@ -12,22 +12,15 @@ const physioAuthController = {
   async register(req, res, next) {
     const physioRegisterSchema = Joi.object({
       name: Joi.string().required(),
-      fatherOrHusbandName: Joi.string().required(),
-      // gender: Joi.string().required(),
-      // DOB: Joi.string().required(),
       cnicOrPassNo: Joi.string().required(),
-      expiryDate: Joi.string().required(),
       qualification: Joi.string().required(),
       speciality: Joi.string().required(),
       services: Joi.string().required(),
+      clinicExperiences: Joi.string().required(),
       clinicName: Joi.string().required(),
-      clinicLastName: Joi.string().required(),
       pmdcNumber: Joi.string().required(),
-      // clinicLicense: Joi.string().required(),
-      licenceExpiryDate: Joi.string().required(),
       emergencyNo: Joi.string().required(),
       clinicAddress: Joi.string().required(),
-      clinicExperiences: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -54,19 +47,15 @@ const physioAuthController = {
 
     const {
       name,
-      fatherOrHusbandName,
       cnicOrPassNo,
-      expiryDate,
       qualification,
       speciality,
       services,
+      clinicExperiences,
       clinicName,
-      clinicLastName,
       pmdcNumber,
-      licenceExpiryDate,
       emergencyNo,
       clinicAddress,
-      clinicExperiences,
       state,
       country,
       website,
@@ -82,7 +71,7 @@ const physioAuthController = {
       cnicImage,
       clinicLogo,
       pmdcImage,
-      taxFileImage
+      taxFileImage,
     } = req.body;
 
     let accessToken;
@@ -92,35 +81,31 @@ const physioAuthController = {
     try {
       const physioToRegister = new Physiotherapist({
         name,
-      fatherOrHusbandName,
-      cnicOrPassNo,
-      expiryDate,
-      qualification,
-      speciality,
-      services,
-      clinicName,
-      clinicLastName,
-      pmdcNumber,
-      licenceExpiryDate,
-      emergencyNo,
-      clinicAddress,
-      clinicExperiences,
-      state,
-      country,
-      website,
-      twitter,
-      youtube,
-      instagram,
-      incomeTaxNo,
-      salesTaxNo,
-      bankName,
-      accountHolderName,
-      accountNumber,
-      physioImage,
-      cnicImage,
-      clinicLogo,
-      pmdcImage,
-      taxFileImage
+        cnicOrPassNo,
+        qualification,
+        speciality,
+        services,
+        clinicExperiences,
+        clinicName,
+        pmdcNumber,
+        emergencyNo,
+        clinicAddress,
+        state,
+        country,
+        website,
+        twitter,
+        youtube,
+        instagram,
+        incomeTaxNo,
+        salesTaxNo,
+        bankName,
+        accountHolderName,
+        accountNumber,
+        physioImage,
+        cnicImage,
+        clinicLogo,
+        pmdcImage,
+        taxFileImage,
       });
 
       physio = await physioToRegister.save();
@@ -182,8 +167,6 @@ const physioAuthController = {
         return next(error);
       }
 
-      
-
       // match password
 
       const match = await bcrypt.compare(password, physio.password);
@@ -201,7 +184,10 @@ const physioAuthController = {
     }
 
     const accessToken = JWTService.signAccessToken({ _id: physio._id }, "365d");
-    const refreshToken = JWTService.signRefreshToken({ _id: physio._id }, "365d");
+    const refreshToken = JWTService.signRefreshToken(
+      { _id: physio._id },
+      "365d"
+    );
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
@@ -272,7 +258,10 @@ const physioAuthController = {
 
     return res
       .status(200)
-      .json({ message: "User updated successfully", Physiotherapist: existingUser });
+      .json({
+        message: "User updated successfully",
+        Physiotherapist: existingUser,
+      });
   },
 
   async updateProfile(req, res, next) {
@@ -324,7 +313,10 @@ const physioAuthController = {
 
     return res
       .status(200)
-      .json({ message: "Physiotherapist updated successfully", Physiotherapist: physio });
+      .json({
+        message: "Physiotherapist updated successfully",
+        Physiotherapist: physio,
+      });
   },
 
   async logout(req, res, next) {
@@ -390,7 +382,7 @@ const physioAuthController = {
     let accessId;
     try {
       accessId = JWTService.verifyAccessToken(accessToken)._id;
-      console.log(accessId)
+      console.log(accessId);
     } catch (e) {
       const error = {
         status: 401,
@@ -425,16 +417,20 @@ const physioAuthController = {
       await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
       await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
-
       const physio = await Physiotherapist.findOne({ _id: id });
-  
+
       const physioDto = new physioDTO(physio);
-  
-      return res.status(200).json({ Physiotherapist: physioDto, auth: true, accessToken: accessToken });
+
+      return res
+        .status(200)
+        .json({
+          Physiotherapist: physioDto,
+          auth: true,
+          accessToken: accessToken,
+        });
     } catch (e) {
       return next(e);
     }
-
   },
 };
 

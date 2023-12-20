@@ -14,21 +14,7 @@ const physioSchema = new mongoose.Schema(
     name: {
       type: String,
     },
-    fatherOrHusbandName: {
-      type: String,
-    },
-      // gender: {
-      //   type: String,
-      // },
-      // DOB: {
-      //   type: String,
-      //   required: true,
-      // },
     cnicOrPassNo: {
-      type: String,
-      required: true,
-    },
-    expiryDate: {
       type: String,
       required: true,
     },
@@ -44,23 +30,15 @@ const physioSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    clinicExperiences: {
+      type: String,
+      required: true,
+    },
     clinicName: {
       type: String,
       required: true,
     },
-    clinicLastName: {
-      type: String,
-      required: true,
-    },
     pmdcNumber: {
-      type: String,
-      required: true,
-    },
-    // clinicLicense: {
-    //   type: String,
-    //   required: true,
-    // },
-    licenceExpiryDate: {
       type: String,
       required: true,
     },
@@ -69,10 +47,6 @@ const physioSchema = new mongoose.Schema(
       required: true,
     },
     clinicAddress: {
-      type: String,
-      required: true,
-    },
-    clinicExperiences: {
       type: String,
       required: true,
     },
