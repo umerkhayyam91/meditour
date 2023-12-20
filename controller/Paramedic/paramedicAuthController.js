@@ -14,20 +14,15 @@ const docAuthController = {
   async register(req, res, next) {
     const docRegisterSchema = Joi.object({
       name: Joi.string().required(),
-      fatherName: Joi.string().required(),
-      gender: Joi.string().required(),
-      DOB: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
       qualification: Joi.string().required(),
       speciality: Joi.string().required(),
       services: Joi.string().required(),
       clinicName: Joi.string().required(),
-      clinicLastName: Joi.string().required(),
-      clinicExperiences: Joi.string().required(),
-      clinicLicenseNo: Joi.string().required(),
-      licenceExpiryDate: Joi.string().required(),
-      emergencyNo: Joi.string().required(),
       clinicAddress: Joi.string().required(),
+      clinicExperiences: Joi.string().required(),
+      pmdcNumber: Joi.string().required(),
+      emergencyNo: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -42,7 +37,7 @@ const docAuthController = {
       doctorImage: Joi.string(),
       cnicImage: Joi.string(),
       clinicLogo: Joi.string(),
-      licenseImage: Joi.string(),
+      pmdcImage: Joi.string(),
       taxFileImage: Joi.string(),
     });
 
@@ -54,21 +49,15 @@ const docAuthController = {
 
     const {
       name,
-      fatherName,
-      gender,
-      DOB,
-      cnicOrPassNo,
+      cnicOrPassportNo,
       qualification,
       speciality,
       services,
       clinicName,
-      cnicOrPassportNo,
-      clinicLastName,
-      clinicExperiences,
-      clinicLicenseNo,
-      licenceExpiryDate,
-      emergencyNo,
       clinicAddress,
+      clinicExperiences,
+      pmdcNumber,
+      emergencyNo,
       state,
       country,
       website,
@@ -83,8 +72,8 @@ const docAuthController = {
       doctorImage,
       cnicImage,
       clinicLogo,
-      licenseImage,
-      taxFileImage,
+      pmdcImage,
+      taxFileImage
     } = req.body;
 
     let accessToken;
@@ -94,21 +83,15 @@ const docAuthController = {
     try {
       const docToRegister = new Paramedic({
         name,
-        fatherName,
-        gender,
-        DOB,
-        cnicOrPassNo,
+        cnicOrPassportNo,
         qualification,
         speciality,
         services,
         clinicName,
-        cnicOrPassportNo,
-        clinicLastName,
-        clinicExperiences,
-        clinicLicenseNo,
-        licenceExpiryDate,
-        emergencyNo,
         clinicAddress,
+        clinicExperiences,
+        pmdcNumber,
+        emergencyNo,
         state,
         country,
         website,
@@ -123,7 +106,7 @@ const docAuthController = {
         doctorImage,
         cnicImage,
         clinicLogo,
-        licenseImage,
+        pmdcImage,
         taxFileImage
       });
 
