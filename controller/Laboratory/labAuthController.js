@@ -23,24 +23,17 @@ const labAuthController = {
   async register(req, res, next) {
     // 1. validate user input
     const labRegisterSchema = Joi.object({
-      // email: Joi.string().email().required(),
       labLogo: Joi.string().required(),
       labLicenseImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string().required(),
-      // phoneNumber: Joi.string().required(),
-      // password: Joi.string().pattern(passwordPattern).required(),
-      // confirmPassword: Joi.ref("password"),
       labFirstName: Joi.string().required(),
       labLastName: Joi.string().required(),
       labLicenseNumber: Joi.string().required(),
-      labExpiryDate: Joi.string().required(),
-      OwnerFirstName: Joi.string().required(),
-      OwnerMiddleName: Joi.string().required(),
-      OwnerLastName: Joi.string().required(),
+      OwnerName: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      cnicOrPassportExpiry: Joi.string().required(),
       labAddress: Joi.string().required(),
+      emergencyNo: Joi.string().required(),
       state: Joi.string().required(),
       website: Joi.string(),
       twitter: Joi.string(),
@@ -63,16 +56,17 @@ const labAuthController = {
 
     // 3. if email or username is already registered -> return an error
     const {
+      labLogo,
+      labLicenseImage,
+      cnicImage,
+      taxFileImage,
       labFirstName,
       labLastName,
       labLicenseNumber,
-      labExpiryDate,
-      OwnerFirstName,
-      OwnerMiddleName,
-      OwnerLastName,
+      OwnerName,
       cnicOrPassportNo,
-      cnicOrPassportExpiry,
       labAddress,
+      emergencyNo,
       state,
       country,
       website,
@@ -84,50 +78,26 @@ const labAuthController = {
       bankName,
       accountHolderName,
       accountNumber,
-      // email,
-      // password,
-      // confirmPassword,
-      // phoneNumber,
-      labLogo,
-      labLicenseImage,
-      taxFileImage,
-      cnicImage,
     } = req.body;
-
-    // try {
-    //   // Inside your try-catch block
-    //   const emailInUse = await Laboratory.exists({ email });
-
-    //   if (emailInUse) {
-    //     const error = new Error("Email already registered, use another email!");
-    //     error.status = 409;
-    //     return next(error);
-    //   }
-    // } catch (error) {
-    //   return next(error);
-    // }
-
-    // 4. password hash
-    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // 5. store user data in db
     let accessToken;
     let refreshToken;
 
     let lab;
-    // const sixDigitId = randomNumber.toString().padStart(8, '0'); // Ensure it is eight digits long
     try {
       const labToRegister = new Laboratory({
+        labLogo,
+        labLicenseImage,
+        cnicImage,
+        taxFileImage,
         labFirstName,
         labLastName,
         labLicenseNumber,
-        labExpiryDate,
-        OwnerFirstName,
-        OwnerMiddleName,
-        OwnerLastName,
+        OwnerName,
         cnicOrPassportNo,
-        cnicOrPassportExpiry,
         labAddress,
+        emergencyNo,
         state,
         country,
         website,
@@ -139,13 +109,6 @@ const labAuthController = {
         bankName,
         accountHolderName,
         accountNumber,
-        // email,
-        // phoneNumber,
-        labLogo,
-        labLicenseImage,
-        taxFileImage,
-        cnicImage,
-        // password: hashedPassword,
       });
 
       lab = await labToRegister.save();
@@ -162,24 +125,11 @@ const labAuthController = {
     await JWTService.storeRefreshToken(refreshToken, lab._id);
     await JWTService.storeAccessToken(accessToken, lab._id);
 
-    // send tokens in cookie
-    // res.cookie("accessToken", accessToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
-
-    // res.cookie("refreshToken", refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
-
     // 6. response send
-
-    // const labDto = new LabDTO(lab);
 
     return res
       .status(201)
-      .json({ lab: lab, auth: true, token: accessToken });
+      .json({ laboratory: lab, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {

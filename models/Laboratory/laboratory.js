@@ -23,19 +23,7 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    labExpiryDate: {
-      type: String,
-      required: true,
-    },
-    OwnerFirstName: {
-      type: String,
-      required: true,
-    },
-    OwnerMiddleName: {
-      type: String,
-      required: true,
-    },
-    OwnerLastName: {
+    OwnerName: {
       type: String,
       required: true,
     },
@@ -43,11 +31,11 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    cnicOrPassportExpiry: {
+    labAddress: {
       type: String,
       required: true,
     },
-    labAddress: {
+    emergencyNo: {
       type: String,
       required: true,
     },

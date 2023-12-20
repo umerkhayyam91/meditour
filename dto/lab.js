@@ -7,13 +7,10 @@ class LabDTO {
     this.labFirstName = lab.labFirstName;
     this.labLastName = lab.labLastName;
     this.labLicenseNumber = lab.labLicenseNumber;
-    this.labExpiryDate = lab.labExpiryDate;
-    this.OwnerFirstName = lab.OwnerFirstName;
-    this.OwnerMiddleName = lab.OwnerMiddleName;
-    this.OwnerLastName = lab.OwnerLastName;
+    this.OwnerName = lab.OwnerName;
     this.cnicOrPassportNo = lab.cnicOrPassportNo;
-    this.cnicOrPassportExpiry = lab.cnicOrPassportExpiry;
     this.labAddress = lab.labAddress;
+    this.emergencyNo = lab.emergencyNo;
     this.state = lab.state;
     this.country = lab.country;
     this.website = lab.website;
