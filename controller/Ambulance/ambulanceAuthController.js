@@ -13,16 +13,12 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const ambulanceAuthController = {
   async register(req, res, next) {
     const ambulanceRegisterSchema = Joi.object({
-      companyName: Joi.string().required(),
-      companyDetail: Joi.string().required(),
-      authorizedName: Joi.string().required(),
-      authorizedDetail: Joi.string().required(),
-      authorizedCnic: Joi.string().required(),
-      qualification: Joi.string().required(),
-      emergencyContact: Joi.string().required(),
+      ambulanceName: Joi.string().required(),
       registrationNumber: Joi.string().required(),
-      cellNo: Joi.string().required(),
-      ambulanceEquipDetail: Joi.string().required(),
+      ownerName: Joi.string().required(),
+      cnicOrPassportNo: Joi.string().required(),
+      companyAddress: Joi.string().required(),
+      emergencyNo: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -34,6 +30,9 @@ const ambulanceAuthController = {
       bankName: Joi.string().required(),
       accountHolderName: Joi.string().required(),
       accountNumber: Joi.string().required(),
+      ambulanceLogo: Joi.string().required(),
+      registrationImage: Joi.string().required(),
+      cnicOrPassportImage: Joi.string().required(),
       taxFileImage: Joi.string(),
     });
 
@@ -44,16 +43,12 @@ const ambulanceAuthController = {
     }
 
     const {
-      companyName,
-      companyDetail,
-      authorizedName,
-      authorizedDetail,
-      authorizedCnic,
-      qualification,
-      emergencyContact,
+      ambulanceName,
       registrationNumber,
-      cellNo,
-      ambulanceEquipDetail,
+      ownerName,
+      cnicOrPassportNo,
+      companyAddress,
+      emergencyNo,
       state,
       country,
       website,
@@ -65,6 +60,9 @@ const ambulanceAuthController = {
       bankName,
       accountHolderName,
       accountNumber,
+      ambulanceLogo,
+      registrationImage,
+      cnicOrPassportImage,
       taxFileImage,
     } = req.body;
 
@@ -74,16 +72,12 @@ const ambulanceAuthController = {
     let ambulance;
     try {
       const ambulanceToRegister = new Ambulance({
-        companyName,
-        companyDetail,
-        authorizedName,
-        authorizedDetail,
-        authorizedCnic,
-        qualification,
-        emergencyContact,
+        ambulanceName,
         registrationNumber,
-        cellNo,
-        ambulanceEquipDetail,
+        ownerName,
+        cnicOrPassportNo,
+        companyAddress,
+        emergencyNo,
         state,
         country,
         website,
@@ -95,6 +89,9 @@ const ambulanceAuthController = {
         bankName,
         accountHolderName,
         accountNumber,
+        ambulanceLogo,
+        registrationImage,
+        cnicOrPassportImage,
         taxFileImage,
       });
 
@@ -117,7 +114,6 @@ const ambulanceAuthController = {
 
     // 6. response send
 
-    // const ambulanceDTO = new ambulanceDto(ambulance);
 
     return res
       .status(201)
@@ -304,12 +300,10 @@ const ambulanceAuthController = {
     // Save the updated test
     await ambulance.save();
 
-    return res
-      .status(200)
-      .json({
-        message: "Ambulance updated successfully",
-        Ambulance: ambulance,
-      });
+    return res.status(200).json({
+      message: "Ambulance updated successfully",
+      Ambulance: ambulance,
+    });
   },
 
   async logout(req, res, next) {
@@ -413,13 +407,11 @@ const ambulanceAuthController = {
 
       const ambulanceDTO = new ambulanceDto(ambulance);
 
-      return res
-        .status(200)
-        .json({
-          Ambulance: ambulanceDTO,
-          auth: true,
-          accessToken: accessToken,
-        });
+      return res.status(200).json({
+        Ambulance: ambulanceDTO,
+        auth: true,
+        accessToken: accessToken,
+      });
     } catch (e) {
       return next(e);
     }

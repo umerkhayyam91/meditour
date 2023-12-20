@@ -11,40 +11,24 @@ const ambulanceSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
-    companyName: {
+    ambulanceName: {
       type: String,
-    },
-    companyDetail: {
-      type: String,
-    },
-    authorizedName: {
-      type: String,
-    },
-    authorizedDetail: {
-      type: String,
-      required: true,
-    },
-    authorizedCnic: {
-      type: String,
-      required: true,
-    },
-    qualification: {
-      type: String,
-      required: true,
-    },
-    emergencyContact: {
-      type: String,
-      required: true,
     },
     registrationNumber: {
       type: String,
       required: true,
     },
-    cellNo: {
-      type: String, 
+    ownerName: {
+      type: String,
+    },
+    cnicOrPassportNo: {
+      type: String,
+    },
+    companyAddress: {
+      type: String,
       required: true,
     },
-    ambulanceEquipDetail: {
+    emergencyNo: {
       type: String,
       required: true,
     },
@@ -85,6 +69,18 @@ const ambulanceSchema = new mongoose.Schema(
       required: true,
     },
     accountNumber: {
+      type: String,
+      required: true,
+    },
+    ambulanceLogo: {
+      type: String,
+      required: true,
+    },
+    registrationImage: {
+      type: String,
+      required: true,
+    },
+    cnicOrPassportImage: {
       type: String,
       required: true,
     },

@@ -4,16 +4,12 @@ class ambulanceDTO {
       this.email = ambulance.email;
       this.phoneNumber = ambulance.phoneNumber;
       this.password = ambulance.password;
-      this.companyName = ambulance.companyName;
-      this.companyDetail = ambulance.companyDetail;
-      this.authorizedName = ambulance.authorizedName;
-      this.authorizedDetail = ambulance.authorizedDetail;
-      this.authorizedCnic = ambulance.authorizedCnic;
-      this.qualification = ambulance.qualification;
-      this.emergencyContact = ambulance.emergencyContact;
+      this.ambulanceName = ambulance.ambulanceName;
       this.registrationNumber = ambulance.registrationNumber;
-      this.cellNo = ambulance.cellNo;
-      this.ambulanceEquipDetail = ambulance.ambulanceEquipDetail;
+      this.ownerName = ambulance.ownerName;
+      this.cnicOrPassportNo = ambulance.cnicOrPassportNo;
+      this.companyAddress = ambulance.companyAddress;
+      this.emergencyNo = ambulance.emergencyNo;
       this.state = ambulance.state;
       this.country = ambulance.country;
       this.website = ambulance.website;
@@ -25,6 +21,9 @@ class ambulanceDTO {
       this.bankName = ambulance.bankName;
       this.accountHolderName = ambulance.accountHolderName;
       this.accountNumber = ambulance.accountNumber;
+      this.ambulanceLogo = ambulance.ambulanceLogo;
+      this.registrationImage = ambulance.registrationImage;
+      this.cnicOrPassportImage = ambulance.cnicOrPassportImage;
       this.taxFileImage = ambulance.taxFileImage;
     }
   }

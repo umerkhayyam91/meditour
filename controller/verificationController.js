@@ -397,7 +397,15 @@ const verificationController = {
       tokens[resetToken] = { email, userType };
       console.log(tokens);
       // Create a reset link with the token
-      const resetLink = `http://localhost:3000/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
+      const baseUrl = "http://localhost:3000"
+      let resetLink
+      if(userType=="Ambulance"){
+         resetLink = `${baseUrl}/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
+      }else if(userType=="Physiotherapist"){
+         resetLink = `${baseUrl}/homeservices/physiotherapist/forgot-password2?token=${resetToken}`;
+      }else if(userType=="Nutritionist"){
+         resetLink = `${baseUrl}/homeservices/nutritionist/forgot-password2?token=${resetToken}`;
+      }
 
       // Send an email with the reset link using Mailgun
       // const data = {
