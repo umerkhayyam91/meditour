@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const labSchema = new mongoose.Schema(
+const pharmacySchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -11,27 +11,19 @@ const labSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
-    pharmFirstName: {
+    pharmacyFirstName: {
       type: String,
       required: true,
     },
-    pharmLastName: {
+    pharmacyLastName: {
       type: String,
       required: true,
     },
-    pharmLicenseNumber: {
+    pharmacyLicenseNumber: {
       type: String,
       required: true,
     },
-    licenceExpiryDate: {
-      type: String,
-      required: true,
-    },
-    OwnerFirstName: {
-      type: String,
-      required: true,
-    },
-    OwnerLastName: {
+    OwnerName: {
       type: String,
       required: true,
     },
@@ -39,11 +31,11 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    cnicOrPassportExpiry: {
+    pharmacyAddress: {
       type: String,
       required: true,
     },
-    pharmAddress: {
+    emergencyNo: {
       type: String,
       required: true,
     },
@@ -87,11 +79,15 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    pharmImage: {
+    pharmacyLogo: {
       type: String,
       required: true,
     },
-    ownerImage: {
+    pharmacyLicenseImage: {
+      type: String,
+      required: true,
+    },
+    cnicImage: {
       type: String,
       required: true,
     },
@@ -101,11 +97,11 @@ const labSchema = new mongoose.Schema(
     },
     isVerified: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   {
     timestamps: true,
   }
 );
-module.exports = mongoose.model("Pharmacy", labSchema, "pharmacies");
+module.exports = mongoose.model("Pharmacy", pharmacySchema, "pharmacies");
