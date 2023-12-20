@@ -10,6 +10,7 @@ class PharmDTO {
       this.OwnerName = pharm.OwnerName;
       this.cnicOrPassportNo = pharm.cnicOrPassportNo;
       this.pharmacyAddress = pharm.pharmacyAddress;
+      this.emergencyNo = pharm.emergencyNo;
       this.state = pharm.state;
       this.country = pharm.country;
       this.website = pharm.website;
@@ -21,8 +22,9 @@ class PharmDTO {
       this.bankName = pharm.bankName;
       this.accountHolderName = pharm.accountHolderName;
       this.accountNumber = pharm.accountNumber;
-      this.pharmImage = pharm.pharmImage;
-      this.ownerImage = pharm.ownerImage;
+      this.pharmacyLogo = pharm.pharmacyLogo;
+      this.pharmacyLicenseImage = pharm.pharmacyLicenseImage;
+      this.cnicImage = pharm.cnicImage;
       this.taxFileImage = pharm.taxFileImage;
     }
   }
