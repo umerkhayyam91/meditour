@@ -13,16 +13,12 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const donationAuthController = {
   async register(req, res, next) {
     const donationRegisterSchema = Joi.object({
-      companyFirstName: Joi.string().required(),
-      companyLastName: Joi.string().required(),
+      companyName: Joi.string().required(),
       companyLicenseNo: Joi.string().required(),
-      licenceExpiry: Joi.string().required(),
-      ownerFirstName: Joi.string().required(),
-      ownerLastName: Joi.string().required(),
+      companyEmergencyNo: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      expiryDate: Joi.string().required(),
+      ownerName: Joi.string().required(),
       companyAddress: Joi.string().required(),
-      companyExperiences: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -36,7 +32,6 @@ const donationAuthController = {
       accountNumber: Joi.string().required(),
       companyLogo: Joi.string().required(),
       licenseImage: Joi.string().required(),
-      ownerImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
     });
@@ -48,16 +43,12 @@ const donationAuthController = {
     }
 
     const {
-      companyFirstName,
-      companyLastName,
+      companyName,
       companyLicenseNo,
-      licenceExpiry,
-      ownerFirstName,
-      ownerLastName,
+      companyEmergencyNo,
       cnicOrPassportNo,
-      expiryDate,
+      ownerName,
       companyAddress,
-      companyExperiences,
       state,
       country,
       website,
@@ -71,7 +62,6 @@ const donationAuthController = {
       accountNumber,
       companyLogo,
       licenseImage,
-      ownerImage,
       cnicImage,
       taxFileImage,
     } = req.body;
@@ -82,16 +72,12 @@ const donationAuthController = {
     let donation;
     try {
       const donationToRegister = new Donation({
-        companyFirstName,
-        companyLastName,
+        companyName,
         companyLicenseNo,
-        licenceExpiry,
-        ownerFirstName,
-        ownerLastName,
+        companyEmergencyNo,
         cnicOrPassportNo,
-        expiryDate,
+        ownerName,
         companyAddress,
-        companyExperiences,
         state,
         country,
         website,
@@ -105,7 +91,6 @@ const donationAuthController = {
         accountNumber,
         companyLogo,
         licenseImage,
-        ownerImage,
         cnicImage,
         taxFileImage,
       });

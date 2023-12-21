@@ -13,14 +13,11 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const ambulanceAuthController = {
   async register(req, res, next) {
     const ambulanceRegisterSchema = Joi.object({
-      companyFirstName: Joi.string().required(),
-      companyLastName: Joi.string().required(),
+      companyName: Joi.string().required(),
       companyLicenseNo: Joi.string().required(),
-      licenceExpiry: Joi.string().required(),
-      ownerFirstName: Joi.string().required(),
-      ownerLastName: Joi.string().required(),
+      companyEmergencyNo: Joi.string().required(),
+      ownerName: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      expiryDate: Joi.string().required(),
       companyAddress: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
@@ -35,7 +32,6 @@ const ambulanceAuthController = {
       accountNumber: Joi.string().required(),
       companyLogo: Joi.string().required(),
       licenseImage: Joi.string().required(),
-      ownerImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
     });
@@ -47,31 +43,27 @@ const ambulanceAuthController = {
     }
 
     const {
-        companyFirstName,
-        companyLastName,
-        companyLicenseNo,
-        licenceExpiry,
-        ownerFirstName,
-        ownerLastName,
-        cnicOrPassportNo,
-        expiryDate,
-        companyAddress,
-        state,
-        country,
-        website,
-        twitter,
-        facebook,
-        instagram,
-        incomeTaxNo,
-        salesTaxNo,
-        bankName,
-        accountHolderName,
-        accountNumber,
-        companyLogo,
-        licenseImage,
-        ownerImage,
-        cnicImage,
-        taxFileImage
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      ownerName,
+      cnicOrPassportNo,
+      companyAddress,
+      state,
+      country,
+      website,
+      twitter,
+      facebook,
+      instagram,
+      incomeTaxNo,
+      salesTaxNo,
+      bankName,
+      accountHolderName,
+      accountNumber,
+      companyLogo,
+      licenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
 
     let accessToken;
@@ -80,14 +72,11 @@ const ambulanceAuthController = {
     let agency;
     try {
       const agencyToRegister = new Agency({
-        companyFirstName,
-        companyLastName,
+        companyName,
         companyLicenseNo,
-        licenceExpiry,
-        ownerFirstName,
-        ownerLastName,
+        companyEmergencyNo,
+        ownerName,
         cnicOrPassportNo,
-        expiryDate,
         companyAddress,
         state,
         country,
@@ -102,9 +91,8 @@ const ambulanceAuthController = {
         accountNumber,
         companyLogo,
         licenseImage,
-        ownerImage,
         cnicImage,
-        taxFileImage
+        taxFileImage,
       });
 
       agency = await agencyToRegister.save();
@@ -112,10 +100,7 @@ const ambulanceAuthController = {
       // token generation
       accessToken = JWTService.signAccessToken({ _id: agency._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken(
-        { _id: agency._id },
-        "365d"
-      );
+      refreshToken = JWTService.signRefreshToken({ _id: agency._id }, "365d");
     } catch (error) {
       return next(error);
     }
@@ -125,7 +110,6 @@ const ambulanceAuthController = {
     await JWTService.storeAccessToken(accessToken, agency._id);
 
     // 6. response send
-
 
     return res
       .status(201)
@@ -184,10 +168,7 @@ const ambulanceAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken(
-      { _id: agency._id },
-      "365d"
-    );
+    const accessToken = JWTService.signAccessToken({ _id: agency._id }, "365d");
     const refreshToken = JWTService.signRefreshToken(
       { _id: agency._id },
       "365d"
@@ -262,7 +243,10 @@ const ambulanceAuthController = {
 
     return res
       .status(200)
-      .json({ message: "User updated successfully", travelAgency: existingUser });
+      .json({
+        message: "User updated successfully",
+        travelAgency: existingUser,
+      });
   },
 
   async updateProfile(req, res, next) {
