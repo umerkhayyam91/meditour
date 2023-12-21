@@ -11,13 +11,13 @@ const travelAgencySchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
-    companyFirstName: {
-      type: String,
-    },
-    companyLastName: {
+    companyName: {
       type: String,
     },
     companyLicenseNo: {
+      type: String,
+    },
+    companyEmergencyNo: {
       type: String,
     },
     licenceExpiry: {
