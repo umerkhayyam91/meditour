@@ -410,6 +410,6 @@ const hotelAuthController = {
       return next(e);
     }
   },
-};
+}
 
 module.exports = hotelAuthController;
