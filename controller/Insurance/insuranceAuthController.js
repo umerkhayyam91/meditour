@@ -13,15 +13,11 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const insuranceAuthController = {
   async register(req, res, next) {
     const insuranceRegisterSchema = Joi.object({
-      companyFirstName: Joi.string().required(),
-      companyLastName: Joi.string().required(),
-      licenseNo: Joi.string().required(),
-      licenceExpiry: Joi.string().required(),
-      ownerFirstName: Joi.string().required(),
-      ownerLastName: Joi.string().required(),
+      companyName: Joi.string().required(),
+      companyLicenseNo: Joi.string().required(),
+      companyEmergencyNo: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      expiryDate: Joi.string().required(),
-      companyExperiences: Joi.string().required(),
+      ownerName: Joi.string().required(),
       companyAddress: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
@@ -36,7 +32,6 @@ const insuranceAuthController = {
       accountNumber: Joi.string().required(),
       companyLogo: Joi.string().required(),
       licenseImage: Joi.string().required(),
-      ownerImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
     });
@@ -48,32 +43,27 @@ const insuranceAuthController = {
     }
 
     const {
-        companyFirstName,
-        companyLastName,
-        licenseNo,
-        licenceExpiry,
-        ownerFirstName,
-        ownerLastName,
-        cnicOrPassportNo,
-        expiryDate,
-        companyExperiences,
-        companyAddress,
-        state,
-        country,
-        website,
-        twitter,
-        facebook,
-        instagram,
-        incomeTaxNo,
-        salesTaxNo,
-        bankName,
-        accountHolderName,
-        accountNumber,
-        companyLogo,
-        licenseImage,
-        ownerImage,
-        cnicImage,
-        taxFileImage
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      cnicOrPassportNo,
+      ownerName,
+      companyAddress,
+      state,
+      country,
+      website,
+      twitter,
+      facebook,
+      instagram,
+      incomeTaxNo,
+      salesTaxNo,
+      bankName,
+      accountHolderName,
+      accountNumber,
+      companyLogo,
+      licenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
 
     let accessToken;
@@ -82,15 +72,11 @@ const insuranceAuthController = {
     let insurance;
     try {
       const insuranceToRegister = new Insurance({
-        companyFirstName,
-        companyLastName,
-        licenseNo,
-        licenceExpiry,
-        ownerFirstName,
-        ownerLastName,
+        companyName,
+        companyLicenseNo,
+        companyEmergencyNo,
         cnicOrPassportNo,
-        expiryDate,
-        companyExperiences,
+        ownerName,
         companyAddress,
         state,
         country,
@@ -105,9 +91,8 @@ const insuranceAuthController = {
         accountNumber,
         companyLogo,
         licenseImage,
-        ownerImage,
         cnicImage,
-        taxFileImage
+        taxFileImage,
       });
 
       insurance = await insuranceToRegister.save();
@@ -115,7 +100,10 @@ const insuranceAuthController = {
       // token generation
       accessToken = JWTService.signAccessToken({ _id: insurance._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken({ _id: insurance._id }, "365d");
+      refreshToken = JWTService.signRefreshToken(
+        { _id: insurance._id },
+        "365d"
+      );
     } catch (error) {
       return next(error);
     }
@@ -183,7 +171,10 @@ const insuranceAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: insurance._id }, "365d");
+    const accessToken = JWTService.signAccessToken(
+      { _id: insurance._id },
+      "365d"
+    );
     const refreshToken = JWTService.signRefreshToken(
       { _id: insurance._id },
       "365d"

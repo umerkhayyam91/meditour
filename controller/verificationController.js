@@ -405,7 +405,9 @@ const verificationController = {
          resetLink = `${baseUrl}/homeservices/physiotherapist/forgot-password2?token=${resetToken}`;
       }else if(userType=="Nutritionist"){
          resetLink = `${baseUrl}/homeservices/nutritionist/forgot-password2?token=${resetToken}`;
-      } else {
+      } else if(userType=="Paramedic") {
+        resetLink = `${baseUrl}/homeservices/paramedicstaff/forgot-password2?token=${resetToken}`;
+      }else{
         resetLink = `${baseUrl}/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
       }
 

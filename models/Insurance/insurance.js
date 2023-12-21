@@ -11,37 +11,22 @@ const insuranceSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
-    companyFirstName: {
+    companyName: {
       type: String,
     },
-    companyLastName: {
+    companyLicenseNo: {
       type: String,
     },
-    licenseNo: {
+    companyEmergencyNo: {
       type: String,
     },
-    licenceExpiry: {
+    ownerName: {
       type: String,
-    },
-    ownerFirstName: {
-      type: String,
-    },
-    ownerLastName: {
-      type: String,
-      required: true,
     },
     cnicOrPassportNo: {
       type: String,
       required: true,
     },
-    expiryDate: {
-      type: String,
-      required: true,
-    },
-    companyExperiences: {
-      type: String,
-      required: true,
-    },  
     companyAddress: {
       type: String,
       required: true,
@@ -91,10 +76,6 @@ const insuranceSchema = new mongoose.Schema(
       required: true,
     },
     licenseImage: {
-      type: String,
-      required: true,
-    },
-    ownerImage: {
       type: String,
       required: true,
     },
