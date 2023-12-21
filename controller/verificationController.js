@@ -382,7 +382,7 @@ const verificationController = {
           return next(error);
         }
       }
-      
+
       if (!existingUser) {
         return res
           .status(404)
