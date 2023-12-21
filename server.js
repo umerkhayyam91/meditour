@@ -1,7 +1,19 @@
 const express = require("express");
 const app = express();
+const whitelist = ["http://localhost:3000"];
 const cors = require("cors");
-app.use(cors());
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 const dbConnect = require("./database/index");
