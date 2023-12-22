@@ -397,17 +397,23 @@ const verificationController = {
       tokens[resetToken] = { email, userType };
       console.log(tokens);
       // Create a reset link with the token
-      const baseUrl = "http://localhost:3000"
-      let resetLink
-      if(userType=="Ambulance"){
-         resetLink = `${baseUrl}/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
-      }else if(userType=="Physiotherapist"){
-         resetLink = `${baseUrl}/homeservices/physiotherapist/forgot-password2?token=${resetToken}`;
-      }else if(userType=="Nutritionist"){
-         resetLink = `${baseUrl}/homeservices/nutritionist/forgot-password2?token=${resetToken}`;
-      } else if(userType=="Paramedic") {
-        resetLink = `${baseUrl}/homeservices/paramedicstaff/forgot-password2?token=${resetToken}`;
-      }else{
+      const baseUrl = "http://localhost:3000";
+      let resetLink;
+      if (userType == "Ambulance") {
+        resetLink = `${baseUrl}/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
+      } else if (userType == "Physiotherapist") {
+        resetLink = `${baseUrl}/homeservices/physiotherapist/password-updates?token=${resetToken}`;
+      } else if (userType == "Nutritionist") {
+        resetLink = `${baseUrl}/homeservices/nutritionist/password-updates?token=${resetToken}`;
+      } else if (userType == "Paramedic") {
+        resetLink = `${baseUrl}/homeservices/paramedicstaff/password-updates?token=${resetToken}`;
+      } else if (userType == "Psychologist") {
+        resetLink = `${baseUrl}/homeservices/psychologist/password-updates?token=${resetToken}`;
+      } else if (userType == "Laboratory") {
+        resetLink = `${baseUrl}/homeservices/laboratory/password-updates?token=${resetToken}`;
+      } else if (userType == "Pharmacy") {
+        resetLink = `${baseUrl}/homeservices/pharmacy/password-updates?token=${resetToken}`;
+      } else {
         resetLink = `${baseUrl}/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
       }
 
@@ -434,14 +440,6 @@ const verificationController = {
           message: `Password reset link sent to ${email}`,
         });
       });
-      // mailgun.messages().send(data, (error, body) => {
-      //     if (error) {
-      //         console.error('Error sending email:', error);
-      //         return res.status(500).json({ status: 'failure', message: 'Failed to send email' });
-      //     }
-
-      //     return res.json({ status: 'success', message: 'Password reset link sent to your email' });
-      // });
     } catch (error) {
       console.error("Error:", error);
       return res
