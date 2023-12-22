@@ -400,21 +400,21 @@ const verificationController = {
       const baseUrl = "http://localhost:3000";
       let resetLink;
       if (userType == "Ambulance") {
-        resetLink = `${baseUrl}/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
+        resetLink = `${baseUrl}/homeservicesambulanceservices//update-password?token=${resetToken}`;
       } else if (userType == "Physiotherapist") {
-        resetLink = `${baseUrl}/homeservices/physiotherapist/password-updates?token=${resetToken}`;
+        resetLink = `${baseUrl}/homeservices/physiotherapist/update-password?token=${resetToken}`;
       } else if (userType == "Nutritionist") {
-        resetLink = `${baseUrl}/homeservices/nutritionist/password-updates?token=${resetToken}`;
+        resetLink = `${baseUrl}/homeservices/nutritionist/update-password?token=${resetToken}`;
       } else if (userType == "Paramedic") {
-        resetLink = `${baseUrl}/homeservices/paramedicstaff/password-updates?token=${resetToken}`;
+        resetLink = `${baseUrl}/homeservices/paramedicstaff/update-password?token=${resetToken}`;
       } else if (userType == "Psychologist") {
-        resetLink = `${baseUrl}/homeservices/psychologist/password-updates?token=${resetToken}`;
+        resetLink = `${baseUrl}/homeservices/psychologist/update-password?token=${resetToken}`;
       } else if (userType == "Laboratory") {
-        resetLink = `${baseUrl}/homeservices/laboratory/password-updates?token=${resetToken}`;
+        resetLink = `${baseUrl}/homeservices/laboratory/update-password?token=${resetToken}`;
       } else if (userType == "Pharmacy") {
-        resetLink = `${baseUrl}/homeservices/pharmacy/password-updates?token=${resetToken}`;
+        resetLink = `${baseUrl}/homeservices/pharmacy/update-password?token=${resetToken}`;
       } else {
-        resetLink = `${baseUrl}/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
+        resetLink = `${baseUrl}/homeservices/ambulanceservices/update-password?token=${resetToken}`;
       }
 
       var transporter = nodemailer.createTransport({
