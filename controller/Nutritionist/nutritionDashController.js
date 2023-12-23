@@ -1,4 +1,4 @@
-const Doctor = require("../../models/Doctor/doctors.js");
+const Nutrition = require("../../models/Nutritionist/nutritionist.js");
 const User = require("../../models/user.js");
 const Appointment = require("../../models/All Doctors Models/appointment.js");
 const moment = require("moment");
@@ -30,7 +30,7 @@ const docDashController = {
   async dashDetails(req, res, next) {
     try {
       const doctorId = req.user._id;
-      const doctor = await Doctor.findById(doctorId);
+      const doctor = await Nutrition.findById(doctorId);
       const doctorName = doctor.name;
       const upcomingAppointment = await Appointment.findOne({doctorId})
         .sort({ createdAt: -1 }) // Sort in descending order based on createdAt

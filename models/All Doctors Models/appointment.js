@@ -28,15 +28,12 @@ const appointmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      required: true,
     },
     ePrescription: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
     },
     notes: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
     },
   },
   {

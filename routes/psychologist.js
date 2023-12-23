@@ -3,6 +3,7 @@ const psychologistAuthController = require("../controller/Psychologist/psycholog
 const VerificationController = require("../controller/verificationController");
 const psychologistAvailabilityController = require("../controller/Psychologist/psychologistAvailabilityController")
 const psychologistAppointController = require("../controller/Psychologist/psychologistAppointController")
+const psychologistDashController = require("../controller/Psychologist/psychologistDashController")
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -18,6 +19,10 @@ router.post("/psychologist/completeSignup", psychologistAuthController.completeS
 router.put("/psychologist/updateProfile", auth, psychologistAuthController.updateProfile);
 router.post("/psychologist/logout", auth, psychologistAuthController.logout);
 router.post("/psychologist/refresh", auth, psychologistAuthController.refresh);
+
+//............Dashboard.................
+router.get("/psychologist/dashDetails", auth, psychologistDashController.dashDetails);
+router.get("/psychologist/graph", auth, psychologistDashController.graph);
 
 //............availability............
 router.post("/psychologist/addAvailability", auth, psychologistAvailabilityController.addAvailability);

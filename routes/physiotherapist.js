@@ -3,6 +3,7 @@ const physioAuthController = require("../controller/Physiotherapist/physioAuthCo
 const VerificationController = require("../controller/verificationController");
 const physioAvailabilityController = require("../controller/Physiotherapist/physioAvailabilityController")
 const physioAppointController = require("../controller/Physiotherapist/physioAppointController")
+const physioDashController = require("../controller/Physiotherapist/physioDashController")
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -18,6 +19,10 @@ router.post("/physio/completeSignup", physioAuthController.completeSignup);
 router.put("/physio/updateProfile", auth, physioAuthController.updateProfile);
 router.post("/physio/logout", auth, physioAuthController.logout);
 router.post("/physio/refresh", auth, physioAuthController.refresh);
+
+//............Dashboard.................
+router.get("/physio/dashDetails", auth, physioDashController.dashDetails);
+router.get("/physio/graph", auth, physioDashController.graph);
 
 //............availability............
 router.post("/physio/addAvailability", auth, physioAvailabilityController.addAvailability);

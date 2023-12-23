@@ -116,45 +116,21 @@ const docAppointController = {
     }
   },
 
-    // async addAppoints(req, res, next) {
-    //   try {
-    //     const { date, startTime, endTime } = req.body;
-    //     const doctorId = req.user._id;
-
-    //     // Create a new appointment
-    //     const newAppointment = new Appointment({
-    //       doctorId,
-    //       patientId: "656867ce85953ba14f2c9ff8",
-    //       date,
-    //       startTime,
-    //       endTime,
-    //     });
-
-    //     // Save the new appointment to the database
-    //     const savedAppointment = await newAppointment.save();
-
-    //     res
-    //       .status(201)
-    //       .json({
-    //         appointment: savedAppointment,
-    //         message: "Appointment added successfully",
-    //       });
-    //   } catch (error) {
-    //     next(error);
-    //   }
-    // },
-
     async addAppoints(req, res, next) {
       try {
+        const { date, startTime, endTime, appointmentType } = req.body;
         const doctorId = req.user._id;
+
         // Create a new appointment
-        const newAppointment = new AppointmentRequest({
+        const newAppointment = new Appointment({
           doctorId,
           patientId: "656867ce85953ba14f2c9ff8",
-          status: "approved",
-          requestedDateTime: "10 am",
+          date,
+          startTime,
+          endTime,
+          appointmentType
         });
-  // console.log(doctorId)
+
         // Save the new appointment to the database
         const savedAppointment = await newAppointment.save();
 
@@ -168,6 +144,31 @@ const docAppointController = {
         next(error);
       }
     },
+
+//     async addAppoints(req, res, next) {
+//       try {
+//         const doctorId = req.user._id;
+//         // Create a new appointment
+//         const newAppointment = new AppointmentRequest({
+//           doctorId,
+//           patientId: "656867ce85953ba14f2c9ff8",
+//           status: "approved",
+//           requestedDateTime: "10 am",
+//         });
+//   // console.log(doctorId)
+//         // Save the new appointment to the database
+//         const savedAppointment = await newAppointment.save();
+
+//         res
+//           .status(201)
+//           .json({
+//             appointment: savedAppointment,
+//             message: "Appointment added successfully",
+//           });
+//       } catch (error) {
+//         next(error);
+//       }
+//     },
 };
 
 module.exports = docAppointController;
