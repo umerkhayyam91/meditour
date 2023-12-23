@@ -1,11 +1,9 @@
 const express = require("express");
 const docAuthController = require("../controller/Doctor/doctorAuthController");
-const pharmMedController = require("../controller/Pharmacy/pharmMedController");
-const pharmOrderController = require("../controller/Pharmacy/pharmOrderController");
-const labTestController = require("../controller/Laboratory/labTestController");
 const VerificationController = require("../controller/verificationController");
 const docAvailabilityController = require("../controller/Doctor/doctorAvailabilityController")
 const docAppointController = require("../controller/Doctor/doctorAppointController")
+const docDashController = require("../controller/Doctor/doctorDashController")
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -21,6 +19,10 @@ router.post("/doc/completeSignup", docAuthController.completeSignup);
 router.put("/doc/updateProfile", auth, docAuthController.updateProfile);
 router.post("/doc/logout", auth, docAuthController.logout);
 router.post("/doc/refresh", auth, docAuthController.refresh);
+
+//............Dashboard.................
+router.get("/doc/dashDetails", auth, docDashController.dashDetails);
+router.get("/doc/graph", auth, docDashController.graph);
 
 //............availability............
 router.post("/doc/addAvailability", auth, docAvailabilityController.addAvailability);
