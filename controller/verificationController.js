@@ -417,7 +417,9 @@ const verificationController = {
           resetLink = `${baseUrl}/traveltourism/rentAcar/update-password?token=${resetToken}`;
       }  else if (userType == "Agency") {
         resetLink = `${baseUrl}/traveltourism/travelAgency/update-password?token=${resetToken}`;
-    }    else {
+    }  else if (userType == "Donation") {
+      resetLink = `${baseUrl}/donation/update-password?token=${resetToken}`;
+  }  else {
         resetLink = `${baseUrl}/homeservices/ambulanceservices/update-password?token=${resetToken}`;
       }
 
