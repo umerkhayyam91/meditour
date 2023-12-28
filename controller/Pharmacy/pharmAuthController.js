@@ -11,7 +11,7 @@ const LabDTO = require("../../dto/lab.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const pharmAuthController = {
+const pharmAuthController = { 
   async register(req, res, next) {
     const pharmRegisterSchema = Joi.object({
       pharmacyLogo: Joi.string().required(),
