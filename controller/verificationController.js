@@ -413,6 +413,8 @@ const verificationController = {
         resetLink = `${baseUrl}/homeservices/laboratory/update-password?token=${resetToken}`;
       } else if (userType == "Pharmacy") {
         resetLink = `${baseUrl}/homeservices/pharmacy/update-password?token=${resetToken}`;
+      }  else if (userType == "rentCar") {
+          resetLink = `${baseUrl}/traveltourism/rentAcar/update-password?token=${resetToken}`;
       } else {
         resetLink = `${baseUrl}/homeservices/ambulanceservices/update-password?token=${resetToken}`;
       }
