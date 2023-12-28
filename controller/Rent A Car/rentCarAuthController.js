@@ -12,7 +12,7 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
 const rentCarAuthController = {
   async register(req, res, next) {
-    const ambulanceRegisterSchema = Joi.object({
+    const rentCarRegisterSchema = Joi.object({
       companyName: Joi.string().required(),
       companyLicenseNo: Joi.string().required(),
       companyEmergencyNo: Joi.string().required(),
@@ -35,8 +35,7 @@ const rentCarAuthController = {
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
     });
-
-    const { error } = ambulanceRegisterSchema.validate(req.body);
+    const { error } = rentCarRegisterSchema.validate(req.body);
 
     if (error) {
       return next(error);
