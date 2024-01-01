@@ -415,7 +415,7 @@ const verificationController = {
         resetLink = `${baseUrl}/medicalservices/hospital/update-password?token=${resetToken}`;
       } else if (userType == "Pharmacy") {
         console.log("3rd")
-        resetLink = `${baseUrl}/homeservices/pharmacy/update-password?token=${resetToken}`;
+        resetLink = `${baseUrl}/pharmacy/update-password?token=${resetToken}`;
       } else if (userType == "Doctor") {
         resetLink = `${baseUrl}/medicalservices/doctor/update-password?token=${resetToken}`;
       } else if (userType == "RentCar") {
