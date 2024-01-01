@@ -410,11 +410,10 @@ const verificationController = {
       } else if (userType == "Psychologist") {
         resetLink = `${baseUrl}/homeservices/psychologist/update-password?token=${resetToken}`;
       } else if (userType == "Laboratory") {
-        resetLink = `${baseUrl}/homeservices/laboratory/update-password?token=${resetToken}`;
+        resetLink = `${baseUrl}/laboratory/update-password?token=${resetToken}`;
       } else if (userType == "Hospital") {
         resetLink = `${baseUrl}/medicalservices/hospital/update-password?token=${resetToken}`;
       } else if (userType == "Pharmacy") {
-        console.log("3rd")
         resetLink = `${baseUrl}/pharmacy/update-password?token=${resetToken}`;
       } else if (userType == "Doctor") {
         resetLink = `${baseUrl}/medicalservices/doctor/update-password?token=${resetToken}`;
@@ -424,9 +423,11 @@ const verificationController = {
         resetLink = `${baseUrl}/traveltourism/travelAgency/update-password?token=${resetToken}`;
       } else if (userType == "Donation") {
         resetLink = `${baseUrl}/donation/update-password?token=${resetToken}`;
-      } else {
-        resetLink = `${baseUrl}/homeservices/ambulanceservices/update-password?token=${resetToken}`;
-      }
+      } else if (userType == "Hotel") {
+        resetLink = `${baseUrl}/traveltourism/hotel/forgot-password?token=${resetToken}`;
+      } else if (userType == "Insurance") {
+        resetLink = `${baseUrl}/donation/update-password?token=${resetToken}`;
+      } 
 
       var transporter = nodemailer.createTransport({
         service: "gmail",
