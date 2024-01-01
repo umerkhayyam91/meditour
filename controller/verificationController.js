@@ -411,6 +411,8 @@ const verificationController = {
         resetLink = `${baseUrl}/homeservices/psychologist/update-password?token=${resetToken}`;
       } else if (userType == "Laboratory") {
         resetLink = `${baseUrl}/homeservices/laboratory/update-password?token=${resetToken}`;
+      } else if (userType == "Hospital") {
+        resetLink = `${baseUrl}/medicalservices/hospital/update-password?token=${resetToken}`;
       } else if (userType == "Pharmacy") {
         resetLink = `${baseUrl}/homeservices/pharmacy/update-password?token=${resetToken}`;
       } else if (userType == "Doctor") {
