@@ -258,6 +258,7 @@ const verificationController = {
 
   async ResetLink(req, res, next) {
     try {
+      console.log("object")
       let { email } = req.body;
       let existingUser;
       let userType;
@@ -279,12 +280,11 @@ const verificationController = {
         try {
           existingUser = await Pharmacy.findOne({ email });
           userType = "Pharmacy";
+          console.log("2nd")
           // userTypeInUrl = "pharm"
         } catch (error) {
           return next(error);
         }
-        next();
-        return;
       } else if (req.originalUrl.includes("/doc")) {
         try {
           existingUser = await Doctor.findOne({ email });
@@ -382,13 +382,13 @@ const verificationController = {
           return next(error);
         }
       }
+      console.log("anything")
 
       if (!existingUser) {
         return res
           .status(404)
           .json({ status: "failure", message: "Email not found" });
       }
-
       // Generate a random password reset token
       const resetToken = uuidv4();
       // Save the resetToken and associated email in your database
@@ -414,6 +414,7 @@ const verificationController = {
       } else if (userType == "Hospital") {
         resetLink = `${baseUrl}/medicalservices/hospital/update-password?token=${resetToken}`;
       } else if (userType == "Pharmacy") {
+        console.log("3rd")
         resetLink = `${baseUrl}/homeservices/pharmacy/update-password?token=${resetToken}`;
       } else if (userType == "Doctor") {
         resetLink = `${baseUrl}/medicalservices/doctor/update-password?token=${resetToken}`;
