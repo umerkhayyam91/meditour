@@ -413,13 +413,15 @@ const verificationController = {
         resetLink = `${baseUrl}/homeservices/laboratory/update-password?token=${resetToken}`;
       } else if (userType == "Pharmacy") {
         resetLink = `${baseUrl}/homeservices/pharmacy/update-password?token=${resetToken}`;
-      }  else if (userType == "RentCar") {
-          resetLink = `${baseUrl}/traveltourism/rentAcar/update-password?token=${resetToken}`;
-      }  else if (userType == "Agency") {
+      } else if (userType == "Doctor") {
+        resetLink = `${baseUrl}/medicalservices/doctor/update-password?token=${resetToken}`;
+      } else if (userType == "RentCar") {
+        resetLink = `${baseUrl}/traveltourism/rentAcar/update-password?token=${resetToken}`;
+      } else if (userType == "Agency") {
         resetLink = `${baseUrl}/traveltourism/travelAgency/update-password?token=${resetToken}`;
-    }  else if (userType == "Donation") {
-      resetLink = `${baseUrl}/donation/update-password?token=${resetToken}`;
-  }  else {
+      } else if (userType == "Donation") {
+        resetLink = `${baseUrl}/donation/update-password?token=${resetToken}`;
+      } else {
         resetLink = `${baseUrl}/homeservices/ambulanceservices/update-password?token=${resetToken}`;
       }
 
