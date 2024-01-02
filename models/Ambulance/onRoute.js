@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const bookingRequestSchema = new mongoose.Schema(
+const onRouteSchema = new mongoose.Schema(
   {
     ambulanceId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -11,25 +11,17 @@ const bookingRequestSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phoneNo: {
-      type: String,
-      required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
     dateAndTime: {
-      type: Date,
-      default: Date.now(),
+        type: Date,
+        default: Date.now(),
     },
-    description: {
+    vehicleNo: {
       type: String,
     },
     status: {
       type: String,
-      enum: ["pending", "accept", "reject"],
-      default: "pending"
+      enum: ["inProcess", "complete"],
+      default: "inProcess"
     },
   },
   {
@@ -37,7 +29,7 @@ const bookingRequestSchema = new mongoose.Schema(
   }
 );
 module.exports = mongoose.model(
-  "Booking Request",
-  bookingRequestSchema,
-  "booking requests"
+  "On Route",
+  onRouteSchema,
+  "on routes"
 );

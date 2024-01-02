@@ -1,0 +1,90 @@
+const express = require("express");
+const app = express();
+const Request = require("../../models/Ambulance/bookingRequest");
+const OnRoute = require("../../models/Ambulance/onRoute");
+
+const ambulanceRequestController = {
+  async getRequests(req, res, next) {
+    try {
+      const ambulanceId = req.user._id;
+      const requests = await Request.find({ ambulanceId });
+
+      if (requests.length == 0) {
+        const error = new Error("No Requests found!");
+        error.status = 404;
+        return next(error);
+      }
+      return res.status(200).json({ requests });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async acceptRequest(req, res, next) {
+    try {
+      const bookingId = req.query.bookingId;
+      const booking = await Request.findById(bookingId);
+      if (!booking) {
+        const error = new Error("Booking request not found!");
+        error.status = 404;
+        return next(error);
+      }
+      booking.status = "accept";
+      await booking.save();
+      const onRoute = new OnRoute ({
+        ambulanceId: booking.ambulanceId,
+        customerId: booking.customerId,
+        dateAndTime: Date.now(),
+        vehicleNo: req.body.vehicleNo,
+      })
+      await onRoute.save();
+      
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async rejectRequest(req, res, next) {
+    try {
+      const bookingId = req.query.bookingId;
+      const booking = await Request.findById(bookingId);
+      if (!booking) {
+          const error = new Error("Booking request not found!");
+          error.status = 404;
+          return next(error);
+        }
+        await Request.findByIdAndDelete(bookingId);
+        return res
+        .status(200)
+        .json({
+          message: "Booking rejected successfully",
+        });
+
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async getOnRoutes(req, res, next) {
+    try {
+      const ambulanceId = req.user._id;
+      const allRoutes = await OnRoute.find({ambulanceId});
+      if (!allRoutes) {
+          const error = new Error("Routes not found!");
+          error.status = 404;
+          return next(error);
+        }
+        return res
+        .status(200)
+        .json({
+          message: "Routes fetched successfully",
+          routes: allRoutes,
+        });
+
+    } catch (error) {
+      return next(error);
+    }
+  },
+};
+
+module.exports = ambulanceRequestController;

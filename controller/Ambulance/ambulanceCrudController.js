@@ -152,7 +152,7 @@ const ambulanceCrudController = {
 
   async deleteAmbulance(req, res, next) {
     const ambulanceId = req.query.ambulanceId;
-    const existingAmbulance = await Abulance.findById(ambulanceId);
+    const existingAmbulance = await Ambulance.findById(ambulanceId);
 
     if (!existingAmbulance) {
       const error = new Error("Ambulance not found!");

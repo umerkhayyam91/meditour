@@ -2,6 +2,7 @@ const express = require("express");
 const ambulanceAuthController = require("../controller/Ambulance/ambulanceAuthController");
 const ambulanceCrudController = require("../controller/Ambulance/ambulanceCrudController");
 const ambulanceDashController = require("../controller/Ambulance/ambulanceDashController");
+const ambulanceRequestController = require("../controller/Ambulance/ambulanceRequestController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
@@ -10,7 +11,7 @@ const router = express.Router();
 const upload = multer({ dest: "temp/" });
 
 
-//............auth...............
+//..............auth...............
 router.post("/ambulance/register", ambulanceAuthController.register);
 router.post("/ambulance/login", ambulanceAuthController.login);
 router.post("/ambulance/uploadFile", upload.single("file"), uploadFileController.uploadFile);
@@ -35,5 +36,12 @@ router.put("/ambulance/editAmbulance", auth, ambulanceCrudController.editAmbulan
 router.delete("/ambulance/deleteAmbulance", auth, ambulanceCrudController.deleteAmbulance);
 router.get("/ambulance/getAmbulance", auth, ambulanceCrudController.getAmbulance);
 router.get("/ambulance/getAllAmbulances", auth, ambulanceCrudController.getAllAmbulances);
+
+//...............booking.......................
+router.get("/ambulance/getRequests", auth, ambulanceRequestController.getRequests);
+router.post("/ambulance/acceptRequest", auth, ambulanceRequestController.acceptRequest);
+router.post("/ambulance/rejectRequest", auth, ambulanceRequestController.rejectRequest);
+router.get("/ambulance/getOnRoutes", auth, ambulanceRequestController.getOnRoutes);
+
 
 module.exports = router;
