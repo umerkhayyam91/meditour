@@ -159,7 +159,8 @@ const labAuthController = {
 
     try {
       // match username
-      lab = await Laboratory.findOne({ email });
+      const emailRegex = new RegExp(email, "i");
+      lab = await Laboratory.findOne({ email: { $regex: emailRegex } });
       if (!lab) {
         const error = {
           status: 401,

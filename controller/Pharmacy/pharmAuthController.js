@@ -139,7 +139,8 @@ const pharmAuthController = {
 
     try {
       // match username
-      pharm = await Pharmacy.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      pharm = await Pharmacy.findOne({ email: { $regex: emailRegex } });
       if (!pharm) {
         const error = {
           status: 401,

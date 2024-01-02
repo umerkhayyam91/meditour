@@ -134,7 +134,8 @@ const donationAuthController = {
 
     try {
       // match username
-      donation = await Donation.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      donation = await Donation.findOne({ email: { $regex: emailRegex } });
       if (!donation) {
         const error = {
           status: 401,

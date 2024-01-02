@@ -134,7 +134,8 @@ const ambulanceAuthController = {
 
     try {
       // match username
-      agency = await Agency.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      agency = await Agency.findOne({ email: { $regex: emailRegex } });
       if (!agency) {
         const error = {
           status: 401,

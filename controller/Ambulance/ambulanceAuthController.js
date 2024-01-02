@@ -114,7 +114,6 @@ const ambulanceAuthController = {
 
     // 6. response send
 
-
     return res
       .status(201)
       .json({ ambulance: ambulance, auth: true, token: accessToken });
@@ -138,7 +137,9 @@ const ambulanceAuthController = {
 
     try {
       // match username
-      ambulance = await Ambulance.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+
+      ambulance = await Ambulance.findOne({ email: { $regex: emailRegex } });
       if (!ambulance) {
         const error = {
           status: 401,

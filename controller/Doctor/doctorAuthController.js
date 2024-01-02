@@ -151,7 +151,9 @@ const docAuthController = {
 
     try {
       // match username
-      doc = await Doctor.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      doc = await Doctor.findOne({ email: { $regex: emailRegex } });
+
       if (!doc) {
         const error = {
           status: 401,

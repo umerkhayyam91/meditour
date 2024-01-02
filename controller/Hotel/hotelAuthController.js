@@ -134,7 +134,8 @@ const hotelAuthController = {
 
     try {
       // match username
-      hotel = await Hotel.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      hotel = await Hotel.findOne({ email: { $regex: emailRegex }   });
       if (!hotel) {
         const error = {
           status: 401,

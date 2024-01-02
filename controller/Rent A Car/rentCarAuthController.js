@@ -133,7 +133,8 @@ const rentCarAuthController = {
 
     try {
       // match username
-      rentCar = await RentCar.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      rentCar = await RentCar.findOne({ email: { $regex: emailRegex } });
       if (!rentCar) {
         const error = {
           status: 401,

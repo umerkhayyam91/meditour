@@ -135,7 +135,8 @@ const hospAuthController = {
 
     try {
       // match username
-      hosp = await Hospital.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      hosp = await Hospital.findOne({ email: { $regex: emailRegex }  });
       if (!hosp) {
         const error = {
           status: 401,

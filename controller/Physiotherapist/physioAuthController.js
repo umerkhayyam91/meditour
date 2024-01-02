@@ -149,7 +149,8 @@ const physioAuthController = {
 
     try {
       // match username
-      physio = await Physiotherapist.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      physio = await Physiotherapist.findOne({ email: { $regex: emailRegex } });
       if (!physio) {
         const error = {
           status: 401,

@@ -137,7 +137,8 @@ const insuranceAuthController = {
 
     try {
       // match username
-      insurance = await Insurance.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      insurance = await Insurance.findOne({ email: { $regex: emailRegex } });
       if (!insurance) {
         const error = {
           status: 401,
