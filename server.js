@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const whitelist = ["http://localhost:3000", "https://themeditourglobal.com"];
+const whitelist = ["http://localhost:3000", "https://meditour.global.com"];
 const cors = require("cors");
 
 const corsOptions = {
