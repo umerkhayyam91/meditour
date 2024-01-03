@@ -110,12 +110,12 @@ const auth = async (req, res, next) => {
       return;
     } else if (req.originalUrl.includes("/ambulance")) {
       try {
-        console.log(_id);
+        // console.log(_id);
         user = await AmbulanceCompany.findOne({ _id: _id });
       } catch (error) {
         return next(error);
       }
-      console.log(user);
+      // console.log(user);
       const ambulanceDTO = new ambulanceDto(user);
 
       req.user = ambulanceDTO;

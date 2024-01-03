@@ -142,12 +142,10 @@ const ambulanceCrudController = {
     // Save the updated ambulance
     await existingAmbulance.save();
 
-    return res
-      .status(200)
-      .json({
-        message: "Test updated successfully",
-        ambulance: existingAmbulance,
-      });
+    return res.status(200).json({
+      message: "Test updated successfully",
+      ambulance: existingAmbulance,
+    });
   },
 
   async deleteAmbulance(req, res, next) {
@@ -159,7 +157,8 @@ const ambulanceCrudController = {
       error.status = 404;
       return next(error);
     }
-    await Ambulance.deleteOne({ ambulanceId });
+    await Ambulance.deleteOne({ _id: ambulanceId });
+    console.log(existingAmbulance)
     return res.status(200).json({ message: "Ambulance deleted successfully" });
   },
 
