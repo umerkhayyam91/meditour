@@ -8,7 +8,6 @@ const ambulanceRequestController = {
     try {
       const ambulanceId = req.user._id;
       const requests = await Request.find({ ambulanceId });
-
       if (requests.length == 0) {
         const error = new Error("No Requests found!");
         error.status = 404;
@@ -31,14 +30,13 @@ const ambulanceRequestController = {
       }
       booking.status = "accept";
       await booking.save();
-      const onRoute = new OnRoute ({
+      const onRoute = new OnRoute({
         ambulanceId: booking.ambulanceId,
         customerId: booking.customerId,
         dateAndTime: Date.now(),
         vehicleNo: req.body.vehicleNo,
-      })
+      });
       await onRoute.save();
-      
     } catch (error) {
       return next(error);
     }
@@ -49,17 +47,14 @@ const ambulanceRequestController = {
       const bookingId = req.query.bookingId;
       const booking = await Request.findById(bookingId);
       if (!booking) {
-          const error = new Error("Booking request not found!");
-          error.status = 404;
-          return next(error);
-        }
-        await Request.findByIdAndDelete(bookingId);
-        return res
-        .status(200)
-        .json({
-          message: "Booking rejected successfully",
-        });
-
+        const error = new Error("Booking request not found!");
+        error.status = 404;
+        return next(error);
+      }
+      await Request.findByIdAndDelete(bookingId);
+      return res.status(200).json({
+        message: "Booking rejected successfully",
+      });
     } catch (error) {
       return next(error);
     }
@@ -68,23 +63,51 @@ const ambulanceRequestController = {
   async getOnRoutes(req, res, next) {
     try {
       const ambulanceId = req.user._id;
-      const allRoutes = await OnRoute.find({ambulanceId});
+      const allRoutes = await OnRoute.find({ ambulanceId });
       if (!allRoutes) {
-          const error = new Error("Routes not found!");
-          error.status = 404;
-          return next(error);
-        }
-        return res
-        .status(200)
-        .json({
-          message: "Routes fetched successfully",
-          routes: allRoutes,
-        });
-
+        const error = new Error("Routes not found!");
+        error.status = 404;
+        return next(error);
+      }
+      return res.status(200).json({
+        message: "Routes fetched successfully",
+        routes: allRoutes,
+      });
     } catch (error) {
       return next(error);
     }
   },
+
+  //   async bookRequest(req,res,next){
+
+  //       const ambulanceId = req.user._id;
+  //       const customerId = req.query.customerId;
+  //       const {
+  //         phoneNo,
+  //         address,
+  //         description,
+  //       } = req.body;
+
+  //       let request;
+
+  //       try {
+  //         const requestToRegister = new Request({
+  //             ambulanceId,
+  //             customerId,
+  //             phoneNo,
+  //             address,
+  //             description
+  //         });
+
+  //         request = await requestToRegister.save();
+  //       } catch (error) {
+  //         return next(error);
+  //       }
+
+  //       // 6. response send
+
+  //       return res.status(201).json({ Request: request, auth: true });
+  //   }
 };
 
 module.exports = ambulanceRequestController;
