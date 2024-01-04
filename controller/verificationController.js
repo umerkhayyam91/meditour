@@ -426,7 +426,7 @@ const verificationController = {
       } else if (userType == "Hotel") {
         resetLink = `${baseUrl}/traveltourism/hotel/forgot-password?token=${resetToken}`;
       } else if (userType == "Insurance") {
-        resetLink = `${baseUrl}/donation/update-password?token=${resetToken}`;
+        resetLink = `${baseUrl}/Insurance/update-password?token=${resetToken}`;
       } 
 
       var transporter = nodemailer.createTransport({
