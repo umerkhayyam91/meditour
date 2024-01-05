@@ -287,6 +287,10 @@ const labAuthController = {
 
   async updateProfile(req, res, next) {
     const labSchema = Joi.object({
+      phoneNumber: Joi.string(),
+      email: Joi.string().email(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),

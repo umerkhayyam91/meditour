@@ -37,6 +37,10 @@ const ambulanceRequestController = {
         vehicleNo: req.body.vehicleNo,
       });
       await onRoute.save();
+      return res.status(200).json({
+        auth: true,
+        message: "Booking Accepted successfully",
+      });
     } catch (error) {
       return next(error);
     }
@@ -53,6 +57,7 @@ const ambulanceRequestController = {
       }
       await Request.findByIdAndDelete(bookingId);
       return res.status(200).json({
+        auth: true,
         message: "Booking rejected successfully",
       });
     } catch (error) {
@@ -78,61 +83,59 @@ const ambulanceRequestController = {
     }
   },
 
-    async addRoute(req,res,next){
+  async addRoute(req, res, next) {
+    const ambulanceId = req.user._id;
+    const customerId = req.query.customerId;
+    const vehicleNo = req.body.vehicleNo;
 
+    let route;
+
+    try {
+      const routeToRegister = new OnRoute({
+        ambulanceId,
+        customerId,
+        vehicleNo,
+      });
+
+      route = await routeToRegister.save();
+    } catch (error) {
+      return next(error);
+    }
+
+    // 6. response send
+
+    return res.status(201).json({ Route: route, auth: true });
+  },
+
+    async bookRequest(req,res,next){
         const ambulanceId = req.user._id;
         const customerId = req.query.customerId;
-        const vehicleNo = req.body.vehicleNo;
+        const {
+          phoneNo,
+          address,
+          description,
+        } = req.body;
 
-        let route;
+        let request;
 
         try {
-          const routeToRegister = new Request({
+          const requestToRegister = new Request({
               ambulanceId,
               customerId,
-              vehicleNo
+              phoneNo,
+              address,
+              description
           });
 
-          route = await routeToRegister.save();
+          request = await requestToRegister.save();
         } catch (error) {
           return next(error);
         }
 
         // 6. response send
 
-        return res.status(201).json({ Route: route, auth: true });
+        return res.status(201).json({ Request: request, auth: true });
     }
-
-
-  //   async bookRequest(req,res,next){
-  //       const ambulanceId = req.user._id;
-  //       const customerId = req.query.customerId;
-  //       const {
-  //         phoneNo,
-  //         address,
-  //         description,
-  //       } = req.body;
-
-  //       let request;
-
-  //       try {
-  //         const requestToRegister = new Request({
-  //             ambulanceId,
-  //             customerId,
-  //             phoneNo,
-  //             address,
-  //             description
-  //         });
-
-  //         request = await requestToRegister.save();
-  //       } catch (error) {
-  //         return next(error);
-  //       }
-
-  //       // 6. response send
-
-  //       return res.status(201).json({ Request: request, auth: true });
-  //   }
 };
 
 module.exports = ambulanceRequestController;
