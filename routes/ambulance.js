@@ -42,7 +42,7 @@ router.get("/ambulance/getRequests", auth, ambulanceRequestController.getRequest
 router.post("/ambulance/acceptRequest", auth, ambulanceRequestController.acceptRequest);
 router.post("/ambulance/rejectRequest", auth, ambulanceRequestController.rejectRequest);
 router.get("/ambulance/getOnRoutes", auth, ambulanceRequestController.getOnRoutes);
-// router.get("/ambulance/bookRequest", auth, ambulanceRequestController.bookRequest);
+router.get("/ambulance/addRoute", auth, ambulanceRequestController.addRoute);
 
 
 module.exports = router;

@@ -78,8 +78,33 @@ const ambulanceRequestController = {
     }
   },
 
-  //   async bookRequest(req,res,next){
+    async addRoute(req,res,next){
 
+        const ambulanceId = req.user._id;
+        const customerId = req.query.customerId;
+        const vehicleNo = req.body.vehicleNo;
+
+        let route;
+
+        try {
+          const routeToRegister = new Request({
+              ambulanceId,
+              customerId,
+              vehicleNo
+          });
+
+          route = await routeToRegister.save();
+        } catch (error) {
+          return next(error);
+        }
+
+        // 6. response send
+
+        return res.status(201).json({ Route: route, auth: true });
+    }
+
+
+  //   async bookRequest(req,res,next){
   //       const ambulanceId = req.user._id;
   //       const customerId = req.query.customerId;
   //       const {
