@@ -256,13 +256,28 @@ const insuranceAuthController = {
 
   async updateProfile(req, res, next) {
     const insuranceSchema = Joi.object({
+      companyName: Joi.string(),
+      companyLicenseNo: Joi.string(),
+      companyEmergencyNo: Joi.string(),
+      ownerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      companyAddress: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      licenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = insuranceSchema.validate(req.body);
@@ -271,13 +286,27 @@ const insuranceAuthController = {
       return next(error);
     }
     const {
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      ownerName,
+      cnicOrPassportNo,
+      companyAddress,
+      state,
+      phoneNumber,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      licenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
     const insuranceId = req.user._id;
 
@@ -290,13 +319,27 @@ const insuranceAuthController = {
     }
 
     // Update only the provided fields
+    if (companyName) insurance.companyName = companyName;
+    if (companyLicenseNo) insurance.companyLicenseNo = companyLicenseNo;
+    if (companyEmergencyNo) insurance.companyEmergencyNo = companyEmergencyNo;
+    if (ownerName) insurance.ownerName = ownerName;
+    if (cnicOrPassportNo) insurance.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) insurance.companyAddress = companyAddress;
+    if (state) insurance.state = state;
+    if (phoneNumber) insurance.phoneNumber = phoneNumber;
+    if (password) insurance.password = password;
     if (website) insurance.website = website;
     if (facebook) insurance.facebook = facebook;
     if (twitter) insurance.twitter = twitter;
     if (instagram) insurance.instagram = instagram;
+    if (incomeTaxNo) insurance.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) insurance.salesTaxNo = salesTaxNo;
     if (bankName) insurance.bankName = bankName;
     if (accountHolderName) insurance.accountHolderName = accountHolderName;
     if (accountNumber) insurance.accountNumber = accountNumber;
+    if (licenseImage) insurance.licenseImage = licenseImage;
+    if (cnicImage) insurance.cnicImage = cnicImage;
+    if (taxFileImage) insurance.taxFileImage = taxFileImage;
 
     // Save the updated test
     await insurance.save();

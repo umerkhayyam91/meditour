@@ -252,13 +252,28 @@ const ambulanceAuthController = {
 
   async updateProfile(req, res, next) {
     const agencySchema = Joi.object({
+      companyName: Joi.string(),
+      companyLicenseNo: Joi.string(),
+      companyEmergencyNo: Joi.string(),
+      ownerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      companyAddress: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      licenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = agencySchema.validate(req.body);
@@ -267,13 +282,27 @@ const ambulanceAuthController = {
       return next(error);
     }
     const {
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      ownerName,
+      cnicOrPassportNo,
+      companyAddress,
+      state,
+      phoneNumber,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      licenseImage,
+      cnicImage,
+      taxFileImage
     } = req.body;
     const agencyId = req.user._id;
 
@@ -286,13 +315,27 @@ const ambulanceAuthController = {
     }
 
     // Update only the provided fields
-    if (website) agency.website = website;
-    if (facebook) agency.facebook = facebook;
-    if (twitter) agency.twitter = twitter;
-    if (instagram) agency.instagram = instagram;
-    if (bankName) agency.bankName = bankName;
-    if (accountHolderName) agency.accountHolderName = accountHolderName;
-    if (accountNumber) agency.accountNumber = accountNumber;
+    if (companyName) rentCar.companyName = companyName;
+    if (companyLicenseNo) rentCar.companyLicenseNo = companyLicenseNo;
+    if (companyEmergencyNo) rentCar.companyEmergencyNo = companyEmergencyNo;
+    if (ownerName) rentCar.ownerName = ownerName;
+    if (cnicOrPassportNo) rentCar.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) rentCar.companyAddress = companyAddress;
+    if (state) rentCar.state = state;
+    if (password) rentCar.password = password;
+    if (phoneNumber) rentCar.phoneNumber = phoneNumber;
+    if (website) rentCar.website = website;
+    if (facebook) rentCar.facebook = facebook;
+    if (twitter) rentCar.twitter = twitter;
+    if (instagram) rentCar.instagram = instagram;
+    if (incomeTaxNo) rentCar.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) rentCar.salesTaxNo = salesTaxNo;
+    if (bankName) rentCar.bankName = bankName;
+    if (accountHolderName) rentCar.accountHolderName = accountHolderName;
+    if (accountNumber) rentCar.accountNumber = accountNumber;
+    if (licenseImage) rentCar.licenseImage = licenseImage;
+    if (cnicImage) rentCar.cnicImage = cnicImage;
+    if (taxFileImage) rentCar.taxFileImage = taxFileImage;
 
     // Save the updated test
     await agency.save();

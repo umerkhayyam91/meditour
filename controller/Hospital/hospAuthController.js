@@ -257,13 +257,28 @@ const hospAuthController = {
 
   async updateProfile(req, res, next) {
     const hospSchema = Joi.object({
+      hospitalName: Joi.string(),
+      hospitalRegNo: Joi.string(),
+      emergencyNo: Joi.string(),
+      OwnerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      hospitalAddress: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      registrationImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = hospSchema.validate(req.body);
@@ -272,13 +287,27 @@ const hospAuthController = {
       return next(error);
     }
     const {
+      hospitalName,
+      hospitalRegNo,
+      emergencyNo,
+      OwnerName,
+      cnicOrPassportNo,
+      hospitalAddress,
+      state,
+      phoneNumber,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      registrationImage,
+      cnicImage,
+      taxFileImage
     } = req.body;
     const hospId = req.user._id;
 
@@ -291,14 +320,27 @@ const hospAuthController = {
     }
 
     // Update only the provided fields
+    if (hospitalName) hosp.hospitalName = hospitalName;
+    if (hospitalRegNo) hosp.hospitalRegNo = hospitalRegNo;
+    if (emergencyNo) hosp.emergencyNo = emergencyNo;
+    if (OwnerName) hosp.OwnerName = OwnerName;
+    if (cnicOrPassportNo) hosp.cnicOrPassportNo = cnicOrPassportNo;
+    if (hospitalAddress) hosp.hospitalAddress = hospitalAddress;
+    if (state) hosp.state = state;
+    if (phoneNumber) hosp.phoneNumber = phoneNumber;
+    if (password) hosp.password = password;
     if (website) hosp.website = website;
     if (facebook) hosp.facebook = facebook;
     if (twitter) hosp.twitter = twitter;
     if (instagram) hosp.instagram = instagram;
+    if (incomeTaxNo) hosp.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) hosp.salesTaxNo = salesTaxNo;
     if (bankName) hosp.bankName = bankName;
     if (accountHolderName) hosp.accountHolderName = accountHolderName;
     if (accountNumber) hosp.accountNumber = accountNumber;
-
+    if (registrationImage) hosp.registrationImage = registrationImage;
+    if (cnicImage) hosp.cnicImage = cnicImage;
+    if (taxFileImage) hosp.taxFileImage = taxFileImage;
     // Save the updated test
     await hosp.save();
 

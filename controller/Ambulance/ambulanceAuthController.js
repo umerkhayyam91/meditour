@@ -256,13 +256,28 @@ const ambulanceAuthController = {
 
   async updateProfile(req, res, next) {
     const ambulanceSchema = Joi.object({
+      ambulanceName: Joi.string(),
+      registrationNumber: Joi.string(),
+      ownerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      companyAddress: Joi.string(),
+      emergencyNo: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      registrationImage: Joi.string(),
+      cnicOrPassportImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = ambulanceSchema.validate(req.body);
@@ -271,13 +286,27 @@ const ambulanceAuthController = {
       return next(error);
     }
     const {
+      ambulanceName,
+      registrationNumber,
+      ownerName,
+      cnicOrPassportNo,
+      companyAddress,
+      emergencyNo,
+      state,
+      phoneNumber,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      registrationImage,
+      cnicOrPassportImage,
+      taxFileImage
     } = req.body;
     const ambulanceId = req.user._id;
 
@@ -290,13 +319,27 @@ const ambulanceAuthController = {
     }
 
     // Update only the provided fields
+    if (ambulanceName) ambulance.ambulanceName = ambulanceName;
+    if (registrationNumber) ambulance.registrationNumber = registrationNumber;
+    if (ownerName) ambulance.ownerName = ownerName;
+    if (cnicOrPassportNo) ambulance.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) ambulance.companyAddress = companyAddress;
+    if (emergencyNo) ambulance.emergencyNo = emergencyNo;
+    if (state) ambulance.state = state;
+    if (phoneNumber) ambulance.phoneNumber = phoneNumber;
+    if (password) ambulance.password = password;
     if (website) ambulance.website = website;
     if (facebook) ambulance.facebook = facebook;
     if (twitter) ambulance.twitter = twitter;
     if (instagram) ambulance.instagram = instagram;
+    if (incomeTaxNo) ambulance.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) ambulance.salesTaxNo = salesTaxNo;
     if (bankName) ambulance.bankName = bankName;
     if (accountHolderName) ambulance.accountHolderName = accountHolderName;
     if (accountNumber) ambulance.accountNumber = accountNumber;
+    if (registrationImage) ambulance.registrationImage = registrationImage;
+    if (cnicOrPassportImage) ambulance.cnicOrPassportImage = cnicOrPassportImage;
+    if (taxFileImage) ambulance.taxFileImage = taxFileImage;
 
     // Save the updated test
     await ambulance.save();

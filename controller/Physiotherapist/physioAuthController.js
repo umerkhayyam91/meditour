@@ -267,13 +267,33 @@ const physioAuthController = {
 
   async updateProfile(req, res, next) {
     const physioSchema = Joi.object({
+      name: Joi.string(),
+      cnicOrPassNo: Joi.string(),
+      qualification: Joi.string(),
+      speciality: Joi.string(),
+      services : Joi.string(),
+      clinicName : Joi.string(),
+      clinicAddress : Joi.string(),
+      clinicExperiences : Joi.string(),
+      pmdcNumber : Joi.string(),
+      emergencyNo: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      doctorImage: Joi.string(),
+      cnicImage: Joi.string(),
+      pmdcImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = physioSchema.validate(req.body);
@@ -282,13 +302,32 @@ const physioAuthController = {
       return next(error);
     }
     const {
+      name,
+      cnicOrPassNo,
+      qualification,
+      speciality,
+      services ,
+      clinicName ,
+      clinicAddress ,
+      clinicExperiences ,
+      pmdcNumber ,
+      emergencyNo,
+      state,
+      phoneNumber,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      doctorImage,
+      cnicImage,
+      pmdcImage,
+      taxFileImage,
     } = req.body;
     const physioId = req.user._id;
 
@@ -301,13 +340,32 @@ const physioAuthController = {
     }
 
     // Update only the provided fields
+    if (name) physio.name = name;
+    if (cnicOrPassNo) physio.cnicOrPassNo = cnicOrPassNo;
+    if (qualification) physio.qualification = qualification;
+    if (speciality) physio.speciality = speciality;
+    if (services) physio.services = services;
+    if (clinicName) physio.clinicName = clinicName;
+    if (clinicAddress) physio.clinicAddress = clinicAddress;
+    if (clinicExperiences) physio.clinicExperiences = clinicExperiences;
+    if (pmdcNumber) physio.pmdcNumber = pmdcNumber;
+    if (emergencyNo) physio.emergencyNo = emergencyNo; 
+    if (state) physio.state = state;
+    if (password) physio.password = password;
+    if (phoneNumber) physio.phoneNumber = phoneNumber;
     if (website) physio.website = website;
     if (facebook) physio.facebook = facebook;
     if (twitter) physio.twitter = twitter;
     if (instagram) physio.instagram = instagram;
+    if (incomeTaxNo) physio.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) physio.salesTaxNo = salesTaxNo;
     if (bankName) physio.bankName = bankName;
     if (accountHolderName) physio.accountHolderName = accountHolderName;
     if (accountNumber) physio.accountNumber = accountNumber;
+    if (doctorImage) physio.doctorImage = doctorImage;
+    if (cnicImage) physio.cnicImage = cnicImage;
+    if (pmdcImage) physio.pmdcImage = pmdcImage;
+    if (taxFileImage) physio.taxFileImage = taxFileImage;
 
     // Save the updated test
     await physio.save();

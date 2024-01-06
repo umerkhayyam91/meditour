@@ -287,17 +287,29 @@ const labAuthController = {
 
   async updateProfile(req, res, next) {
     const labSchema = Joi.object({
+      labFirstName: Joi.string(),
+      labLastName: Joi.string(),
+      labLicenseNumber: Joi.string(),
+      OwnerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      labAddress: Joi.string(),
+      emergencyNo: Joi.string(),
+      state: Joi.string(),
       phoneNumber: Joi.string(),
-      email: Joi.string().email(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      labLicenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = labSchema.validate(req.body);
@@ -306,13 +318,28 @@ const labAuthController = {
       return next(error);
     }
     const {
+      labFirstName,
+      labLastName,
+      labLicenseNumber,
+      OwnerName,
+      cnicOrPassportNo,
+      labAddress,
+      emergencyNo,
+      state,
+      phoneNumber,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      labLicenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
     const labId = req.user._id;
     console.log(labId);
@@ -326,13 +353,28 @@ const labAuthController = {
     }
 
     // Update only the provided fields
+    if (labFirstName) lab.labFirstName = labFirstName;
+    if (labLastName) lab.labLastName = labLastName;
+    if (labLicenseNumber) lab.labLicenseNumber = labLicenseNumber;
+    if (OwnerName) lab.OwnerName = OwnerName;
+    if (cnicOrPassportNo) lab.cnicOrPassportNo = cnicOrPassportNo;
+    if (labAddress) lab.labAddress = labAddress;
+    if (emergencyNo) lab.emergencyNo = emergencyNo;
+    if (state) lab.state = state;
+    if (phoneNumber) lab.phoneNumber = phoneNumber;
+    if (password) lab.password = password;
     if (website) lab.website = website;
     if (facebook) lab.facebook = facebook;
     if (twitter) lab.twitter = twitter;
     if (instagram) lab.instagram = instagram;
+    if (incomeTaxNo) lab.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) lab.salesTaxNo = salesTaxNo;
     if (bankName) lab.bankName = bankName;
     if (accountHolderName) lab.accountHolderName = accountHolderName;
     if (accountNumber) lab.accountNumber = accountNumber;
+    if (labLicenseImage) lab.labLicenseImage = labLicenseImage;
+    if (cnicImage) lab.cnicImage = cnicImage;
+    if (taxFileImage) lab.taxFileImage = taxFileImage;
 
     // Save the updated test
     await lab.save();

@@ -264,13 +264,29 @@ const pharmAuthController = {
 
   async updateProfile(req, res, next) {
     const pharmSchema = Joi.object({
+      pharmacyFirstName: Joi.string(),
+      pharmacyLastName: Joi.string(),
+      pharmacyLicenseNumber: Joi.string(),
+      ownerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      pharmacyAddress: Joi.string(),
+      emergencyNo: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      pharmacyLicenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = pharmSchema.validate(req.body);
@@ -279,13 +295,28 @@ const pharmAuthController = {
       return next(error);
     }
     const {
+      pharmacyFirstName,
+      pharmacyLastName,
+      pharmacyLicenseNumber,
+      ownerName,
+      cnicOrPassportNo,
+      pharmacyAddress,
+      emergencyNo,
+      state,
+      phoneNumber,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      pharmacyLicenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
     const pharmId = req.user._id;
 
@@ -298,13 +329,28 @@ const pharmAuthController = {
     }
 
     // Update only the provided fields
+    if (pharmacyFirstName) pharm.pharmacyFirstName = pharmacyFirstName;
+    if (pharmacyLastName) pharm.pharmacyLastName = pharmacyLastName;
+    if (pharmacyLicenseNumber) pharm.pharmacyLicenseNumber = pharmacyLicenseNumber;
+    if (ownerName) pharm.ownerName = ownerName;
+    if (cnicOrPassportNo) pharm.cnicOrPassportNo = cnicOrPassportNo;
+    if (pharmacyAddress) pharm.pharmacyAddress = pharmacyAddress;
+    if (emergencyNo) pharm.emergencyNo = emergencyNo;
+    if (state) pharm.state = state;
+    if (phoneNumber) pharm.phoneNumber = phoneNumber;
+    if (password) pharm.password = password;
     if (website) pharm.website = website;
     if (facebook) pharm.facebook = facebook;
     if (twitter) pharm.twitter = twitter;
     if (instagram) pharm.instagram = instagram;
+    if (incomeTaxNo) pharm.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) pharm.salesTaxNo = salesTaxNo;
     if (bankName) pharm.bankName = bankName;
     if (accountHolderName) pharm.accountHolderName = accountHolderName;
     if (accountNumber) pharm.accountNumber = accountNumber;
+    if (pharmacyLicenseImage) pharm.pharmacyLicenseImage = pharmacyLicenseImage;
+    if (cnicImage) pharm.cnicImage = cnicImage;
+    if (taxFileImage) pharm.taxFileImage = taxFileImage;
 
     // Save the updated test
     await pharm.save();

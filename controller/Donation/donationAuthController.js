@@ -252,13 +252,28 @@ const donationAuthController = {
 
   async updateProfile(req, res, next) {
     const donationSchema = Joi.object({
+      companyName: Joi.string(),
+      companyLicenseNo: Joi.string(),
+      companyEmergencyNo: Joi.string(),
+      OwnerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      companyAddress: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      licenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = donationSchema.validate(req.body);
@@ -267,13 +282,27 @@ const donationAuthController = {
       return next(error);
     }
     const {
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      OwnerName,
+      cnicOrPassportNo,
+      companyAddress,
+      state,
+      phoneNumber,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      licenseImage,
+      cnicImage,
+      taxFileImage
     } = req.body;
     const donationId = req.user._id;
 
@@ -286,13 +315,27 @@ const donationAuthController = {
     }
 
     // Update only the provided fields
+    if (companyName) donation.companyName = companyName;
+    if (companyLicenseNo) donation.companyLicenseNo = companyLicenseNo;
+    if (companyEmergencyNo) donation.companyEmergencyNo = companyEmergencyNo;
+    if (OwnerName) donation.OwnerName = OwnerName;
+    if (cnicOrPassportNo) donation.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) donation.companyAddress = companyAddress;
+    if (state) donation.state = state;
+    if (phoneNumber) donation.phoneNumber = phoneNumber;
+    if (password) donation.password = password;
     if (website) donation.website = website;
     if (facebook) donation.facebook = facebook;
     if (twitter) donation.twitter = twitter;
     if (instagram) donation.instagram = instagram;
+    if (incomeTaxNo) donation.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) donation.salesTaxNo = salesTaxNo;
     if (bankName) donation.bankName = bankName;
     if (accountHolderName) donation.accountHolderName = accountHolderName;
     if (accountNumber) donation.accountNumber = accountNumber;
+    if (licenseImage) donation.licenseImage = licenseImage;
+    if (cnicImage) donation.cnicImage = cnicImage;
+    if (taxFileImage) donation.taxFileImage = taxFileImage;
 
     // Save the updated test
     await donation.save();

@@ -250,13 +250,28 @@ const hotelAuthController = {
 
   async updateProfile(req, res, next) {
     const hotelSchema = Joi.object({
+      companyName: Joi.string(),
+      companyLicenseNo: Joi.string(),
+      companyEmergencyNo: Joi.string(),
+      ownerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      companyAddress: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      licenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = hotelSchema.validate(req.body);
@@ -265,13 +280,27 @@ const hotelAuthController = {
       return next(error);
     }
     const {
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      ownerName,
+      cnicOrPassportNo,
+      companyAddress,
+      state,
+      phoneNumber,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      licenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
     const hotelId = req.user._id;
 
@@ -284,13 +313,27 @@ const hotelAuthController = {
     }
 
     // Update only the provided fields
-    if (website) hotel.website = website;
-    if (facebook) hotel.facebook = facebook;
-    if (twitter) hotel.twitter = twitter;
-    if (instagram) hotel.instagram = instagram;
-    if (bankName) hotel.bankName = bankName;
-    if (accountHolderName) hotel.accountHolderName = accountHolderName;
-    if (accountNumber) hotel.accountNumber = accountNumber;
+    if (companyName) hosp.companyName = companyName;
+    if (companyLicenseNo) hosp.companyLicenseNo = companyLicenseNo;
+    if (companyEmergencyNo) hosp.companyEmergencyNo = companyEmergencyNo;
+    if (ownerName) hosp.ownerName = ownerName;
+    if (cnicOrPassportNo) hosp.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) hosp.companyAddress = companyAddress;
+    if (state) hosp.state = state;
+    if (phoneNumber) hosp.phoneNumber = phoneNumber;
+    if (password) hosp.password = password;
+    if (website) hosp.website = website;
+    if (facebook) hosp.facebook = facebook;
+    if (twitter) hosp.twitter = twitter;
+    if (instagram) hosp.instagram = instagram;
+    if (incomeTaxNo) hosp.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) hosp.salesTaxNo = salesTaxNo;
+    if (bankName) hosp.bankName = bankName;
+    if (accountHolderName) hosp.accountHolderName = accountHolderName;
+    if (accountNumber) hosp.accountNumber = accountNumber;
+    if (licenseImage) hosp.licenseImage = licenseImage;
+    if (cnicImage) hosp.cnicImage = cnicImage;
+    if (taxFileImage) hosp.taxFileImage = taxFileImage;
 
     // Save the updated test
     await hotel.save();

@@ -107,35 +107,31 @@ const ambulanceRequestController = {
     return res.status(201).json({ Route: route, auth: true });
   },
 
-    async bookRequest(req,res,next){
-        const ambulanceId = req.user._id;
-        const customerId = req.query.customerId;
-        const {
-          phoneNo,
-          address,
-          description,
-        } = req.body;
+  async bookRequest(req, res, next) {
+    const ambulanceId = req.user._id;
+    const customerId = req.query.customerId;
+    const { phoneNo, address, description } = req.body;
 
-        let request;
+    let request;
 
-        try {
-          const requestToRegister = new Request({
-              ambulanceId,
-              customerId,
-              phoneNo,
-              address,
-              description
-          });
+    try {
+      const requestToRegister = new Request({
+        ambulanceId,
+        customerId,
+        phoneNo,
+        address,
+        description,
+      });
 
-          request = await requestToRegister.save();
-        } catch (error) {
-          return next(error);
-        }
-
-        // 6. response send
-
-        return res.status(201).json({ Request: request, auth: true });
+      request = await requestToRegister.save();
+    } catch (error) {
+      return next(error);
     }
+
+    // 6. response send
+
+    return res.status(201).json({ Request: request, auth: true });
+  },
 };
 
 module.exports = ambulanceRequestController;

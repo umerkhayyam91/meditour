@@ -23,7 +23,7 @@ const pharmacySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    OwnerName: {
+    ownerName: {
       type: String,
       required: true,
     },
