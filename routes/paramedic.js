@@ -4,6 +4,7 @@ const VerificationController = require("../controller/verificationController");
 const paramedicAvailabilityController = require("../controller/Paramedic/paramedicAvailabilityController")
 const paramedicAppointController = require("../controller/Paramedic/paramedicAppointController")
 const paramedicDashController = require("../controller/Paramedic/paramedicDashController")
+const generalRequestController = require("../controller/All Doctors Controllers/generalRequestController")
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -35,6 +36,10 @@ router.get("/paramedic/patientHistory", auth, paramedicAppointController.patient
 router.get("/paramedic/getRequests", auth, paramedicAppointController.getRequests);
 // router.post("/paramedic/addAppoints", auth, paramedicAppointController.addAppoints);
 
+//.............Appointment Requests........................
+router.get("/paramedic/getRequests", auth, generalRequestController.getRequests);
+router.post("/paramedic/acceptRequest", auth, generalRequestController.acceptRequest);
+router.delete("/paramedic/rejectRequest", auth, generalRequestController.rejectRequest);
 
 //..............verification.........
 router.post("/paramedic/sendCodeToEmail", VerificationController.sendCodeToEmail);

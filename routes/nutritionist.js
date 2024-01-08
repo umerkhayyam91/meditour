@@ -4,6 +4,7 @@ const VerificationController = require("../controller/verificationController");
 const nutritionistAvailabilityController = require("../controller/Nutritionist/nutritionAvailabilityController")
 const nutritionistAppointController = require("../controller/Nutritionist/nutritionAppointController")
 const nutritionistDashController = require("../controller/Nutritionist/nutritionDashController")
+const generalRequestController = require("../controller/All Doctors Controllers/generalRequestController")
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -34,6 +35,12 @@ router.get("/nutritionist/getAllAppointments", auth, nutritionistAppointControll
 router.get("/nutritionist/getAllPatients", auth, nutritionistAppointController.getAllPatients);
 router.get("/nutritionist/patientHistory", auth, nutritionistAppointController.patientHistory);
 router.get("/nutritionist/getRequests", auth, nutritionistAppointController.getRequests);
+
+
+//.............Appointment Requests........................
+router.get("/nutritionist/getRequests", auth, generalRequestController.getRequests);
+router.post("/nutritionist/acceptRequest", auth, generalRequestController.acceptRequest);
+router.delete("/nutritionist/rejectRequest", auth, generalRequestController.rejectRequest);
 
 
 //..............verification.........

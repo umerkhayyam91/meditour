@@ -4,6 +4,7 @@ const VerificationController = require("../controller/verificationController");
 const psychologistAvailabilityController = require("../controller/Psychologist/psychologistAvailabilityController")
 const psychologistAppointController = require("../controller/Psychologist/psychologistAppointController")
 const psychologistDashController = require("../controller/Psychologist/psychologistDashController")
+const generalRequestController = require("../controller/All Doctors Controllers/generalRequestController")
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -34,6 +35,10 @@ router.get("/psychologist/getAllPatients", auth, psychologistAppointController.g
 router.get("/psychologist/patientHistory", auth, psychologistAppointController.patientHistory);
 router.get("/psychologist/getRequests", auth, psychologistAppointController.getRequests);
 
+//.............Appointment Requests........................
+router.get("/psychologist/getRequests", auth, generalRequestController.getRequests);
+router.post("/psychologist/acceptRequest", auth, generalRequestController.acceptRequest);
+router.delete("/psychologist/rejectRequest", auth, generalRequestController.rejectRequest);
 
 //..............verification.........
 router.post("/psychologist/sendCodeToEmail", VerificationController.sendCodeToEmail);
