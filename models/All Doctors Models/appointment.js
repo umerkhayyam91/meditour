@@ -20,7 +20,6 @@ const appointmentSchema = new mongoose.Schema(
     },
     endTime: {
       type: String,
-      required: true,
     },
     appointmentType: {
       type: String,
@@ -28,6 +27,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
+      enum: ["pending", "completed"],
     },
     ePrescription: {
       type: mongoose.Schema.Types.ObjectId,

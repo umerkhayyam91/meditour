@@ -3,7 +3,7 @@ const app = express();
 const Appointment = require("../../models/All Doctors Models/appointment");
 const Patient = require("../../models/user");
 const User = require("../../models/user");
-const AppointmentRequest = require("../../models/Doctor/request");
+const AppointmentRequest = require("../../models/All Doctors Models/request");
 
 const physioAppointController = {
   async getAllAppointments(req, res, next) {
@@ -118,58 +118,114 @@ const physioAppointController = {
     }
   },
 
-  //   async addAppoints(req, res, next) {
-  //     try {
-  //       const { date, startTime, endTime } = req.body;
-  //       const doctorId = req.user._id;
+  async addAppoints(req, res, next) {
+    try {
+      const { date, startTime, endTime, appointmentType } = req.body;
+      const doctorId = req.user._id;
 
-  //       // Create a new appointment
-  //       const newAppointment = new Appointment({
-  //         doctorId,
-  //         patientId: "656867ce85953ba14f2c9ff8",
-  //         date,
-  //         startTime,
-  //         endTime,
-  //       });
+      // Create a new appointment
+      const newAppointment = new Appointment({
+        doctorId,
+        patientId: "6575c60302fd4a563391b8b0",
+        date,
+        startTime,
+        endTime,
+        appointmentType,
+      });
 
-  //       // Save the new appointment to the database
-  //       const savedAppointment = await newAppointment.save();
+      // Save the new appointment to the database
+      const savedAppointment = await newAppointment.save();
 
-  //       res
-  //         .status(201)
-  //         .json({
-  //           appointment: savedAppointment,
-  //           message: "Appointment added successfully",
-  //         });
-  //     } catch (error) {
-  //       next(error);
-  //     }
-  //   },
+      res.status(201).json({
+        appointment: savedAppointment,
+        message: "Appointment added successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
-  //   async addAppoints(req, res, next) {
-  //     try {
-  //       const doctorId = req.user._id;
-  //       // Create a new appointment
-  //       const newAppointment = new AppointmentRequest({
-  //         doctorId,
-  //         patientId: "656867ce85953ba14f2c9ff8",
-  //         status: "approved",
-  //         requestedDateTime: "10 am",
-  //       });
-  // // console.log(doctorId)
-  //       // Save the new appointment to the database
-  //       const savedAppointment = await newAppointment.save();
+  async acceptRequest(req, res, next) {
+    try {
+      const bookingId = req.query.bookingId;
+      const doctorId = req.user._id;
+      const booking = await AppointmentRequest.findById(bookingId);
+      if (!booking) {
+        const error = new Error("Appointment request not found!");
+        error.status = 404;
+        return next(error);
+      }
+      if(booking.status=="accept"){
+        return res.status(200).json({
+          auth: false,
+          message: "Booking Accepted already accepted",
+        });
+      }
+      booking.status = "accept";
+      const patientId = booking.patientId;
+      const appointmentType = booking.appointmentType;
+      await booking.save();
+      const newAppointment = new Appointment({
+        doctorId,
+        patientId,
+        date: Date.now(),
+        startTime: booking.requestedDateTime,
+        appointmentType,
+        status: "pending",
+      });
+      // console.log(doctorId)
+      // Save the new appointment to the database
+      await newAppointment.save();
+      return res.status(200).json({
+        auth: true,
+        message: "Booking Accepted successfully",
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
 
-  //       res
-  //         .status(201)
-  //         .json({
-  //           appointment: savedAppointment,
-  //           message: "Appointment added successfully",
-  //         });
-  //     } catch (error) {
-  //       next(error);
-  //     }
-  //   },
+  async rejectRequest(req, res, next) {
+    try {
+      const bookingId = req.query.bookingId;
+      const booking = await AppointmentRequest.findById(bookingId);
+      if (!booking) {
+        const error = new Error("Appointment request not found!");
+        error.status = 404;
+        return next(error);
+      }
+      await AppointmentRequest.findByIdAndDelete(bookingId);
+      return res.status(200).json({
+        auth: true,
+        message: "Booking rejected successfully",
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async addAppoints(req, res, next) {
+    try {
+      const doctorId = req.user._id;
+      // Create a new appointment
+      const newAppointment = new AppointmentRequest({
+        doctorId,
+        patientId: "656867ce85953ba14f2c9ff8",
+        status: "approved",
+        requestedDateTime: "10 am",
+      });
+      // console.log(doctorId)
+      // Save the new appointment to the database
+      const savedAppointment = await newAppointment.save();
+
+      res.status(201).json({
+        appointment: savedAppointment,
+        message: "Appointment added successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 module.exports = physioAppointController;

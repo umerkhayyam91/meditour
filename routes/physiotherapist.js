@@ -33,6 +33,8 @@ router.get("/physio/getAllAppointments", auth, physioAppointController.getAllApp
 router.get("/physio/getAllPatients", auth, physioAppointController.getAllPatients);
 router.get("/physio/patientHistory", auth, physioAppointController.patientHistory);
 router.get("/physio/getRequests", auth, physioAppointController.getRequests);
+router.post("/physio/addAppoints", auth, physioAppointController.addAppoints);
+router.post("/physio/acceptRequest", auth, physioAppointController.acceptRequest);
 
 
 //..............verification.........

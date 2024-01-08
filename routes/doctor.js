@@ -4,6 +4,7 @@ const VerificationController = require("../controller/verificationController");
 const docAvailabilityController = require("../controller/Doctor/doctorAvailabilityController")
 const docAppointController = require("../controller/Doctor/doctorAppointController")
 const docDashController = require("../controller/Doctor/doctorDashController")
+const docRequestController = require("../controller/Doctor/doctorRequestController")
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -32,7 +33,7 @@ router.get("/doc/getAvailability", auth, docAvailabilityController.getAvailabili
 router.get("/doc/getAllAppointments", auth, docAppointController.getAllAppointments);
 router.get("/doc/getAllPatients", auth, docAppointController.getAllPatients);
 router.get("/doc/patientHistory", auth, docAppointController.patientHistory);
-router.get("/doc/getRequests", auth, docAppointController.getRequests);
+router.get("/doc/getRequests", auth, docRequestController.getRequests);
 // router.post("/doc/addAppoints", auth, docAppointController.addAppoints);
 
 
