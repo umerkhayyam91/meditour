@@ -129,9 +129,9 @@ const docDashController = {
           doctorImage: doctorImage,
           patientName: patientName,
           upcomingAppointment: upcomingAppointment,
-          todayPatientCount: todayPatientCount,
+          patientCount: todayPatientCount,
           patientPercentageChange: patientPercentageChange,
-          todayAppointCount: todayAppointCount,
+          appointmentCount: todayAppointCount,
           appointmentPercentageChange: appointmentPercentageChange,
         });
       } else if (duration == "week") {
@@ -188,9 +188,9 @@ const docDashController = {
           doctorImage: doctorImage,
           patientName: patientName,
           upcomingAppointment: upcomingAppointment,
-          weekPatientCount: weekPatientCount,
+          patientCount: weekPatientCount,
           patientPercentageChange: patientPercentageChange,
-          weekAppointCount: weekAppointCount,
+          appointmentCount: weekAppointCount,
           appointmentPercentageChange: appointmentPercentageChange,
         });
       }
