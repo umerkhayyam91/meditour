@@ -32,10 +32,13 @@ const docDashController = {
       const doctorId = req.user._id;
       const doctor = await Physiotherapist.findById(doctorId);
       const doctorName = doctor.name;
-      const upcomingAppointment = await Appointment.findOne({doctorId})
+      const doctorImage = doctor.physioImage;
+      const upcomingAppointment = await Appointment.findOne({ doctorId })
         .sort({ createdAt: -1 }) // Sort in descending order based on createdAt
         .limit(1);
-
+      const patientId = upcomingAppointment.patientId;
+      const patient = await User.findById(patientId);
+      const patientName = patient.userName;
       const currentDate = new Date();
       // Set the time to the beginning of the day
       currentDate.setHours(0, 0, 0, 0);
@@ -123,6 +126,8 @@ const docDashController = {
         }
         return res.json({
           doctorName: doctorName,
+          doctorImage: doctorImage,
+          patientName: patientName,
           upcomingAppointment: upcomingAppointment,
           todayPatientCount: todayPatientCount,
           patientPercentageChange: patientPercentageChange,
@@ -180,6 +185,8 @@ const docDashController = {
 
         return res.json({
           doctorName: doctorName,
+          doctorImage: doctorImage,
+          patientName: patientName,
           upcomingAppointment: upcomingAppointment,
           weekPatientCount: weekPatientCount,
           patientPercentageChange: patientPercentageChange,
