@@ -93,15 +93,23 @@ const docDashController = {
           .distinct("patientId")
           .then((patientIds) => patientIds.length);
 
+
         let patientPercentageChange;
         if (yesPatientCount === 0) {
-          patientPercentageChange = todayPatientCount * 100 + "%"; // If yesterday's orders are zero, the change is undefined
+          patientPercentageChange = todayPatientCount * 100 ; // If last week's orders are zero, the change is undefined
         } else {
           patientPercentageChange =
             (
-              ((todayPatientCount - yesPatientCount) / yesPatientCount) *
+              ((todayPatientCount - yesPatientCount) /
+                yesPatientCount) *
               100
-            ).toFixed(2) + "%";
+            ).toFixed(2);
+        }
+
+        if(patientPercentageChange>0){
+          patientPercentageChange = "+" + patientPercentageChange + "%";
+        } else {
+          patientPercentageChange = patientPercentageChange + "%";
         }
 
         const todayAppointCount = await Appointment.countDocuments({
@@ -116,13 +124,20 @@ const docDashController = {
 
         let appointmentPercentageChange;
         if (yesAppointCount === 0) {
-          appointmentPercentageChange = todayAppointCount * 100 + "%"; // If yesterday's orders are zero, the change is undefined
+          appointmentPercentageChange = todayAppointCount * 100 ; // If last week's orders are zero, the change is undefined
         } else {
           appointmentPercentageChange =
             (
-              ((todayAppointCount - yesAppointCount) / yesAppointCount) *
+              ((todayAppointCount - yesAppointCount) /
+                yesAppointCount) *
               100
-            ).toFixed(2) + "%";
+            ).toFixed(2);
+        }
+
+        if(appointmentPercentageChange>0){
+          appointmentPercentageChange = "+" + appointmentPercentageChange + "%";
+        } else {
+          appointmentPercentageChange = appointmentPercentageChange + "%";
         }
         return res.json({
           doctorName: doctorName,
@@ -151,14 +166,19 @@ const docDashController = {
 
         let patientPercentageChange;
         if (lastWeekPatientCount === 0) {
-          patientPercentageChange = weekPatientCount * 100 + "%"; // If last week's orders are zero, the change is undefined
+          patientPercentageChange = weekPatientCount * 100 ; // If last week's orders are zero, the change is undefined
         } else {
           patientPercentageChange =
             (
               ((weekPatientCount - lastWeekPatientCount) /
                 lastWeekPatientCount) *
               100
-            ).toFixed(2) + "%";
+            ).toFixed(2) ;
+        }
+        if(patientPercentageChange>0){
+          patientPercentageChange = "+" + patientPercentageChange + "%";
+        } else {
+          patientPercentageChange = patientPercentageChange + "%";
         }
 
         const weekAppointCount = await Appointment.countDocuments({
@@ -173,14 +193,20 @@ const docDashController = {
 
         let appointmentPercentageChange;
         if (lastWeekAppointCount === 0) {
-          appointmentPercentageChange = weekAppointCount * 100 + "%"; // If last week's orders are zero, the change is undefined
+          appointmentPercentageChange = weekAppointCount * 100 ; // If last week's orders are zero, the change is undefined
         } else {
           appointmentPercentageChange =
             (
               ((weekAppointCount - lastWeekAppointCount) /
                 lastWeekAppointCount) *
               100
-            ).toFixed(2) + "%";
+            ).toFixed(2);
+        }
+
+        if(appointmentPercentageChange>0){
+          appointmentPercentageChange = "+" + appointmentPercentageChange + "%";
+        } else {
+          appointmentPercentageChange = appointmentPercentageChange + "%";
         }
 
         return res.json({
