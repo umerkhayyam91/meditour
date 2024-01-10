@@ -171,11 +171,6 @@ const docAvailabilityController = {
       // Check if doctor availability exists
       const doctorAvailability = await DoctorAvailability.findOne({ doctorId });
 
-      if (!doctorAvailability) {
-        return res
-          .status(404)
-          .json({ message: "Doctor availability not found" });
-      }
 
       res.status(200).json({ availability: doctorAvailability });
     } catch (error) {
