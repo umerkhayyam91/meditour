@@ -36,9 +36,14 @@ const docDashController = {
       const upcomingAppointment = await Appointment.findOne({ doctorId })
         .sort({ createdAt: -1 }) // Sort in descending order based on createdAt
         .limit(1);
-      const patientId = upcomingAppointment.patientId;
-      const patient = await User.findById(patientId);
-      const patientName = patient.userName;
+      let patientName;
+      if (upcomingAppointment) {
+        const patientId = upcomingAppointment.patientId;
+        const patient = await User.findById(patientId);
+        patientName = patient.userName;
+      } else {
+        patientName = null;
+      }
       const currentDate = new Date();
       // Set the time to the beginning of the day
       currentDate.setHours(0, 0, 0, 0);
@@ -63,7 +68,7 @@ const docDashController = {
       weekStartDate.setHours(0, 0, 0, 0);
 
       const lastWeekStartDate = new Date(currentDate);
-      lastWeekStartDate.setDate(currentDate.getDate() - 7);
+      lastWeekStartDate.setDate(currentDate.getDate() - 14);
 
       // Set the time to the beginning of the week
       lastWeekStartDate.setHours(0, 0, 0, 0);
@@ -93,20 +98,17 @@ const docDashController = {
           .distinct("patientId")
           .then((patientIds) => patientIds.length);
 
-
         let patientPercentageChange;
         if (yesPatientCount === 0) {
-          patientPercentageChange = todayPatientCount * 100 ; // If last week's orders are zero, the change is undefined
+          patientPercentageChange = todayPatientCount * 100; // If last week's orders are zero, the change is undefined
         } else {
-          patientPercentageChange =
-            (
-              ((todayPatientCount - yesPatientCount) /
-                yesPatientCount) *
-              100
-            ).toFixed(2);
+          patientPercentageChange = (
+            ((todayPatientCount - yesPatientCount) / yesPatientCount) *
+            100
+          ).toFixed(2);
         }
 
-        if(patientPercentageChange>0){
+        if (patientPercentageChange > 0) {
           patientPercentageChange = "+" + patientPercentageChange + "%";
         } else {
           patientPercentageChange = patientPercentageChange + "%";
@@ -124,17 +126,15 @@ const docDashController = {
 
         let appointmentPercentageChange;
         if (yesAppointCount === 0) {
-          appointmentPercentageChange = todayAppointCount * 100 ; // If last week's orders are zero, the change is undefined
+          appointmentPercentageChange = todayAppointCount * 100; // If last week's orders are zero, the change is undefined
         } else {
-          appointmentPercentageChange =
-            (
-              ((todayAppointCount - yesAppointCount) /
-                yesAppointCount) *
-              100
-            ).toFixed(2);
+          appointmentPercentageChange = (
+            ((todayAppointCount - yesAppointCount) / yesAppointCount) *
+            100
+          ).toFixed(2);
         }
 
-        if(appointmentPercentageChange>0){
+        if (appointmentPercentageChange > 0) {
           appointmentPercentageChange = "+" + appointmentPercentageChange + "%";
         } else {
           appointmentPercentageChange = appointmentPercentageChange + "%";
@@ -163,19 +163,16 @@ const docDashController = {
         })
           .distinct("patientId")
           .then((patientIds) => patientIds.length);
-
         let patientPercentageChange;
         if (lastWeekPatientCount === 0) {
-          patientPercentageChange = weekPatientCount * 100 ; // If last week's orders are zero, the change is undefined
+          patientPercentageChange = weekPatientCount * 100; // If last week's orders are zero, the change is undefined
         } else {
-          patientPercentageChange =
-            (
-              ((weekPatientCount - lastWeekPatientCount) /
-                lastWeekPatientCount) *
-              100
-            ).toFixed(2) ;
+          patientPercentageChange = (
+            ((weekPatientCount - lastWeekPatientCount) / lastWeekPatientCount) *
+            100
+          ).toFixed(2);
         }
-        if(patientPercentageChange>0){
+        if (patientPercentageChange > 0) {
           patientPercentageChange = "+" + patientPercentageChange + "%";
         } else {
           patientPercentageChange = patientPercentageChange + "%";
@@ -193,17 +190,15 @@ const docDashController = {
 
         let appointmentPercentageChange;
         if (lastWeekAppointCount === 0) {
-          appointmentPercentageChange = weekAppointCount * 100 ; // If last week's orders are zero, the change is undefined
+          appointmentPercentageChange = weekAppointCount * 100; // If last week's orders are zero, the change is undefined
         } else {
-          appointmentPercentageChange =
-            (
-              ((weekAppointCount - lastWeekAppointCount) /
-                lastWeekAppointCount) *
-              100
-            ).toFixed(2);
+          appointmentPercentageChange = (
+            ((weekAppointCount - lastWeekAppointCount) / lastWeekAppointCount) *
+            100
+          ).toFixed(2);
         }
 
-        if(appointmentPercentageChange>0){
+        if (appointmentPercentageChange > 0) {
           appointmentPercentageChange = "+" + appointmentPercentageChange + "%";
         } else {
           appointmentPercentageChange = appointmentPercentageChange + "%";

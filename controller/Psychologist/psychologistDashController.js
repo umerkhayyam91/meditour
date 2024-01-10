@@ -60,7 +60,7 @@ const docDashController = {
       weekStartDate.setHours(0, 0, 0, 0);
 
       const lastWeekStartDate = new Date(currentDate);
-      lastWeekStartDate.setDate(currentDate.getDate() - 7);
+      lastWeekStartDate.setDate(currentDate.getDate() - 14);
 
       // Set the time to the beginning of the week
       lastWeekStartDate.setHours(0, 0, 0, 0);
@@ -90,16 +90,21 @@ const docDashController = {
           .distinct("patientId")
           .then((patientIds) => patientIds.length);
 
-        let patientPercentageChange;
-        if (yesPatientCount === 0) {
-          patientPercentageChange = todayPatientCount * 100 + "%"; // If yesterday's orders are zero, the change is undefined
-        } else {
-          patientPercentageChange =
-            (
+          let patientPercentageChange;
+          if (yesPatientCount === 0) {
+            patientPercentageChange = todayPatientCount * 100; // If last week's orders are zero, the change is undefined
+          } else {
+            patientPercentageChange = (
               ((todayPatientCount - yesPatientCount) / yesPatientCount) *
               100
-            ).toFixed(2) + "%";
-        }
+            ).toFixed(2);
+          }
+  
+          if (patientPercentageChange > 0) {
+            patientPercentageChange = "+" + patientPercentageChange + "%";
+          } else {
+            patientPercentageChange = patientPercentageChange + "%";
+          }
 
         const todayAppointCount = await Appointment.countDocuments({
           createdAt: { $gte: currentDate, $lt: new Date() },
@@ -113,13 +118,18 @@ const docDashController = {
 
         let appointmentPercentageChange;
         if (yesAppointCount === 0) {
-          appointmentPercentageChange = todayAppointCount * 100 + "%"; // If yesterday's orders are zero, the change is undefined
+          appointmentPercentageChange = todayAppointCount * 100; // If last week's orders are zero, the change is undefined
         } else {
-          appointmentPercentageChange =
-            (
-              ((todayAppointCount - yesAppointCount) / yesAppointCount) *
-              100
-            ).toFixed(2) + "%";
+          appointmentPercentageChange = (
+            ((todayAppointCount - yesAppointCount) / yesAppointCount) *
+            100
+          ).toFixed(2);
+        }
+
+        if (appointmentPercentageChange > 0) {
+          appointmentPercentageChange = "+" + appointmentPercentageChange + "%";
+        } else {
+          appointmentPercentageChange = appointmentPercentageChange + "%";
         }
         return res.json({
           doctorName: doctorName,
@@ -144,17 +154,20 @@ const docDashController = {
           .distinct("patientId")
           .then((patientIds) => patientIds.length);
 
-        let patientPercentageChange;
-        if (lastWeekPatientCount === 0) {
-          patientPercentageChange = weekPatientCount * 100 + "%"; // If last week's orders are zero, the change is undefined
-        } else {
-          patientPercentageChange =
-            (
-              ((weekPatientCount - lastWeekPatientCount) /
-                lastWeekPatientCount) *
+          let patientPercentageChange;
+          if (lastWeekPatientCount === 0) {
+            patientPercentageChange = weekPatientCount * 100; // If last week's orders are zero, the change is undefined
+          } else {
+            patientPercentageChange = (
+              ((weekPatientCount - lastWeekPatientCount) / lastWeekPatientCount) *
               100
-            ).toFixed(2) + "%";
-        }
+            ).toFixed(2);
+          }
+          if (patientPercentageChange > 0) {
+            patientPercentageChange = "+" + patientPercentageChange + "%";
+          } else {
+            patientPercentageChange = patientPercentageChange + "%";
+          }
 
         const weekAppointCount = await Appointment.countDocuments({
           createdAt: { $gte: weekStartDate, $lt: new Date() },
@@ -168,14 +181,18 @@ const docDashController = {
 
         let appointmentPercentageChange;
         if (lastWeekAppointCount === 0) {
-          appointmentPercentageChange = weekAppointCount * 100 + "%"; // If last week's orders are zero, the change is undefined
+          appointmentPercentageChange = weekAppointCount * 100; // If last week's orders are zero, the change is undefined
         } else {
-          appointmentPercentageChange =
-            (
-              ((weekAppointCount - lastWeekAppointCount) /
-                lastWeekAppointCount) *
-              100
-            ).toFixed(2) + "%";
+          appointmentPercentageChange = (
+            ((weekAppointCount - lastWeekAppointCount) / lastWeekAppointCount) *
+            100
+          ).toFixed(2);
+        }
+
+        if (appointmentPercentageChange > 0) {
+          appointmentPercentageChange = "+" + appointmentPercentageChange + "%";
+        } else {
+          appointmentPercentageChange = appointmentPercentageChange + "%";
         }
 
         return res.json({
