@@ -36,14 +36,16 @@ const docDashController = {
       const upcomingAppointment = await Appointment.findOne({ doctorId })
         .sort({ createdAt: -1 }) // Sort in descending order based on createdAt
         .limit(1);
-      let patientName;
-      if (upcomingAppointment) {
-        const patientId = upcomingAppointment.patientId;
-        const patient = await User.findById(patientId);
-        patientName = patient.userName;
-      } else {
-        patientName = null;
-      }
+        
+        let patientName;
+        if (upcomingAppointment) {
+          const patientId = upcomingAppointment.patientId;
+          const patient = await User.findById(patientId);
+          console.log(upcomingAppointment)
+          patientName = patient.userName;
+        } else {
+          patientName = null;
+        }
       const currentDate = new Date();
       // Set the time to the beginning of the day
       currentDate.setHours(0, 0, 0, 0);

@@ -32,12 +32,23 @@ const docDashController = {
       const doctorId = req.user._id;
       const doctor = await Psychologist.findById(doctorId);
       const doctorName = doctor.name;
-      const upcomingAppointment = await Appointment.findOne({doctorId})
+      const doctorImage = doctor.doctorImage;
+      const upcomingAppointment = await Appointment.findOne({ doctorId })
         .sort({ createdAt: -1 }) // Sort in descending order based on createdAt
         .limit(1);
+        
+        let patientName;
+        if (upcomingAppointment) {
+          const patientId = upcomingAppointment.patientId;
+          const patient = await User.findById(patientId);
+          console.log(upcomingAppointment)
+          patientName = patient.userName;
+        } else {
+          patientName = null;
+        }
 
       const currentDate = new Date();
-      // Set the time to the beginning of the day
+      // Set the time to the beginning of the days
       currentDate.setHours(0, 0, 0, 0);
 
       // Calculate yesterday's date
@@ -74,7 +85,6 @@ const docDashController = {
 
         return next(error);
       }
-
       if (duration == "today") {
         const todayPatientCount = await Appointment.find({
           createdAt: { $gte: currentDate, $lt: new Date() },
@@ -133,6 +143,8 @@ const docDashController = {
         }
         return res.json({
           doctorName: doctorName,
+          doctorImage: doctorImage,
+          patientName: patientName,
           upcomingAppointment: upcomingAppointment,
           todayPatientCount: todayPatientCount,
           patientPercentageChange: patientPercentageChange,
@@ -197,6 +209,8 @@ const docDashController = {
 
         return res.json({
           doctorName: doctorName,
+          doctorImage: doctorImage,
+          patientName: patientName,
           upcomingAppointment: upcomingAppointment,
           weekPatientCount: weekPatientCount,
           patientPercentageChange: patientPercentageChange,

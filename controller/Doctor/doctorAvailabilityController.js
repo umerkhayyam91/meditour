@@ -43,7 +43,7 @@ const docAvailabilityController = {
             (hospital) => String(hospital.hospitalId) === String(hospitalId)
           );
         }
-
+        
         hospitalAvailability.physicalAvailability =
           hospitalAvailability.physicalAvailability || [];
 

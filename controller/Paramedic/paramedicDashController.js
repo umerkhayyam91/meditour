@@ -32,9 +32,19 @@ const docDashController = {
       const doctorId = req.user._id;
       const doctor = await Paramedic.findById(doctorId);
       const doctorName = doctor.name;
-      const upcomingAppointment = await Appointment.findOne({doctorId})
+      const doctorImage = doctor.doctorImage;
+      const upcomingAppointment = await Appointment.findOne({ doctorId })
         .sort({ createdAt: -1 }) // Sort in descending order based on createdAt
         .limit(1);
+        
+        let patientName;
+        if (upcomingAppointment) {
+          const patientId = upcomingAppointment.patientId;
+          const patient = await User.findById(patientId);
+          patientName = patient.userName;
+        } else {
+          patientName = null;
+        }
 
       const currentDate = new Date();
       // Set the time to the beginning of the day

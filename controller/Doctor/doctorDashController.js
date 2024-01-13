@@ -32,9 +32,19 @@ const docDashController = {
       const doctorId = req.user._id;
       const doctor = await Doctor.findById(doctorId);
       const doctorName = doctor.name;
-      const upcomingAppointment = await Appointment.findOne({doctorId})
+      const doctorImage = doctor.doctorImage;
+      const upcomingAppointment = await Appointment.findOne({ doctorId })
         .sort({ createdAt: -1 }) // Sort in descending order based on createdAt
         .limit(1);
+        
+        let patientName;
+        if (upcomingAppointment) {
+          const patientId = upcomingAppointment.patientId;
+          const patient = await User.findById(patientId);
+          patientName = patient.userName;
+        } else {
+          patientName = null;
+        }
 
       const currentDate = new Date();
       // Set the time to the beginning of the day
@@ -90,21 +100,21 @@ const docDashController = {
           .distinct("patientId")
           .then((patientIds) => patientIds.length);
 
-          let patientPercentageChange;
-          if (yesPatientCount === 0) {
-            patientPercentageChange = todayPatientCount * 100; // If last week's orders are zero, the change is undefined
-          } else {
-            patientPercentageChange = (
-              ((todayPatientCount - yesPatientCount) / yesPatientCount) *
-              100
-            ).toFixed(2);
-          }
-  
-          if (patientPercentageChange > 0) {
-            patientPercentageChange = "+" + patientPercentageChange + "%";
-          } else {
-            patientPercentageChange = patientPercentageChange + "%";
-          }
+        let patientPercentageChange;
+        if (yesPatientCount === 0) {
+          patientPercentageChange = todayPatientCount * 100; // If last week's orders are zero, the change is undefined
+        } else {
+          patientPercentageChange = (
+            ((todayPatientCount - yesPatientCount) / yesPatientCount) *
+            100
+          ).toFixed(2);
+        }
+
+        if (patientPercentageChange > 0) {
+          patientPercentageChange = "+" + patientPercentageChange + "%";
+        } else {
+          patientPercentageChange = patientPercentageChange + "%";
+        }
 
         const todayAppointCount = await Appointment.countDocuments({
           createdAt: { $gte: currentDate, $lt: new Date() },
@@ -154,20 +164,20 @@ const docDashController = {
           .distinct("patientId")
           .then((patientIds) => patientIds.length);
 
-          let patientPercentageChange;
-          if (lastWeekPatientCount === 0) {
-            patientPercentageChange = weekPatientCount * 100; // If last week's orders are zero, the change is undefined
-          } else {
-            patientPercentageChange = (
-              ((weekPatientCount - lastWeekPatientCount) / lastWeekPatientCount) *
-              100
-            ).toFixed(2);
-          }
-          if (patientPercentageChange > 0) {
-            patientPercentageChange = "+" + patientPercentageChange + "%";
-          } else {
-            patientPercentageChange = patientPercentageChange + "%";
-          }
+        let patientPercentageChange;
+        if (lastWeekPatientCount === 0) {
+          patientPercentageChange = weekPatientCount * 100; // If last week's orders are zero, the change is undefined
+        } else {
+          patientPercentageChange = (
+            ((weekPatientCount - lastWeekPatientCount) / lastWeekPatientCount) *
+            100
+          ).toFixed(2);
+        }
+        if (patientPercentageChange > 0) {
+          patientPercentageChange = "+" + patientPercentageChange + "%";
+        } else {
+          patientPercentageChange = patientPercentageChange + "%";
+        }
 
         const weekAppointCount = await Appointment.countDocuments({
           createdAt: { $gte: weekStartDate, $lt: new Date() },
