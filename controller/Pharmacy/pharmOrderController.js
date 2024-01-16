@@ -57,7 +57,7 @@ const pharmOrderController = {
 
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const pharmPerPage = 10;
-      const pharmId = req.user.id;
+      const pharmId = req.user._id;
       const totalPharms = await pharmOrder.countDocuments({ pharmId }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalPharms / pharmPerPage); // Calculate the total number of pages
 

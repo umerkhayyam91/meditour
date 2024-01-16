@@ -1,5 +1,5 @@
 const JWTService = require("../services/JWTService");
-const User = require("../models/user");
+const User = require("../models/User/user");
 const labDto = require("../dto/lab");
 const pharmDto = require("../dto/pharm");
 const docDto = require("../dto/doctor");
@@ -14,6 +14,7 @@ const rentCarDTO = require("../dto/rentCar");
 const donationDTO = require("../dto/donation");
 const hotelDTO = require("../dto/hotel");
 const insuranceDTO = require("../dto/insurance");
+const userDTO = require("../dto/user");
 const Laboratory = require("../models/Laboratory/laboratory");
 const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
@@ -227,6 +228,18 @@ const auth = async (req, res, next) => {
       const insuranceDto = new insuranceDTO(user);
 
       req.user = insuranceDto;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/user")) {
+      try {
+        user = await User.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const userDto = new userDTO(user);
+
+      req.user = userDto;
 
       next();
       return;

@@ -8,7 +8,7 @@ const docRequestController = {
   async getRequests(req, res, next) {
     try {
       const doctorId = req.user._id;
-      const allRequests = await AppointmentRequest.find({ doctorId });
+      const allRequests = await AppointmentRequest.find({ doctorId , status: "pending"});
       return res.status(200).json({
         AppointmentRequests: allRequests,
         auth: true,

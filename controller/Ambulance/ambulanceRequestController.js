@@ -7,7 +7,7 @@ const ambulanceRequestController = {
   async getRequests(req, res, next) {
     try {
       const ambulanceId = req.user._id;
-      const requests = await Request.find({ ambulanceId });
+      const requests = await Request.find({ ambulanceId , status: "pending"});
       if (requests.length == 0) {
         const error = new Error("No Requests found!");
         error.status = 404;

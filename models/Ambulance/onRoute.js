@@ -4,11 +4,12 @@ const onRouteSchema = new mongoose.Schema(
   {
     ambulanceId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Booking Request",
+      ref: "Ambulance Company",
       required: true,
     },
     customerId: {
       type: String,
+      ref: "User",
       required: true,
     },
     dateAndTime: {

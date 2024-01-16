@@ -4,7 +4,7 @@ const bookingRequestSchema = new mongoose.Schema(
   {
     ambulanceId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Booking Request",
+      ref: "Ambulance Company",
       required: true,
     },
     customerId: {
@@ -36,7 +36,7 @@ const bookingRequestSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-module.exports = mongoose.model(
+  module.exports = mongoose.model(
   "Booking Request",
   bookingRequestSchema,
   "booking requests"

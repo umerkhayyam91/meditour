@@ -29,6 +29,8 @@ router.post("/ambulance/resetPassword", VerificationController.resetPassword);
 //...............dashboard...............
 router.get("/ambulance/dashDetails",auth, ambulanceDashController.dashDetails)
 router.get("/ambulance/graph",auth, ambulanceDashController.graph)
+router.post("/ambulance/addBooking", auth, ambulanceDashController.addBooking);
+
 
 //.............ambulance CRUD...............
 router.post("/ambulance/addAmbulance", auth, ambulanceCrudController.addAmbulance);

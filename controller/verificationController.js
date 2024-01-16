@@ -16,6 +16,7 @@ const RentCar = require("../models/Rent A Car/rentCar");
 const Donation = require("../models/Donation/donation");
 const Hotel = require("../models/Hotel/hotel");
 const Insurance = require("../models/Insurance/insurance");
+const User = require("../models/User/user");
 const ResetToken = require("../models/resetToken");
 const bcrypt = require("bcrypt");
 app.use(express.json());
@@ -54,6 +55,8 @@ const userTypeFunction = async function (userModel, email, newPassword) {
     user = await Hotel.find({ email });
   } else if (userModel === "Insurance") {
     user = await Insurance.find({ email });
+  } else if (userModel === "User") {
+    user = await User.find({ email });
   }
   if (!user) {
     return res
@@ -151,6 +154,12 @@ const userTypeFunction = async function (userModel, email, newPassword) {
       { password: hashedNewPassword },
       { runValidators: true }
     );
+  } else if (userModel === "User") {
+    await User.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
   }
 };
 
@@ -186,6 +195,8 @@ const verificationController = {
       emailExists = await Hotel.exists({ email });
     } else if (req.originalUrl.includes("/insurance")) {
       emailExists = await Insurance.exists({ email });
+    } else if (req.originalUrl.includes("/user")) {
+      emailExists = await User.exists({ email });
     }
     if (emailExists) {
       const error = new Error("Email already exists!");
@@ -381,6 +392,14 @@ const verificationController = {
         } catch (error) {
           return next(error);
         }
+      } else if (req.originalUrl.includes("/user")) {
+        try {
+          existingUser = await User.findOne({ email });
+          userType = "User";
+          // userTypeInUrl = "rentCar"
+        } catch (error) {
+          return next(error);
+        }
       }
       console.log("anything")
 
@@ -426,6 +445,8 @@ const verificationController = {
       } else if (userType == "Hotel") {
         resetLink = `${baseUrl}/traveltourism/hotel/forgot-password?token=${resetToken}`;
       } else if (userType == "Insurance") {
+        resetLink = `${baseUrl}/Insurance/update-password?token=${resetToken}`;
+      } else if (userType == "User") {
         resetLink = `${baseUrl}/Insurance/update-password?token=${resetToken}`;
       } 
 

@@ -35,6 +35,7 @@ const rentCarRouter = require("./routes/rentCar");
 const donationRouter = require("./routes/donation");
 const hotelRouter = require("./routes/hotel");
 const insuranceRouter = require("./routes/insurance");
+const userRouter = require("./routes/user");
 
 app.use(labRouter);
 app.use(pharmRouter);
@@ -50,6 +51,7 @@ app.use(rentCarRouter);
 app.use(donationRouter);
 app.use(hotelRouter);
 app.use(insuranceRouter);
+app.use(userRouter);
 
 dbConnect();
 app.use(ErrorHandler);
