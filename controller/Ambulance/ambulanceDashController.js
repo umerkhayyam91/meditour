@@ -103,7 +103,6 @@ const ambulanceDashController = {
       const currentDate = new Date();
       // Set the time to the beginning of the day
       currentDate.setHours(0, 0, 0, 0);
-
       const yesterdayDate = new Date(currentDate);
       yesterdayDate.setDate(currentDate.getDate() - 1);
 
@@ -159,12 +158,7 @@ const ambulanceDashController = {
         previousWeekEnd
       );
 
-      
-
-
-
-
-        //..............todayOnRouteCount..............//
+      //..............todayOnRouteCount..............//
       const todayOnRouteCount = await OnRoute.find({
         createdAt: { $gte: currentDate, $lt: new Date() },
         ambulanceId,
@@ -215,7 +209,7 @@ const ambulanceDashController = {
         todayOnRouteCount,
         onRoutePercentageChange,
         currentWeekOnRouteData,
-        previousWeekOnRouteData
+        previousWeekOnRouteData,
       });
     } catch (error) {
       next(error);

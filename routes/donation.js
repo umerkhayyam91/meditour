@@ -1,5 +1,6 @@
 const express = require("express");
 const donationAuthController = require("../controller/Donation/donationAuthController");
+const donationpackageController = require("../controller/Donation/donationPackageController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
@@ -17,6 +18,12 @@ router.put("/donation/updateProfile", auth, donationAuthController.updateProfile
 router.post("/donation/logout", auth, donationAuthController.logout);
 router.post("/donation/refresh", auth, donationAuthController.refresh);
 
+//............packages................//
+router.post("/donation/addPackage", auth, donationpackageController.addPackage);
+router.put("/donation/editPackage", auth, donationpackageController.editPackage);
+router.delete("/donation/deletePackage", auth, donationpackageController.deletePackage);
+router.get("/donation/getPackage", auth, donationpackageController.getPackage);
+router.get("/donation/getAllPackages", auth, donationpackageController.getAllPackages);
 
 //..............verification.........
 router.post("/donation/sendCodeToEmail", VerificationController.sendCodeToEmail);

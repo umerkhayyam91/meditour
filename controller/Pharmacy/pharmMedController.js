@@ -132,7 +132,7 @@ const pharmMedController = {
 
     return res
       .status(200)
-      .json({ message: "Test updated successfully", test: existingMed });
+      .json({ message: "Medicine updated successfully", medicine: existingMed });
   },
 
   async deleteMed(req, res, next) {
