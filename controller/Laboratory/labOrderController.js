@@ -33,7 +33,7 @@ const labOrderController = {
     try {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const labPerPage = 10;
-      const labId = req.user.id;
+      const labId = req.user._id;
       const totalPharms = await Order.countDocuments({ labId }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalPharms / labPerPage); // Calculate the total number of pages
 
@@ -93,6 +93,37 @@ const labOrderController = {
       return next(error);
     }
   },
+
+//.........testApi............//
+  async testing(req, res, next) {
+    try {
+      const { orderId, testName, MR_NO, date, patientName, status, results } =
+      req.body;
+    const labId = req.user._id;
+
+    let test;
+
+    let testCode = Math.floor(Math.random() * 1000000); // Generate a random number between 0 and 99999999
+
+      const testToRegister = new Order({
+        labId,
+        testCode,
+        orderId,
+        testName,
+        MR_NO,
+        date,
+        patientName,
+        status,
+        results
+      });
+
+      test = await testToRegister.save();
+      res.json("order added successfully!")
+    } catch (error) {
+      return next(error);
+    }
+  },
+ 
 };
 
 module.exports = labOrderController;

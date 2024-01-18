@@ -3,6 +3,7 @@ const pharmAuthController = require("../controller/Pharmacy/pharmAuthController"
 const pharmMedController = require("../controller/Pharmacy/pharmMedController");
 const pharmOrderController = require("../controller/Pharmacy/pharmOrderController");
 const pharmDashController = require("../controller/Pharmacy/pharmDashController");
+const labOrderController = require("../controller/Laboratory/labOrderController");
 const labTestController = require("../controller/Laboratory/labTestController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
@@ -29,6 +30,7 @@ router.get("/pharm/getAllMeds", auth, pharmMedController.getAllMeds)
 //............orders................
 router.get("/pharm/getOrders", auth, pharmOrderController.getOrders)
 router.put("/pharm/changeStatus", auth, pharmOrderController.changeStatus)
+router.post("/pharm/testing", auth, pharmOrderController.testing)
 
 //............dashboard.............
 router.get("/pharm/dashDetails", auth, pharmDashController.dashDetails)

@@ -1,7 +1,7 @@
 const pharmOrder = require("../../models/Pharmacy/pharmOrder.js");
 const moment = require("moment");
 
-async function getOrderCountsForWeek(labId, startDate, endDate) {
+async function getOrderCountsForWeek(pharmId, startDate, endDate) {
   const days = [];
   let currentDate = moment(startDate);
 
@@ -11,7 +11,7 @@ async function getOrderCountsForWeek(labId, startDate, endDate) {
     const ordersCount = await pharmOrder
       .find({
         createdAt: { $gte: currentDate, $lt: nextDate },
-        labId: labId,
+        pharmId: pharmId,
       })
       .countDocuments();
 
@@ -80,37 +80,52 @@ const pharmDashController = {
 
       let pendingPercentageChange;
       if (penDayBefYesCount === 0) {
-        pendingPercentageChange = pendingYesOrdersCount * 100 + "%"; // If the day before yesterday's orders are zero, the change is undefined
+        pendingPercentageChange = pendingYesOrdersCount * 100; // If the day before yesterday's orders are zero, the change is undefined
       } else {
-        pendingPercentageChange =
-          (
-            ((pendingYesOrdersCount - penDayBefYesCount) / penDayBefYesCount) *
-            100
-          ).toFixed(2) + "%";
+        pendingPercentageChange = (
+          ((pendingYesOrdersCount - penDayBefYesCount) / penDayBefYesCount) *
+          100
+        ).toFixed(2);
+      }
+
+      if (pendingPercentageChange > 0) {
+        pendingPercentageChange = "+" + pendingPercentageChange + "%";
+      } else {
+        pendingPercentageChange = pendingPercentageChange + "%";
       }
 
       // Handle the case where yesterday's orders are zero
       let newOrdersPercentageChange;
       if (yesterdayOrdersCount === 0) {
-        newOrdersPercentageChange = todayOrdersCount * 100 + "%"; // If yesterday's orders are zero, the change is undefined
+        newOrdersPercentageChange = todayOrdersCount * 100; // If yesterday's orders are zero, the change is undefined
       } else {
-        newOrdersPercentageChange =
-          (
-            ((todayOrdersCount - yesterdayOrdersCount) / yesterdayOrdersCount) *
-            100
-          ).toFixed(2) + "%";
+        newOrdersPercentageChange = (
+          ((todayOrdersCount - yesterdayOrdersCount) / yesterdayOrdersCount) *
+          100
+        ).toFixed(2);
+      }
+
+      if (newOrdersPercentageChange > 0) {
+        newOrdersPercentageChange = "+" + newOrdersPercentageChange + "%";
+      } else {
+        newOrdersPercentageChange = newOrdersPercentageChange + "%";
       }
 
       let comOrdersPercentageChange;
       if (completeYesOrdersCount === 0) {
-        comOrdersPercentageChange = completeTodayOrdersCount * 100 + "%"; // If yesterday's orders are zero, the change is undefined
+        comOrdersPercentageChange = completeTodayOrdersCount * 100; // If yesterday's orders are zero, the change is undefined
       } else {
-        comOrdersPercentageChange =
-          (
-            ((completeTodayOrdersCount - completeYesOrdersCount) /
-              completeYesOrdersCount) *
-            100
-          ).toFixed(2) + "%";
+        comOrdersPercentageChange = (
+          ((completeTodayOrdersCount - completeYesOrdersCount) /
+            completeYesOrdersCount) *
+          100
+        ).toFixed(2);
+      }
+
+      if (comOrdersPercentageChange > 0) {
+        comOrdersPercentageChange = "+" + comOrdersPercentageChange + "%";
+      } else {
+        comOrdersPercentageChange = comOrdersPercentageChange + "%";
       }
 
       res.json({
