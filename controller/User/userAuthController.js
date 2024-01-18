@@ -9,6 +9,18 @@ const AccessToken = require("../../models/accessToken.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
+async function getNextMrNo() {
+  // Find the latest user in the database and get their mrNo
+  const latestUser = await User.findOne({}, 'mrNo').sort({ mrNo: -1 });
+
+  // If there are no users yet, start with "000001"
+  const nextMrNo = latestUser
+    ? String(Number(latestUser.mrNo) + 1).padStart(6, '0')
+    : '000001';
+
+  return nextMrNo;
+}
+
 const authController = {
   async register(req, res, next) {
     const userRegisterSchema = Joi.object({
@@ -17,56 +29,56 @@ const authController = {
       phone: Joi.string().required(),
       password: Joi.string().pattern(passwordPattern).required(),
     });
-
+  
     const { error } = userRegisterSchema.validate(req.body);
-
+  
     if (error) {
       return next(error);
     }
-
+  
     const { name, email, phone, password } = req.body;
     const emailExists = await User.findOne({ email });
+  
     if (emailExists) {
       const error = {
         status: 401,
-        message: "Email Already Registered",
+        message: 'Email Already Registered',
       };
-
+  
       return next(error);
     }
-
+  
     let accessToken;
     let refreshToken;
     const hashedPassword = await bcrypt.hash(password, 10);
-
+  
     let user;
     try {
+      // Get the next unique mrNo
+      const mrNo = await getNextMrNo();
+  
+      // Create a new user with the generated mrNo
       const userToRegister = new User({
         name,
         email,
+        mrNo,
         phone,
         password: hashedPassword,
       });
-
+  
       user = await userToRegister.save();
-
-      // token generation
-      accessToken = JWTService.signAccessToken({ _id: user._id }, "365d");
-
-      refreshToken = JWTService.signRefreshToken({ _id: user._id }, "365d");
+  
+      // Token generation
+      accessToken = JWTService.signAccessToken({ _id: user._id }, '365d');
+      refreshToken = JWTService.signRefreshToken({ _id: user._id }, '365d');
     } catch (error) {
       return next(error);
     }
-
-    // store refresh token in db
     await JWTService.storeRefreshToken(refreshToken, user._id);
-    await JWTService.storeAccessToken(accessToken, user._id);
+  await JWTService.storeAccessToken(accessToken, user._id);
 
-    // 6. response send
-
-    // const userDto = new usertorDto(user);
-
-    return res.status(201).json({ user: user, auth: true, token: accessToken });
+  // Response send
+  return res.status(201).json({ user, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {

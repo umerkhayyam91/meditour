@@ -8,7 +8,7 @@ const packageSchema = new mongoose.Schema(
     userIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Users",
         default: [],
       },
     ],
