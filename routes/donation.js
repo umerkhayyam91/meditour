@@ -33,6 +33,7 @@ router.get("/donation/getAllDonations", auth, donationDonarListController.getAll
 
 //.............dashboard.............//
 router.get("/donation/graph", auth, donationDashController.graph);
+router.get("/donation/dashDetails", auth, donationDashController.dashDetails);
 
 //..............verification.........
 router.post("/donation/sendCodeToEmail", VerificationController.sendCodeToEmail);

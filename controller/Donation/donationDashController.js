@@ -1,4 +1,4 @@
-const Paramedic = require("../../models/Paramedic/paramedic.js");
+const Package = require("../../models/Donation/package.js");
 const User = require("../../models/user.js");
 const DonorList = require("../../models/Donation/donorList.js");
 const moment = require("moment");
@@ -54,191 +54,43 @@ async function getAmountCountForWeek(donationId, startDate, endDate) {
 const docDashController = {
   async dashDetails(req, res, next) {
     try {
-      const doctorId = req.user._id;
-      const doctor = await Paramedic.findById(doctorId);
-      const doctorName = doctor.name;
-      const doctorImage = doctor.doctorImage;
-      const upcomingAppointment = await Appointment.findOne({ doctorId })
-        .sort({ createdAt: -1 }) // Sort in descending order based on createdAt
-        .limit(1);
+      const donationId = req.user._id;
+      const result = await DonorList.aggregate([
+        {
+          $match: {
+            donationId,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalAmount: {
+              $sum: "$donationAmount",
+            },
+          },
+        },
+      ]);
 
-      let patientName;
-      if (upcomingAppointment) {
-        const patientId = upcomingAppointment.patientId;
-        const patient = await User.findById(patientId);
-        patientName = patient.userName;
+      let totalAmount = 0;
+
+      if (result.length > 0) {
+        totalAmount = result[0].totalAmount;
+        console.log(`Total Donation Amount: ${totalAmount}`);
       } else {
-        patientName = null;
+        console.log("No documents found for the specified donationId.");
       }
 
-      const currentDate = new Date();
-      // Set the time to the beginning of the day
-      currentDate.setHours(0, 0, 0, 0);
+      const uniqueUserDocs = await DonorList.aggregate([
+        { $group: { _id: "$userId", count: { $sum: 1 } } },
+        { $count: "uniqueUserIds" },
+      ]);
 
-      // Calculate yesterday's date
-      const yesterdayDate = new Date(currentDate);
-      yesterdayDate.setDate(currentDate.getDate() - 1);
-
-      // Set the time to the beginning of yesterday
-      yesterdayDate.setHours(0, 0, 0, 0);
-
-      const dayBeforeYesterday = new Date(currentDate);
-      dayBeforeYesterday.setDate(currentDate.getDate() - 2);
-
-      // Set the time to the beginning of the day before yesterday
-      dayBeforeYesterday.setHours(0, 0, 0, 0);
-
-      const weekStartDate = new Date(currentDate);
-      weekStartDate.setDate(currentDate.getDate() - 7);
-
-      // Set the time to the beginning of the week
-      weekStartDate.setHours(0, 0, 0, 0);
-
-      const lastWeekStartDate = new Date(currentDate);
-      lastWeekStartDate.setDate(currentDate.getDate() - 14);
-
-      // Set the time to the beginning of the week
-      lastWeekStartDate.setHours(0, 0, 0, 0);
-
-      const duration = req.query.duration;
-      if (!duration) {
-        const error = {
-          status: 400,
-          message: "Duration Period Missing",
-        };
-
-        return next(error);
-      }
-
-      if (duration == "today") {
-        const todayPatientCount = await Appointment.find({
-          createdAt: { $gte: currentDate, $lt: new Date() },
-          doctorId,
-        })
-          .distinct("patientId")
-          .then((patientIds) => patientIds.length);
-
-        const yesPatientCount = await Appointment.find({
-          createdAt: { $gte: yesterdayDate, $lt: currentDate },
-          doctorId,
-        })
-          .distinct("patientId")
-          .then((patientIds) => patientIds.length);
-
-        let patientPercentageChange;
-        if (yesPatientCount === 0) {
-          patientPercentageChange = todayPatientCount * 100; // If last week's orders are zero, the change is undefined
-        } else {
-          patientPercentageChange = (
-            ((todayPatientCount - yesPatientCount) / yesPatientCount) *
-            100
-          ).toFixed(2);
-        }
-
-        if (patientPercentageChange > 0) {
-          patientPercentageChange = "+" + patientPercentageChange + "%";
-        } else {
-          patientPercentageChange = patientPercentageChange + "%";
-        }
-
-        const todayAppointCount = await Appointment.countDocuments({
-          createdAt: { $gte: currentDate, $lt: new Date() },
-          doctorId,
-        });
-
-        const yesAppointCount = await Appointment.countDocuments({
-          createdAt: { $gte: yesterdayDate, $lt: currentDate },
-          doctorId,
-        });
-
-        let appointmentPercentageChange;
-        if (yesAppointCount === 0) {
-          appointmentPercentageChange = todayAppointCount * 100; // If last week's orders are zero, the change is undefined
-        } else {
-          appointmentPercentageChange = (
-            ((todayAppointCount - yesAppointCount) / yesAppointCount) *
-            100
-          ).toFixed(2);
-        }
-
-        if (appointmentPercentageChange > 0) {
-          appointmentPercentageChange = "+" + appointmentPercentageChange + "%";
-        } else {
-          appointmentPercentageChange = appointmentPercentageChange + "%";
-        }
-        return res.json({
-          doctorName: doctorName,
-          upcomingAppointment: upcomingAppointment,
-          todayPatientCount: todayPatientCount,
-          patientPercentageChange: patientPercentageChange,
-          todayAppointCount: todayAppointCount,
-          appointmentPercentageChange: appointmentPercentageChange,
-        });
-      } else if (duration == "week") {
-        const weekPatientCount = await Appointment.find({
-          createdAt: { $gte: weekStartDate, $lt: new Date() },
-          doctorId,
-        })
-          .distinct("patientId")
-          .then((patientIds) => patientIds.length);
-
-        const lastWeekPatientCount = await Appointment.find({
-          createdAt: { $gte: lastWeekStartDate, $lt: weekStartDate },
-          doctorId,
-        })
-          .distinct("patientId")
-          .then((patientIds) => patientIds.length);
-
-        let patientPercentageChange;
-        if (lastWeekPatientCount === 0) {
-          patientPercentageChange = weekPatientCount * 100; // If last week's orders are zero, the change is undefined
-        } else {
-          patientPercentageChange = (
-            ((weekPatientCount - lastWeekPatientCount) / lastWeekPatientCount) *
-            100
-          ).toFixed(2);
-        }
-        if (patientPercentageChange > 0) {
-          patientPercentageChange = "+" + patientPercentageChange + "%";
-        } else {
-          patientPercentageChange = patientPercentageChange + "%";
-        }
-
-        const weekAppointCount = await Appointment.countDocuments({
-          createdAt: { $gte: weekStartDate, $lt: new Date() },
-          doctorId,
-        });
-
-        const lastWeekAppointCount = await Appointment.countDocuments({
-          createdAt: { $gte: lastWeekStartDate, $lt: weekStartDate },
-          doctorId,
-        });
-
-        let appointmentPercentageChange;
-        if (lastWeekAppointCount === 0) {
-          appointmentPercentageChange = weekAppointCount * 100; // If last week's orders are zero, the change is undefined
-        } else {
-          appointmentPercentageChange = (
-            ((weekAppointCount - lastWeekAppointCount) / lastWeekAppointCount) *
-            100
-          ).toFixed(2);
-        }
-
-        if (appointmentPercentageChange > 0) {
-          appointmentPercentageChange = "+" + appointmentPercentageChange + "%";
-        } else {
-          appointmentPercentageChange = appointmentPercentageChange + "%";
-        }
-
-        return res.json({
-          doctorName: doctorName,
-          upcomingAppointment: upcomingAppointment,
-          weekPatientCount: weekPatientCount,
-          patientPercentageChange: patientPercentageChange,
-          weekAppointCount: weekAppointCount,
-          appointmentPercentageChange: appointmentPercentageChange,
-        });
-      }
+      const totalPackages = await Package.countDocuments({ donationId });
+      res.json({
+        totalAmount,
+        totalDonors: uniqueUserDocs[0].uniqueUserIds,
+        totalPackages,
+      });
     } catch (error) {
       next(error);
     }
