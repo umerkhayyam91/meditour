@@ -2,6 +2,7 @@ const express = require("express");
 const donationAuthController = require("../controller/Donation/donationAuthController");
 const donationpackageController = require("../controller/Donation/donationPackageController");
 const donationDonarListController = require("../controller/Donation/donationDonorListController");
+const donationDashController = require("../controller/Donation/donationDashController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
@@ -29,6 +30,9 @@ router.post("/donation/addDonation", auth, donationpackageController.addDonation
 
 //..........donarLists............///
 router.get("/donation/getAllDonations", auth, donationDonarListController.getAllDonations);
+
+//.............dashboard.............//
+router.get("/donation/graph", auth, donationDashController.graph);
 
 //..............verification.........
 router.post("/donation/sendCodeToEmail", VerificationController.sendCodeToEmail);

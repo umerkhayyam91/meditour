@@ -8,7 +8,7 @@ const donationListSchema = new mongoose.Schema(
     },
     packageId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Donation",
+      ref: "Packages",
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -24,7 +24,7 @@ const donationListSchema = new mongoose.Schema(
       type: String,
     },
     donationAmount: {
-      type: String,
+      type: Number,
     }
   },
   {
@@ -32,7 +32,7 @@ const donationListSchema = new mongoose.Schema(
   }
 );
 module.exports = mongoose.model(
-  "Donation List",
+  "Donor List",
   donationListSchema,
-  "donation lists"
+  "donor list"
 );
