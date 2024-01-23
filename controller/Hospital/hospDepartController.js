@@ -14,7 +14,7 @@ const hospDepartController = {
     const hospitalId = req.user._id;
     const hospDepartSchema = Joi.object({
       departmentName: Joi.string().required(),
-      availableDoctors: Joi.number().required(),
+      // availableDoctors: Joi.number().required(),
       dapartmentLogo: Joi.string().required(),
     });
 
@@ -23,13 +23,13 @@ const hospDepartController = {
     if (error) {
       return next(error);
     }
-    const { departmentName, availableDoctors, dapartmentLogo } = req.body;
+    const { departmentName, dapartmentLogo } = req.body;
     let depart;
     try {
       const hospToRegister = new Department({
         hospitalId,
         departmentName,
-        availableDoctors,
+        // availableDoctors,
         dapartmentLogo,
       });
 
@@ -48,7 +48,7 @@ const hospDepartController = {
     const departmentId = req.query.id; // Assuming you pass departmentId in the request parameters
     const hospDepartSchema = Joi.object({
       departmentName: Joi.string(),
-      availableDoctors: Joi.number(),
+      // availableDoctors: Joi.number(),
       dapartmentLogo: Joi.string(),
     });
   
@@ -58,14 +58,14 @@ const hospDepartController = {
       return next(error);
     }
   
-    const { departmentName, availableDoctors, dapartmentLogo } = req.body;
+    const { departmentName, dapartmentLogo } = req.body;
     let depart;
     
     try {
       // Assuming Department is the mongoose model for the department schema
       depart = await Department.findOneAndUpdate(
         { _id: departmentId, hospitalId },
-        { $set: { departmentName, availableDoctors, dapartmentLogo } },
+        { $set: { departmentName, dapartmentLogo } },
         { new: true }
       );
   

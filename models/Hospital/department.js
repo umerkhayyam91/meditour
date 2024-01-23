@@ -17,10 +17,6 @@ const departmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    availableDoctors: {
-      type: Number,
-      required: true,
-    },
     dapartmentLogo: {
       type: String,
       required: true,
