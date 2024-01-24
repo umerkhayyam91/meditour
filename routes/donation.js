@@ -30,6 +30,7 @@ router.post("/donation/addDonation", auth, donationpackageController.addDonation
 
 //..........donarLists............///
 router.get("/donation/getAllDonations", auth, donationDonarListController.getAllDonations);
+router.get("/donation/getDonor", donationDonarListController.getDonor);
 
 //.............dashboard.............//
 router.get("/donation/graph", auth, donationDashController.graph);
