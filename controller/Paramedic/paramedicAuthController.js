@@ -275,6 +275,7 @@ const docAuthController = {
       emergencyNo: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
@@ -310,6 +311,7 @@ const docAuthController = {
       emergencyNo,
       state,
       phoneNumber,
+      currentPassword,
       password,
       website,
       twitter,
@@ -335,6 +337,21 @@ const docAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, doc.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      doc.password = hashedPassword;
+    }
+
     // Update only the provided fields
     if (name) doc.name = name;
     if (cnicOrPassportNo) doc.cnicOrPassportNo = cnicOrPassportNo;
@@ -347,7 +364,6 @@ const docAuthController = {
     if (pmdcNumber) doc.pmdcNumber = pmdcNumber;
     if (emergencyNo) doc.emergencyNo = emergencyNo;
     if (state) doc.state = state;
-    if (password) doc.password = password;
     if (phoneNumber) doc.phoneNumber = phoneNumber;
     if (website) doc.website = website;
     if (facebook) doc.facebook = facebook;

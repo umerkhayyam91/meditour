@@ -260,6 +260,7 @@ const rentCarAuthController = {
       companyAddress: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
@@ -290,6 +291,7 @@ const rentCarAuthController = {
       companyAddress,
       state,
       phoneNumber,
+      currentPassword,
       password,
       website,
       twitter,
@@ -314,6 +316,21 @@ const rentCarAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, rentCar.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      rentCar.password = hashedPassword;
+    }
+
     // Update only the provided fields
     if (companyName) rentCar.companyName = companyName;
     if (companyLicenseNo) rentCar.companyLicenseNo = companyLicenseNo;
@@ -322,7 +339,6 @@ const rentCarAuthController = {
     if (cnicOrPassportNo) rentCar.cnicOrPassportNo = cnicOrPassportNo;
     if (companyAddress) rentCar.companyAddress = companyAddress;
     if (state) rentCar.state = state;
-    if (password) rentCar.password = password;
     if (phoneNumber) rentCar.phoneNumber = phoneNumber;
     if (website) rentCar.website = website;
     if (facebook) rentCar.facebook = facebook;

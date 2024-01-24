@@ -40,7 +40,7 @@ const docAuthController = {
       pmdcImage: Joi.string(),
       taxFileImage: Joi.string(),
     });
-    
+
     const { error } = docRegisterSchema.validate(req.body);
 
     if (error) {
@@ -107,7 +107,7 @@ const docAuthController = {
         cnicImage,
         clinicLogo,
         pmdcImage,
-        taxFileImage
+        taxFileImage,
       });
 
       doc = await docToRegister.save();
@@ -268,14 +268,15 @@ const docAuthController = {
       cnicOrPassportNo: Joi.string(),
       qualification: Joi.string(),
       speciality: Joi.string(),
-      services : Joi.string(),
-      clinicName : Joi.string(),
-      clinicAddress : Joi.string(),
-      clinicExperiences : Joi.string(),
-      pmdcNumber : Joi.string(),
+      services: Joi.string(),
+      clinicName: Joi.string(),
+      clinicAddress: Joi.string(),
+      clinicExperiences: Joi.string(),
+      pmdcNumber: Joi.string(),
       emergencyNo: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
@@ -303,14 +304,15 @@ const docAuthController = {
       cnicOrPassportNo,
       qualification,
       speciality,
-      services ,
-      clinicName ,
-      clinicAddress ,
-      clinicExperiences ,
-      pmdcNumber ,
+      services,
+      clinicName,
+      clinicAddress,
+      clinicExperiences,
+      pmdcNumber,
       emergencyNo,
       state,
       phoneNumber,
+      currentPassword,
       password,
       website,
       twitter,
@@ -335,6 +337,20 @@ const docAuthController = {
       error.status = 404;
       return next(error);
     }
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, doc.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      doc.password = hashedPassword;
+    }
 
     // Update only the provided fields
     if (name) doc.name = name;
@@ -348,7 +364,6 @@ const docAuthController = {
     if (pmdcNumber) doc.pmdcNumber = pmdcNumber;
     if (emergencyNo) doc.emergencyNo = emergencyNo;
     if (state) doc.state = state;
-    if (password) doc.password = password;
     if (phoneNumber) doc.phoneNumber = phoneNumber;
     if (website) doc.website = website;
     if (facebook) doc.facebook = facebook;

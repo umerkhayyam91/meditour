@@ -279,6 +279,7 @@ const physioAuthController = {
       emergencyNo: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
@@ -314,6 +315,7 @@ const physioAuthController = {
       emergencyNo,
       state,
       phoneNumber,
+      currentPassword,
       password,
       website,
       twitter,
@@ -339,6 +341,21 @@ const physioAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, physio.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      physio.password = hashedPassword;
+    }
+
     // Update only the provided fields
     if (name) physio.name = name;
     if (cnicOrPassNo) physio.cnicOrPassNo = cnicOrPassNo;
@@ -351,7 +368,6 @@ const physioAuthController = {
     if (pmdcNumber) physio.pmdcNumber = pmdcNumber;
     if (emergencyNo) physio.emergencyNo = emergencyNo; 
     if (state) physio.state = state;
-    if (password) physio.password = password;
     if (phoneNumber) physio.phoneNumber = phoneNumber;
     if (website) physio.website = website;
     if (facebook) physio.facebook = facebook;

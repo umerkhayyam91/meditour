@@ -296,6 +296,7 @@ const labAuthController = {
       emergencyNo: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
@@ -327,6 +328,7 @@ const labAuthController = {
       emergencyNo,
       state,
       phoneNumber,
+      currentPassword,
       password,
       website,
       twitter,
@@ -352,6 +354,21 @@ const labAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, lab.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      lab.password = hashedPassword;
+    }
+
     // Update only the provided fields
     if (labFirstName) lab.labFirstName = labFirstName;
     if (labLastName) lab.labLastName = labLastName;
@@ -362,7 +379,6 @@ const labAuthController = {
     if (emergencyNo) lab.emergencyNo = emergencyNo;
     if (state) lab.state = state;
     if (phoneNumber) lab.phoneNumber = phoneNumber;
-    if (password) lab.password = password;
     if (website) lab.website = website;
     if (facebook) lab.facebook = facebook;
     if (twitter) lab.twitter = twitter;

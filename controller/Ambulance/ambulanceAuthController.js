@@ -264,6 +264,7 @@ const ambulanceAuthController = {
       emergencyNo: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
@@ -294,6 +295,7 @@ const ambulanceAuthController = {
       emergencyNo,
       state,
       phoneNumber,
+      currentPassword,
       password,
       website,
       twitter,
@@ -318,6 +320,22 @@ const ambulanceAuthController = {
       return next(error);
     }
 
+    
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, ambulance.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      ambulance.password = hashedPassword;
+    }
+
     // Update only the provided fields
     if (ambulanceName) ambulance.ambulanceName = ambulanceName;
     if (registrationNumber) ambulance.registrationNumber = registrationNumber;
@@ -327,7 +345,6 @@ const ambulanceAuthController = {
     if (emergencyNo) ambulance.emergencyNo = emergencyNo;
     if (state) ambulance.state = state;
     if (phoneNumber) ambulance.phoneNumber = phoneNumber;
-    if (password) ambulance.password = password;
     if (website) ambulance.website = website;
     if (facebook) ambulance.facebook = facebook;
     if (twitter) ambulance.twitter = twitter;

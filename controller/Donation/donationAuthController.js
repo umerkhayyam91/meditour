@@ -260,6 +260,7 @@ const donationAuthController = {
       companyAddress: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
@@ -290,6 +291,7 @@ const donationAuthController = {
       companyAddress,
       state,
       phoneNumber,
+      currentPassword,
       password,
       website,
       twitter,
@@ -314,6 +316,21 @@ const donationAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, donation.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      donation.password = hashedPassword;
+    }
+
     // Update only the provided fields
     if (companyName) donation.companyName = companyName;
     if (companyLicenseNo) donation.companyLicenseNo = companyLicenseNo;
@@ -323,7 +340,6 @@ const donationAuthController = {
     if (companyAddress) donation.companyAddress = companyAddress;
     if (state) donation.state = state;
     if (phoneNumber) donation.phoneNumber = phoneNumber;
-    if (password) donation.password = password;
     if (website) donation.website = website;
     if (facebook) donation.facebook = facebook;
     if (twitter) donation.twitter = twitter;

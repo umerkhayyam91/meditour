@@ -273,6 +273,7 @@ const pharmAuthController = {
       emergencyNo: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
@@ -304,6 +305,7 @@ const pharmAuthController = {
       emergencyNo,
       state,
       phoneNumber,
+      currentPassword,
       password,
       website,
       twitter,
@@ -328,6 +330,21 @@ const pharmAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, pharm.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      pharm.password = hashedPassword;
+    }
+
     // Update only the provided fields
     if (pharmacyFirstName) pharm.pharmacyFirstName = pharmacyFirstName;
     if (pharmacyLastName) pharm.pharmacyLastName = pharmacyLastName;
@@ -338,7 +355,6 @@ const pharmAuthController = {
     if (emergencyNo) pharm.emergencyNo = emergencyNo;
     if (state) pharm.state = state;
     if (phoneNumber) pharm.phoneNumber = phoneNumber;
-    if (password) pharm.password = password;
     if (website) pharm.website = website;
     if (facebook) pharm.facebook = facebook;
     if (twitter) pharm.twitter = twitter;

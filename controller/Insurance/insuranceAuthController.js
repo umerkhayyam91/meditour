@@ -264,6 +264,7 @@ const insuranceAuthController = {
       companyAddress: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
@@ -294,6 +295,7 @@ const insuranceAuthController = {
       companyAddress,
       state,
       phoneNumber,
+      currentPassword,
       password,
       website,
       twitter,
@@ -318,6 +320,21 @@ const insuranceAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, insurance.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      insurance.password = hashedPassword;
+    }
+
     // Update only the provided fields
     if (companyName) insurance.companyName = companyName;
     if (companyLicenseNo) insurance.companyLicenseNo = companyLicenseNo;
@@ -327,7 +344,6 @@ const insuranceAuthController = {
     if (companyAddress) insurance.companyAddress = companyAddress;
     if (state) insurance.state = state;
     if (phoneNumber) insurance.phoneNumber = phoneNumber;
-    if (password) insurance.password = password;
     if (website) insurance.website = website;
     if (facebook) insurance.facebook = facebook;
     if (twitter) insurance.twitter = twitter;

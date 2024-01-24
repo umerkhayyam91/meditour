@@ -258,6 +258,7 @@ const hotelAuthController = {
       companyAddress: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
       password: Joi.string().pattern(passwordPattern),
       confirmPassword: Joi.ref("password"),
       website: Joi.string(),
@@ -288,6 +289,7 @@ const hotelAuthController = {
       companyAddress,
       state,
       phoneNumber,
+      currentPassword,
       password,
       website,
       twitter,
@@ -312,6 +314,21 @@ const hotelAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, hotel.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      hotel.password = hashedPassword;
+    }
+
     // Update only the provided fields
     if (companyName) hosp.companyName = companyName;
     if (companyLicenseNo) hosp.companyLicenseNo = companyLicenseNo;
@@ -321,7 +338,6 @@ const hotelAuthController = {
     if (companyAddress) hosp.companyAddress = companyAddress;
     if (state) hosp.state = state;
     if (phoneNumber) hosp.phoneNumber = phoneNumber;
-    if (password) hosp.password = password;
     if (website) hosp.website = website;
     if (facebook) hosp.facebook = facebook;
     if (twitter) hosp.twitter = twitter;
