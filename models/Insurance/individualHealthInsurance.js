@@ -27,7 +27,6 @@ const insuranceSchema = new mongoose.Schema(
     },
     claimPayoutRatio: {
       type: String,
-      required: true,
     },
     hospitals: [
       {
@@ -43,11 +42,9 @@ const insuranceSchema = new mongoose.Schema(
     ],
     icuCcuLimits: {
       type: String,
-      required: true,
     },
-    accidentalEmergencyLimits : {
+    accidentalEmergencyLimits: {
       type: String,
-      required: true,
     },
     ambulanceCoverage: {
       type: String,
@@ -63,31 +60,24 @@ const insuranceSchema = new mongoose.Schema(
     },
     policyDocument: {
       type: String,
-      required: true,
     },
     claimProcess: {
       type: String,
-      required: true,
     },
     heading: {
       type: String,
-      required: true,
     },
     description: {
       type: String,
-      required: true,
     },
     actualPrice: {
       type: String,
-      required: true,
     },
     meditourPrice: {
       type: String,
-      required: true,
     },
     perYear: {
       type: String,
-      required: true,
     },
   },
   {

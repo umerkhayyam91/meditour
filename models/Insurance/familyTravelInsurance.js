@@ -6,68 +6,49 @@ const insuranceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Insurance",
     },
-    ageCriteria: {
-      type: String,
-    },
-    hospitalizationLimit: {
-      startlimit: String,
-      endLimit: String,
-    },
     packageName: {
       type: String,
     },
     packageLogo: {
       type: String,
     },
-    hospitalizationPerPerson: {
+    medicalCover: {
       type: String,
     },
-    dailyRoomAndBoardLimit: {
+    coveringUpto: {
       type: String,
     },
-    claimPayoutRatio: {
+    adndCoverage: {
       type: String,
     },
-    hospitals: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "hospital",
-      },
-    ],
-    laboratories: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "hospital",
-      },
-    ],
-    icuCcuLimits: {
+    repatriationCoverage: {
       type: String,
     },
-    accidentalEmergencyLimits: {
+    medExpensesHospitalizationCoverage: {
       type: String,
     },
-    ambulanceCoverage: {
+    emergencyReturnHomeCoverage: {
       type: String,
     },
-    specializedInvestigationCoverage: {
+    tripCancellation: {
       type: String,
     },
-    waitingPeriod: {
+    luggageArrivalDelay: {
       type: String,
     },
-    maternity: {
+    flightDelay: {
       type: String,
     },
-    policyDocument: {
+    travelStayOverOneFamMember: {
       type: String,
     },
-    claimProcess: {
+    passportLoss: {
       type: String,
     },
-    heading: {
+    baggageLoss: {
       type: String,
     },
-    description: {
+    policyFile: {
       type: String,
     },
     actualPrice: {
@@ -79,13 +60,17 @@ const insuranceSchema = new mongoose.Schema(
     perYear: {
       type: String,
     },
+    tripType: {
+      type: String,
+      enum: ["singleTrip", "multipleTrips"],
+    },
   },
   {
     timestamps: true,
   }
 );
 module.exports = mongoose.model(
-  "Parent Health Insurance",
+  "Family Travel Insurance",
   insuranceSchema,
-  "parent health insurances"
+  "family travel insurances"
 );
