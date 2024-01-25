@@ -38,6 +38,7 @@ router.post("/donation/addCriteria", auth, donationCriteriaController.addCriteri
 router.put("/donation/editCriteria", auth, donationCriteriaController.editCriteria);
 router.delete("/donation/deleteCriteria", auth, donationCriteriaController.deleteCriteria);
 router.get("/donation/getCriteria", auth, donationCriteriaController.getCriteria);
+router.get("/donation/getAllCriterion", auth, donationCriteriaController.getAllCriterion);
 
 //.............dashboard.............//
 router.get("/donation/graph", auth, donationDashController.graph);

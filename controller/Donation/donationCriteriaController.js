@@ -45,9 +45,9 @@ const donationCriteriaController = {
 
   async editCriteria(req, res, next) {
     const donationCriteriaSchema = Joi.object({
-        criteriaName: Joi.string(),
-        description: Joi.string(),
-        image: Joi.number(),
+      criteriaName: Joi.string(),
+      description: Joi.string(),
+      image: Joi.number(),
     });
 
     const { error } = donationCriteriaSchema.validate(req.body);
@@ -55,8 +55,7 @@ const donationCriteriaController = {
     if (error) {
       return next(error);
     }
-    const { criteriaName, description, image } =
-      req.body;
+    const { criteriaName, description, image } = req.body;
 
     const criteriaId = req.query.criteriaId;
     const existingCriteria = await Criteria.findById(criteriaId);
@@ -105,6 +104,33 @@ const donationCriteriaController = {
         return next(error);
       }
       return res.status(200).json({ criteria });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async getAllCriterion(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      const criterionPerPage = 10;
+      const donationId = req.user._id;
+      const totalCriterion = await Criteria.countDocuments({ donationId }); // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalCriterion / criterionPerPage); // Calculate the total number of pages
+
+      const skip = (page - 1) * criterionPerPage; // Calculate the number of posts to skip based on the current page
+
+      const criterion = await Criteria.find({ donationId })
+        .skip(skip)
+        .limit(criterionPerPage);
+      let previousPage = page > 1 ? page - 1 : null;
+      let nextPage = page < totalPages ? page + 1 : null;
+      // const medDto = new medDTO(criterion);
+      return res.status(200).json({
+        criterion: criterion,
+        auth: true,
+        previousPage: previousPage,
+        nextPage: nextPage,
+      });
     } catch (error) {
       return next(error);
     }
