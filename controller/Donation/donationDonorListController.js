@@ -1,26 +1,27 @@
-const DonorList = require("../../models/Donation/donations.js");
+const Donation = require("../../models/Donation/donations.js");
 const User = require("../../models/User/user.js");
 
-const donationDonorListController = {
+const donationCompanyDonationsController = {
   async getAllDonations(req, res, next) {
     try {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
-      const donorListPerPage = 10;
+      const donationsPerPage = 10;
       const donationId = req.user._id;
-      const totaldonorList = await DonorList.countDocuments({ donationId }); // Get the total number of posts for the user
-      const totalPages = Math.ceil(totaldonorList / donorListPerPage); // Calculate the total number of pages
+      console.log(donationId)
+      const totalDonations = await Donation.countDocuments({ donationId }); // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalDonations / donationsPerPage); // Calculate the total number of pages
 
-      const skip = (page - 1) * donorListPerPage; // Calculate the number of posts to skip based on the current page
+      const skip = (page - 1) * donationsPerPage; // Calculate the number of posts to skip based on the current page
 
-      const donorLists = await DonorList.find({ donationId })
+      const donations = await Donation.find({ donationId })
         .skip(skip)
-        .limit(donorListPerPage);
+        .limit(donationsPerPage);
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
-      //   const dataType = typeof donorLists
-      // const medDto = new medDTO(donorLists);
+      //   const dataType = typeof donations
+      // const medDto = new medDTO(donations);
       return res.status(200).json({
-        donorLists: donorLists,
+        donations: donations,
         auth: true,
         previousPage: previousPage,
         nextPage: nextPage,
@@ -32,8 +33,8 @@ const donationDonorListController = {
 
   async getDonor(req, res, next) {
     try {
-      const donationListId = req.query.donationListId;
-      const donor = await DonorList.findById(donationListId);
+      const donationId = req.query.donationId;
+      const donor = await Donation.findById(donationId);
 
       if (!donor) {
         const error = new Error("Donor not found!");
@@ -47,4 +48,4 @@ const donationDonorListController = {
   },
 };
 
-module.exports = donationDonorListController;
+module.exports = donationCompanyDonationsController;

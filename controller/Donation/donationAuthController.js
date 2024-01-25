@@ -169,7 +169,10 @@ const donationAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: donation._id }, "365d");
+    const accessToken = JWTService.signAccessToken(
+      { _id: donation._id },
+      "365d"
+    );
     const refreshToken = JWTService.signRefreshToken(
       { _id: donation._id },
       "365d"
@@ -242,12 +245,10 @@ const donationAuthController = {
     // Save the updated test
     await existingUser.save();
 
-    return res
-      .status(200)
-      .json({
-        message: "User updated successfully",
-        donation: existingUser,
-      });
+    return res.status(200).json({
+      message: "User updated successfully",
+      donation: existingUser,
+    });
   },
 
   async updateProfile(req, res, next) {
@@ -304,7 +305,7 @@ const donationAuthController = {
       accountNumber,
       licenseImage,
       cnicImage,
-      taxFileImage
+      taxFileImage,
     } = req.body;
     const donationId = req.user._id;
 
