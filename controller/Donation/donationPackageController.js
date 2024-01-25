@@ -16,10 +16,12 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const donationPackageController = {
   async addPackage(req, res, next) {
     const donationPackageSchema = Joi.object({
-      donationType: Joi.string().required(),
+      criteriaIds: Joi.string().required(),
+      donationName: Joi.string().required(),
       targetAudience: Joi.string().required(),
       requiredAmount: Joi.number().required(),
       totalDays: Joi.string().required(),
+      description: Joi.string().required(),
       images: Joi.string().required(),
     });
 
@@ -29,18 +31,27 @@ const donationPackageController = {
       return next(error);
     }
     const donationId = req.user._id;
-    const { donationType, targetAudience, requiredAmount, totalDays, images } =
-      req.body;
+    const {
+      criteriaIds,
+      donationName,
+      targetAudience,
+      requiredAmount,
+      totalDays,
+      description,
+      images,
+    } = req.body;
 
     let package;
 
     try {
       const packageToRegister = new Package({
+        criteriaIds,
         donationId,
-        donationType,
+        donationName,
         targetAudience,
         requiredAmount,
         totalDays,
+        description,
         images,
       });
 
@@ -58,10 +69,12 @@ const donationPackageController = {
 
   async editPackage(req, res, next) {
     const donationPackageSchema = Joi.object({
-      donationType: Joi.string(),
+      criteriaIds: Joi.string(),
+      donationName: Joi.string(),
       targetAudience: Joi.string(),
       requiredAmount: Joi.number(),
       totalDays: Joi.string(),
+      description: Joi.string(),
       images: Joi.string(),
     });
 
@@ -70,8 +83,15 @@ const donationPackageController = {
     if (error) {
       return next(error);
     }
-    const { donationType, targetAudience, requiredAmount, totalDays, images } =
-      req.body;
+    const {
+      criteriaIds,
+      donationName,
+      targetAudience,
+      requiredAmount,
+      totalDays,
+      description,
+      images,
+    } = req.body;
 
     const packageId = req.query.packageId;
     const existingPackage = await Package.findById(packageId);
@@ -83,10 +103,12 @@ const donationPackageController = {
     }
 
     // Update only the provided fields
-    if (donationType) existingPackage.donationType = donationType;
+    if (criteriaIds) existingPackage.criteriaIds = criteriaIds;
+    if (donationName) existingPackage.donationName = donationName;
     if (targetAudience) existingPackage.targetAudience = targetAudience;
     if (requiredAmount) existingPackage.requiredAmount = requiredAmount;
     if (totalDays) existingPackage.totalDays = totalDays;
+    if (description) existingPackage.description = description;
     if (images) existingPackage.images = images;
 
     // Save the updated test
@@ -157,7 +179,8 @@ const donationPackageController = {
   //..........dummyApi............//
   async addDonation(req, res, next) {
     try {
-      const { packageId, mrNo, donorName, donationPurpose, donationAmount } = req.body;
+      const { packageId, mrNo, donorName, donationPurpose, donationAmount } =
+        req.body;
       const donationId = req.user._id;
 
       // Create a new donation

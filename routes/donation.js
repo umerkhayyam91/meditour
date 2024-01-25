@@ -1,8 +1,9 @@
 const express = require("express");
 const donationAuthController = require("../controller/Donation/donationAuthController");
 const donationpackageController = require("../controller/Donation/donationPackageController");
-const donationDonarListController = require("../controller/Donation/donationDonorListController");
+const donationDonationsController = require("../controller/Donation/donationDonationsController");
 const donationDashController = require("../controller/Donation/donationDashController");
+const donationCriteriaController = require("../controller/Donation/donationCriteriaController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
@@ -28,9 +29,15 @@ router.get("/donation/getPackage", auth, donationpackageController.getPackage);
 router.get("/donation/getAllPackages", auth, donationpackageController.getAllPackages);
 router.post("/donation/addDonation", auth, donationpackageController.addDonation);
 
-//..........donarLists............///
-router.get("/donation/getAllDonations", auth, donationDonarListController.getAllDonations);
-router.get("/donation/getDonor", donationDonarListController.getDonor);
+//..........donations............///
+router.get("/donation/getAllDonations", auth, donationDonationsController.getAllDonations);
+router.get("/donation/getDonor", donationDonationsController.getDonor);
+
+//..........criteria............///
+router.post("/donation/addCriteria", auth, donationCriteriaController.addCriteria);
+router.put("/donation/editCriteria", auth, donationCriteriaController.editCriteria);
+router.delete("/donation/deleteCriteria", auth, donationCriteriaController.deleteCriteria);
+router.get("/donation/getCriteria", auth, donationCriteriaController.getCriteria);
 
 //.............dashboard.............//
 router.get("/donation/graph", auth, donationDashController.graph);
