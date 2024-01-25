@@ -10,7 +10,7 @@ const donationCriteriaController = {
     const donationCriteriaSchema = Joi.object({
       criteriaName: Joi.string().required(),
       description: Joi.string().required(),
-      image: Joi.number().required(),
+      image: Joi.string().required(),
     });
 
     const { error } = donationCriteriaSchema.validate(req.body);
