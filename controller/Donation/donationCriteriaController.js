@@ -45,9 +45,9 @@ const donationCriteriaController = {
 
   async editCriteria(req, res, next) {
     const donationCriteriaSchema = Joi.object({
-        criteriaName: Joi.string().required(),
-        description: Joi.string().required(),
-        image: Joi.number().required(),
+        criteriaName: Joi.string(),
+        description: Joi.string(),
+        image: Joi.number(),
     });
 
     const { error } = donationCriteriaSchema.validate(req.body);
