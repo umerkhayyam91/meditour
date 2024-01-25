@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const Donation = require("../../models/Donation/donation.js");
+const Donation = require("../../models/Donation/donationCompany.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
 const donationDTO = require("../../dto/donation.js");

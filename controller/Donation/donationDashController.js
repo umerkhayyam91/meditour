@@ -1,6 +1,6 @@
 const Package = require("../../models/Donation/package.js");
 const User = require("../../models/user.js");
-const DonorList = require("../../models/Donation/donorList.js");
+const Donation = require("../../models/Donation/donations.js");
 const moment = require("moment");
 
 async function getAmountCountForWeek(donationId, startDate, endDate) {
@@ -11,7 +11,7 @@ async function getAmountCountForWeek(donationId, startDate, endDate) {
     const nextDate = moment(currentDate).endOf("day");
     // Modify this query based on your actual data structure
     try {
-      const result = await DonorList.aggregate([
+      const result = await Donation.aggregate([
         {
           $match: {
             donationId,
@@ -55,7 +55,7 @@ const docDashController = {
   async dashDetails(req, res, next) {
     try {
       const donationId = req.user._id;
-      const result = await DonorList.aggregate([
+      const result = await Donation.aggregate([
         {
           $match: {
             donationId,
@@ -80,7 +80,7 @@ const docDashController = {
         console.log("No documents found for the specified donationId.");
       }
 
-      const uniqueUserDocs = await DonorList.aggregate([
+      const uniqueUserDocs = await Donation.aggregate([
         { $group: { _id: "$userId", count: { $sum: 1 } } },
         { $count: "uniqueUserIds" },
       ]);

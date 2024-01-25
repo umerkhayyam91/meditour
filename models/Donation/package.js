@@ -12,7 +12,7 @@ const packageSchema = new mongoose.Schema(
         default: [],
       },
     ],
-    donationType: {
+    donationName: {
       type: String,
     },
     targetAudience: {
@@ -22,6 +22,9 @@ const packageSchema = new mongoose.Schema(
       type: Number,
     },
     totalDays: {
+      type: String,
+    },
+    description: {
       type: String,
     },
     images: [

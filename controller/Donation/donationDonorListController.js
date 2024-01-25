@@ -1,4 +1,4 @@
-const DonorList = require("../../models/Donation/donorList.js");
+const DonorList = require("../../models/Donation/donations.js");
 const User = require("../../models/User/user.js");
 
 const donationDonorListController = {
@@ -32,8 +32,8 @@ const donationDonorListController = {
 
   async getDonor(req, res, next) {
     try {
-      const donorId = req.query.donorId;
-      const donor = await User.findById(donorId);
+      const donationListId = req.query.donationListId;
+      const donor = await DonorList.findById(donationListId);
 
       if (!donor) {
         const error = new Error("Donor not found!");

@@ -4,7 +4,7 @@ const donationListSchema = new mongoose.Schema(
   {
     donationId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Donation",
+      ref: "Donation Company",
     },
     packageId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,14 +25,10 @@ const donationListSchema = new mongoose.Schema(
     },
     donationAmount: {
       type: Number,
-    }
+    },
   },
   {
     timestamps: true,
   }
 );
-module.exports = mongoose.model(
-  "Donor List",
-  donationListSchema,
-  "donor list"
-);
+module.exports = mongoose.model("Donations", donationListSchema, "donations");
