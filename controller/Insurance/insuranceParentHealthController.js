@@ -1,9 +1,9 @@
-const IndividualHealth = require("../../models/Insurance/individualHealthInsurance.js");
+const ParentHealth = require("../../models/Insurance/parentsHealthInsurance.js");
 const Joi = require("joi");
-const individualhealthDTO = require("../../dto/Insurance/individualHealth.js");
+const parentHealthDTO = require("../../dto/Insurance/parentHealth.js");
 
 const insuranceHealthController = {
-  async addIndividualHealth(req, res, next) {
+  async addParentHealth(req, res, next) {
     const insuranceRegisterSchema = Joi.object({
       ageCriteria: Joi.string(),
       hospitalizationLimit: Joi.string(),
@@ -63,7 +63,7 @@ const insuranceHealthController = {
     let insurance;
     const insuranceId = req.user._id;
     try {
-      const insuranceToRegister = new IndividualHealth({
+      const insuranceToRegister = new ParentHealth({
         insuranceId,
         ageCriteria,
         hospitalizationLimit,
@@ -90,17 +90,15 @@ const insuranceHealthController = {
       });
 
       insurance = await insuranceToRegister.save();
-      const individualhealthDto = new individualhealthDTO(insurance);
+      const parentHealthDto = new parentHealthDTO(insurance);
 
-      return res
-        .status(201)
-        .json({ insurance: individualhealthDto, auth: true });
+      return res.status(201).json({ insurance: parentHealthDto, auth: true });
     } catch (error) {
       return next(error);
     }
   },
 
-  async editIndividualHealth(req, res, next) {
+  async editParentHealth(req, res, next) {
     const insuranceHealthSchema = Joi.object({
       ageCriteria: Joi.string(),
       hospitalizationLimit: Joi.string(),
@@ -157,12 +155,10 @@ const insuranceHealthController = {
     } = req.body;
 
     const insuranceHealthId = req.query.insuranceHealthId;
-    const existingInsurance = await IndividualHealth.findById(
-      insuranceHealthId
-    );
+    const existingInsurance = await ParentHealth.findById(insuranceHealthId);
 
     if (!existingInsurance) {
-      const error = new Error("Individual Health not found!");
+      const error = new Error("Parent Health not found!");
       error.status = 404;
       return next(error);
     }
@@ -202,37 +198,33 @@ const insuranceHealthController = {
     await existingInsurance.save();
 
     return res.status(200).json({
-      message: "Individual Health updated successfully",
+      message: "Parent Health updated successfully",
       insurance: existingInsurance,
     });
   },
 
-  async deleteIndividualHealth(req, res, next) {
+  async deleteParentHealth(req, res, next) {
     const insuranceHealthId = req.query.insuranceHealthId;
-    const existingInsurance = await IndividualHealth.findById(
-      insuranceHealthId
-    );
+    const existingInsurance = await ParentHealth.findById(insuranceHealthId);
 
     if (!existingInsurance) {
-      const error = new Error("Individual Health not found!");
+      const error = new Error("Parent Health not found!");
       error.status = 404;
       return next(error);
     }
-    await IndividualHealth.findByIdAndDelete({ _id: insuranceHealthId });
+    await ParentHealth.findByIdAndDelete({ _id: insuranceHealthId });
     return res
       .status(200)
-      .json({ message: "Individual Health deleted successfully" });
+      .json({ message: "Parent Health deleted successfully" });
   },
 
-  async getIndividualHealth(req, res, next) {
+  async getParentHealth(req, res, next) {
     try {
       const insuranceHealthId = req.query.insuranceHealthId;
-      const existingInsurance = await IndividualHealth.findById(
-        insuranceHealthId
-      );
+      const existingInsurance = await ParentHealth.findById(insuranceHealthId);
 
       if (!existingInsurance) {
-        const error = new Error("Individual Health not found!");
+        const error = new Error("Parent Health not found!");
         error.status = 404;
         return next(error);
       }
@@ -242,19 +234,17 @@ const insuranceHealthController = {
     }
   },
 
-  async getAllIndividualHealth(req, res, next) {
+  async getAllParentHealth(req, res, next) {
     try {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const insurancePerPage = 10;
       const insuranceId = req.user._id;
-      const totalinsurance = await IndividualHealth.countDocuments({
-        insuranceId,
-      }); // Get the total number of posts for the user
+      const totalinsurance = await ParentHealth.countDocuments({ insuranceId }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalinsurance / insurancePerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * insurancePerPage; // Calculate the number of posts to skip based on the current page
 
-      const insurances = await IndividualHealth.find({ insuranceId })
+      const insurances = await ParentHealth.find({ insuranceId })
         .skip(skip)
         .limit(insurancePerPage);
       let previousPage = page > 1 ? page - 1 : null;

@@ -16,7 +16,7 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const donationPackageController = {
   async addPackage(req, res, next) {
     const donationPackageSchema = Joi.object({
-      criteriaIds: Joi.string().required(),
+      criteriaIds: Joi.array().required(),
       donationName: Joi.string().required(),
       targetAudience: Joi.string().required(),
       requiredAmount: Joi.number().required(),

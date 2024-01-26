@@ -31,7 +31,7 @@ const insuranceSchema = new mongoose.Schema(
     hospitals: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "hospital",
+        ref: "Hospital",
       },
     ],
     laboratories: [
