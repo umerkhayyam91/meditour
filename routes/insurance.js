@@ -4,6 +4,7 @@ const insuranceIndividualHealthController = require("../controller/Insurance/ins
 const insuranceFamilyHealthController = require("../controller/Insurance/insuranceFamilyHealthController");
 const insuranceParentHealthController = require("../controller/Insurance/insuranceParentHealthController");
 const insuranceIndividualTravelController = require("../controller/Insurance/insuranceIndividualTravelController");
+const insuranceFamilyTravelController = require("../controller/Insurance/insuranceFamilyTravelController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
@@ -44,10 +45,17 @@ router.get("/insurance/getAllParentHealth", auth, insuranceParentHealthControlle
 
 //.............individual Travel../.....................//
 router.post("/insurance/addIndividualTravel", auth, insuranceIndividualTravelController.addIndividualTravel);
-router.put("/insurance/addIndividualTravel", auth, insuranceIndividualTravelController.editIndividualTravel);
+router.put("/insurance/editIndividualTravel", auth, insuranceIndividualTravelController.editIndividualTravel);
 router.delete("/insurance/deleteIndividualTravel", auth, insuranceIndividualTravelController.deleteIndividualTravel);
 router.get("/insurance/getIndividualTravel", auth, insuranceIndividualTravelController.getIndividualTravel);
 router.get("/insurance/getAllIndividualTravel", auth, insuranceIndividualTravelController.getAllIndividualTravel);
+
+//.............family Travel../.....................//
+router.post("/insurance/addFamilyTravel", auth, insuranceFamilyTravelController.addFamilyTravel);
+router.put("/insurance/editFamilyTravel", auth, insuranceFamilyTravelController.editFamilyTravel);
+router.delete("/insurance/deleteFamilyTravel", auth, insuranceFamilyTravelController.deleteFamilyTravel);
+router.get("/insurance/getFamilyTravel", auth, insuranceFamilyTravelController.getFamilyTravel);
+router.get("/insurance/getAllFamilyTravel", auth, insuranceFamilyTravelController.getAllFamilyTravel);
 
 //..............verification.........
 router.post("/insurance/sendCodeToEmail", VerificationController.sendCodeToEmail);
