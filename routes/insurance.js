@@ -44,7 +44,7 @@ router.get("/insurance/getAllParentHealth", auth, insuranceParentHealthControlle
 
 //.............individual Travel../.....................//
 router.post("/insurance/addIndividualTravel", auth, insuranceIndividualTravelController.addIndividualTravel);
-router.put("/insurance/editIndividualTravel", auth, insuranceIndividualTravelController.editIndividualTravel);
+router.put("/insurance/addIndividualTravel", auth, insuranceIndividualTravelController.editIndividualTravel);
 router.delete("/insurance/deleteIndividualTravel", auth, insuranceIndividualTravelController.deleteIndividualTravel);
 router.get("/insurance/getIndividualTravel", auth, insuranceIndividualTravelController.getIndividualTravel);
 router.get("/insurance/getAllIndividualTravel", auth, insuranceIndividualTravelController.getAllIndividualTravel);
