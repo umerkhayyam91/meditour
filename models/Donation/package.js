@@ -17,7 +17,7 @@ const packageSchema = new mongoose.Schema(
         default: [],
       },
     ],
-    donationName: {
+    donationTitle: {
       type: String,
     },
     targetAudience: {
