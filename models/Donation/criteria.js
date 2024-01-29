@@ -7,6 +7,7 @@ const donationCriteriaSchema = new mongoose.Schema(
     },
     criteriaName: {
       type: String,
+      enum: ["education", "food"]
     },
     description: {
       type: String,

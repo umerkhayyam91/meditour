@@ -22,7 +22,7 @@ const donationPackageController = {
       requiredAmount: Joi.number().required(),
       totalDays: Joi.string().required(),
       description: Joi.string().required(),
-      images: Joi.string().required(),
+      images: Joi.array().required(),
     });
 
     const { error } = donationPackageSchema.validate(req.body);
@@ -75,7 +75,7 @@ const donationPackageController = {
       requiredAmount: Joi.number(),
       totalDays: Joi.string(),
       description: Joi.string(),
-      images: Joi.string(),
+      images: Joi.array(),
     });
 
     const { error } = donationPackageSchema.validate(req.body);
@@ -170,6 +170,23 @@ const donationPackageController = {
         auth: true,
         previousPage: previousPage,
         nextPage: nextPage,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async getCategoryPackages(req, res, next) {
+    try {
+      const donationId = req.user._id;
+      const criteriaType = req.query.criteriaType;
+
+      const packages = await Package.find({ donationId }).populate("criteriaId");
+        
+      // const medDto = new medDTO(packages);
+      return res.status(200).json({
+        packages: packages,
+        auth: true
       });
     } catch (error) {
       return next(error);

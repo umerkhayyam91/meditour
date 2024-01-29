@@ -27,6 +27,7 @@ router.put("/donation/editPackage", auth, donationpackageController.editPackage)
 router.delete("/donation/deletePackage", auth, donationpackageController.deletePackage);
 router.get("/donation/getPackage", auth, donationpackageController.getPackage);
 router.get("/donation/getAllPackages", auth, donationpackageController.getAllPackages);
+router.get("/donation/getCategoryPackages", auth, donationpackageController.getCategoryPackages);
 router.post("/donation/addDonation", auth, donationpackageController.addDonation);
 
 //..........donations............///
