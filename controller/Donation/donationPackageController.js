@@ -17,7 +17,7 @@ const donationPackageController = {
   async addPackage(req, res, next) {
     const donationPackageSchema = Joi.object({
       criteriaId: Joi.string().required(),
-      donationName: Joi.string().required(),
+      donationTitle: Joi.string().required(),
       targetAudience: Joi.string().required(),
       requiredAmount: Joi.number().required(),
       totalDays: Joi.string().required(),
@@ -33,7 +33,7 @@ const donationPackageController = {
     const donationId = req.user._id;
     const {
       criteriaId,
-      donationName,
+      donationTitle,
       targetAudience,
       requiredAmount,
       totalDays,
@@ -47,7 +47,7 @@ const donationPackageController = {
       const packageToRegister = new Package({
         criteriaId,
         donationId,
-        donationName,
+        donationTitle,
         targetAudience,
         requiredAmount,
         totalDays,
@@ -70,7 +70,7 @@ const donationPackageController = {
   async editPackage(req, res, next) {
     const donationPackageSchema = Joi.object({
       criteriaId: Joi.string(),
-      donationName: Joi.string(),
+      donationTitle: Joi.string(),
       targetAudience: Joi.string(),
       requiredAmount: Joi.number(),
       totalDays: Joi.string(),
@@ -85,7 +85,7 @@ const donationPackageController = {
     }
     const {
       criteriaId,
-      donationName,
+      donationTitle,
       targetAudience,
       requiredAmount,
       totalDays,
@@ -104,7 +104,7 @@ const donationPackageController = {
 
     // Update only the provided fields
     if (criteriaId) existingPackage.criteriaId = criteriaId;
-    if (donationName) existingPackage.donationName = donationName;
+    if (donationTitle) existingPackage.donationTitle = donationTitle;
     if (targetAudience) existingPackage.targetAudience = targetAudience;
     if (requiredAmount) existingPackage.requiredAmount = requiredAmount;
     if (totalDays) existingPackage.totalDays = totalDays;
