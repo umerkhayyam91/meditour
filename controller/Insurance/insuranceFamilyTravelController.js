@@ -229,10 +229,10 @@ const insuranceTravelController = {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const insurancePerPage = 10;
       const insuranceId = req.user._id;
-      const totalinsurance = await FamilyTravel.countDocuments({
+      const totalInsurance = await FamilyTravel.countDocuments({
         insuranceId,
       }); // Get the total number of posts for the user
-      const totalPages = Math.ceil(totalinsurance / insurancePerPage); // Calculate the total number of pages
+      const totalPages = Math.ceil(totalInsurance / insurancePerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * insurancePerPage; // Calculate the number of posts to skip based on the current page
 

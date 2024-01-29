@@ -5,6 +5,7 @@ const insuranceFamilyHealthController = require("../controller/Insurance/insuran
 const insuranceParentHealthController = require("../controller/Insurance/insuranceParentHealthController");
 const insuranceIndividualTravelController = require("../controller/Insurance/insuranceIndividualTravelController");
 const insuranceFamilyTravelController = require("../controller/Insurance/insuranceFamilyTravelController");
+const insuranceRequestController = require("../controller/Insurance/insuranceRequestController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
@@ -56,6 +57,10 @@ router.put("/insurance/editFamilyTravel", auth, insuranceFamilyTravelController.
 router.delete("/insurance/deleteFamilyTravel", auth, insuranceFamilyTravelController.deleteFamilyTravel);
 router.get("/insurance/getFamilyTravel", auth, insuranceFamilyTravelController.getFamilyTravel);
 router.get("/insurance/getAllFamilyTravel", auth, insuranceFamilyTravelController.getAllFamilyTravel);
+
+//..............insurance requests.................//
+router.get("/insurance/getAllRequests", auth, insuranceRequestController.getAllRequests);
+
 
 //..............verification.........
 router.post("/insurance/sendCodeToEmail", VerificationController.sendCodeToEmail);
