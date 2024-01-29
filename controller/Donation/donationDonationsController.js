@@ -30,7 +30,7 @@ const donationCompanyDonationsController = {
       return next(error);
     }
   },
-
+ 
   async getDonor(req, res, next) {
     try {
       const donationId = req.query.donationId;
