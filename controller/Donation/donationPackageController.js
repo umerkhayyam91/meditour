@@ -16,7 +16,7 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const donationPackageController = {
   async addPackage(req, res, next) {
     const donationPackageSchema = Joi.object({
-      criteriaIds: Joi.array().required(),
+      criteriaId: Joi.string().required(),
       donationName: Joi.string().required(),
       targetAudience: Joi.string().required(),
       requiredAmount: Joi.number().required(),
@@ -32,7 +32,7 @@ const donationPackageController = {
     }
     const donationId = req.user._id;
     const {
-      criteriaIds,
+      criteriaId,
       donationName,
       targetAudience,
       requiredAmount,
@@ -45,7 +45,7 @@ const donationPackageController = {
 
     try {
       const packageToRegister = new Package({
-        criteriaIds,
+        criteriaId,
         donationId,
         donationName,
         targetAudience,
@@ -69,7 +69,7 @@ const donationPackageController = {
 
   async editPackage(req, res, next) {
     const donationPackageSchema = Joi.object({
-      criteriaIds: Joi.string(),
+      criteriaId: Joi.string(),
       donationName: Joi.string(),
       targetAudience: Joi.string(),
       requiredAmount: Joi.number(),
@@ -84,7 +84,7 @@ const donationPackageController = {
       return next(error);
     }
     const {
-      criteriaIds,
+      criteriaId,
       donationName,
       targetAudience,
       requiredAmount,
@@ -103,7 +103,7 @@ const donationPackageController = {
     }
 
     // Update only the provided fields
-    if (criteriaIds) existingPackage.criteriaIds = criteriaIds;
+    if (criteriaId) existingPackage.criteriaId = criteriaId;
     if (donationName) existingPackage.donationName = donationName;
     if (targetAudience) existingPackage.targetAudience = targetAudience;
     if (requiredAmount) existingPackage.requiredAmount = requiredAmount;

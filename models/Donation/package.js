@@ -5,12 +5,11 @@ const packageSchema = new mongoose.Schema(
     donationId: {
       type: String,
     },
-    criteriaIds: [
+    criteriaId:
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Donation Criteria",
       },
-    ],
     userIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
