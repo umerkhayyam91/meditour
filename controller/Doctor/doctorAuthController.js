@@ -14,16 +14,15 @@ const docAuthController = {
   async register(req, res, next) {
     const docRegisterSchema = Joi.object({
       name: Joi.string().required(),
-      fatherName: Joi.string().required(),
-      gender: Joi.string().required(),
-      DOB: Joi.string().required(),
-      cnicOrPassNo: Joi.string().required(),
+      cnicOrPassportNo: Joi.string().required(),
       qualification: Joi.string().required(),
       speciality: Joi.string().required(),
+      services: Joi.string().required(),
       clinicName: Joi.string().required(),
-      clinicLicense: Joi.string().required(),
-      licenceExpiryDate: Joi.string().required(),
       clinicAddress: Joi.string().required(),
+      clinicExperiences: Joi.string().required(),
+      pmdcNumber: Joi.string().required(),
+      emergencyNo: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -37,6 +36,8 @@ const docAuthController = {
       accountNumber: Joi.string().required(),
       doctorImage: Joi.string(),
       cnicImage: Joi.string(),
+      clinicLogo: Joi.string(),
+      pmdcImage: Joi.string(),
       taxFileImage: Joi.string(),
     });
 
@@ -47,31 +48,32 @@ const docAuthController = {
     }
 
     const {
-        name,
-        fatherName,
-        gender,
-        DOB,
-        cnicOrPassNo,
-        qualification,
-        speciality,
-        clinicName,
-        clinicLicense,
-        licenceExpiryDate,
-        clinicAddress,
-        state,
-        country,
-        website,
-        twitter,
-        facebook,
-        instagram,
-        incomeTaxNo,
-        salesTaxNo,
-        bankName,
-        accountHolderName,
-        accountNumber,
-        doctorImage,
-        cnicImage,
-        taxFileImage
+      name,
+      cnicOrPassportNo,
+      qualification,
+      speciality,
+      services,
+      clinicName,
+      clinicAddress,
+      clinicExperiences,
+      pmdcNumber,
+      emergencyNo,
+      state,
+      country,
+      website,
+      twitter,
+      facebook,
+      instagram,
+      incomeTaxNo,
+      salesTaxNo,
+      bankName,
+      accountHolderName,
+      accountNumber,
+      doctorImage,
+      cnicImage,
+      clinicLogo,
+      pmdcImage,
+      taxFileImage,
     } = req.body;
 
     let accessToken;
@@ -81,16 +83,15 @@ const docAuthController = {
     try {
       const docToRegister = new Doctor({
         name,
-        fatherName,
-        gender,
-        DOB,
-        cnicOrPassNo,
+        cnicOrPassportNo,
         qualification,
         speciality,
+        services,
         clinicName,
-        clinicLicense,
-        licenceExpiryDate,
         clinicAddress,
+        clinicExperiences,
+        pmdcNumber,
+        emergencyNo,
         state,
         country,
         website,
@@ -104,7 +105,9 @@ const docAuthController = {
         accountNumber,
         doctorImage,
         cnicImage,
-        taxFileImage
+        clinicLogo,
+        pmdcImage,
+        taxFileImage,
       });
 
       doc = await docToRegister.save();
@@ -148,7 +151,9 @@ const docAuthController = {
 
     try {
       // match username
-      doc = await Doctor.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      doc = await Doctor.findOne({ email: { $regex: emailRegex } });
+
       if (!doc) {
         const error = {
           status: 401,
@@ -165,8 +170,6 @@ const docAuthController = {
 
         return next(error);
       }
-
-      
 
       // match password
 
@@ -261,13 +264,34 @@ const docAuthController = {
 
   async updateProfile(req, res, next) {
     const docSchema = Joi.object({
+      name: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      qualification: Joi.string(),
+      speciality: Joi.string(),
+      services: Joi.string(),
+      clinicName: Joi.string(),
+      clinicAddress: Joi.string(),
+      clinicExperiences: Joi.string(),
+      pmdcNumber: Joi.string(),
+      emergencyNo: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      doctorImage: Joi.string(),
+      cnicImage: Joi.string(),
+      pmdcImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = docSchema.validate(req.body);
@@ -276,13 +300,33 @@ const docAuthController = {
       return next(error);
     }
     const {
+      name,
+      cnicOrPassportNo,
+      qualification,
+      speciality,
+      services,
+      clinicName,
+      clinicAddress,
+      clinicExperiences,
+      pmdcNumber,
+      emergencyNo,
+      state,
+      phoneNumber,
+      currentPassword,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      doctorImage,
+      cnicImage,
+      pmdcImage,
+      taxFileImage,
     } = req.body;
     const docId = req.user._id;
 
@@ -293,15 +337,47 @@ const docAuthController = {
       error.status = 404;
       return next(error);
     }
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, doc.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      doc.password = hashedPassword;
+    }
 
     // Update only the provided fields
+    if (name) doc.name = name;
+    if (cnicOrPassportNo) doc.cnicOrPassportNo = cnicOrPassportNo;
+    if (qualification) doc.qualification = qualification;
+    if (speciality) doc.speciality = speciality;
+    if (services) doc.services = services;
+    if (clinicName) doc.clinicName = clinicName;
+    if (clinicAddress) doc.clinicAddress = clinicAddress;
+    if (clinicExperiences) doc.clinicExperiences = clinicExperiences;
+    if (pmdcNumber) doc.pmdcNumber = pmdcNumber;
+    if (emergencyNo) doc.emergencyNo = emergencyNo;
+    if (state) doc.state = state;
+    if (phoneNumber) doc.phoneNumber = phoneNumber;
     if (website) doc.website = website;
     if (facebook) doc.facebook = facebook;
     if (twitter) doc.twitter = twitter;
     if (instagram) doc.instagram = instagram;
+    if (incomeTaxNo) doc.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) doc.salesTaxNo = salesTaxNo;
     if (bankName) doc.bankName = bankName;
     if (accountHolderName) doc.accountHolderName = accountHolderName;
     if (accountNumber) doc.accountNumber = accountNumber;
+    if (doctorImage) doc.doctorImage = doctorImage;
+    if (cnicImage) doc.cnicImage = cnicImage;
+    if (pmdcImage) doc.pmdcImage = pmdcImage;
+    if (taxFileImage) doc.taxFileImage = taxFileImage;
 
     // Save the updated test
     await doc.save();
@@ -374,7 +450,7 @@ const docAuthController = {
     let accessId;
     try {
       accessId = JWTService.verifyAccessToken(accessToken)._id;
-      console.log(accessId)
+      console.log(accessId);
     } catch (e) {
       const error = {
         status: 401,
@@ -409,16 +485,16 @@ const docAuthController = {
       await RefreshToken.updateOne({ userId: id }, { token: refreshToken });
       await AccessToken.updateOne({ userId: accessId }, { token: accessToken });
 
-
       const doc = await Doctor.findOne({ _id: id });
-  
+
       const doctorDTO = new doctorDto(doc);
-  
-      return res.status(200).json({ doctor: doctorDTO, auth: true, accessToken: accessToken });
+
+      return res
+        .status(200)
+        .json({ doctor: doctorDTO, auth: true, accessToken: accessToken });
     } catch (e) {
       return next(e);
     }
-
   },
 };
 

@@ -11,40 +11,26 @@ const donationSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
-    companyFirstName: {
-      type: String,
-    },
-    companySecondName: {
+    companyName: {
       type: String,
     },
     companyLicenseNo: {
       type: String,
     },
-    licenceExpiry: {
+    companyEmergencyNo: {
       type: String,
     },
-    ownerFirstName: {
-      type: String,
-    },
-    ownerLastName: {
+    ownerName: {
       type: String,
     },
     cnicOrPassportNo: {
       type: String,
       required: true,
     },
-    expiryDate: {
-      type: String,
-      required: true,
-    },
     companyAddress: {
       type: String,
       required: true,
-    },  
-    companyExperiences: {
-      type: String,
-      required: true,
-    },  
+    },
     state: {
       type: String,
       required: true,
@@ -93,10 +79,6 @@ const donationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    ownerImage: {
-      type: String,
-      required: true,
-    },
     cnicImage: {
       type: String,
       required: true,
@@ -110,4 +92,8 @@ const donationSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-module.exports = mongoose.model("Donation", donationSchema, "donation companies");
+module.exports = mongoose.model(
+  "Donation Company",
+  donationSchema,
+  "donation companies"
+);

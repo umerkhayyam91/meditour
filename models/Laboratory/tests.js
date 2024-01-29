@@ -7,8 +7,8 @@ const testSchema = new mongoose.Schema(
       required: true,
     },
     labId: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Laboratory",
     },
     testCode: {
       type: Number,

@@ -132,7 +132,7 @@ const pharmMedController = {
 
     return res
       .status(200)
-      .json({ message: "Test updated successfully", test: existingMed });
+      .json({ message: "Medicine updated successfully", medicine: existingMed });
   },
 
   async deleteMed(req, res, next) {
@@ -144,7 +144,7 @@ const pharmMedController = {
       error.status = 404;
       return next(error);
     }
-    await Medicine.deleteOne({ medId });
+    await Medicine.findByIdAndDelete({ _id: medId });
     return res.status(200).json({ message: "Medicine deleted successfully" });
   },
 
@@ -166,32 +166,29 @@ const pharmMedController = {
 
   async getAllMeds(req, res, next) {
     try {
-      console.log(req)
+      console.log(req);
 
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const medPerPage = 10;
       const pharmId = req.user._id;
-      console.log("pharmId", pharmId)
+      console.log("pharmId", pharmId);
       const totalMeds = await Medicine.countDocuments({ pharmId }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalMeds / medPerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * medPerPage; // Calculate the number of posts to skip based on the current page
 
-      const medicines = await Medicine
-        .find({ pharmId })
+      const medicines = await Medicine.find({ pharmId })
         .skip(skip)
         .limit(medPerPage);
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
       // const medDto = new medDTO(medicines);
-      return res
-        .status(200)
-        .json({
-          medicines: medicines,
-          auth: true,
-          previousPage: previousPage,
-          nextPage: nextPage,
-        }); 
+      return res.status(200).json({
+        medicines: medicines,
+        auth: true,
+        previousPage: previousPage,
+        nextPage: nextPage,
+      });
     } catch (error) {
       return next(error);
     }

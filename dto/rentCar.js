@@ -4,17 +4,12 @@ class rentCarDTO {
       this.email = rentCar.email;
       this.phoneNumber = rentCar.phoneNumber;
       this.password = rentCar.password;
-      this.ownerName = rentCar.ownerName;
-      this.fatherName = rentCar.fatherName;
-      this.cnicOrPassportNo = rentCar.cnicOrPassportNo;
-      this.expiryDate = rentCar.expiryDate;
       this.companyName = rentCar.companyName;
-      this.companyLastName = rentCar.companyLastName;
-      this.licenseNo = rentCar.licenseNo;
-      this.licenseExpiry = rentCar.licenseExpiry;
+      this.companyLicenseNo = rentCar.companyLicenseNo;
+      this.companyEmergencyNo = rentCar.companyEmergencyNo;
+      this.ownerName = rentCar.ownerName;
+      this.cnicOrPassportNo = rentCar.cnicOrPassportNo;
       this.companyAddress = rentCar.companyAddress;
-      this.companyExperiences = rentCar.companyExperiences;
-      this.emergencyNo = rentCar.emergencyNo;
       this.state = rentCar.state;
       this.country = rentCar.country;
       this.website = rentCar.website;
@@ -28,7 +23,6 @@ class rentCarDTO {
       this.accountNumber = rentCar.accountNumber;
       this.companyLogo = rentCar.companyLogo;
       this.licenseImage = rentCar.licenseImage;
-      this.ownerImage = rentCar.ownerImage;
       this.cnicImage = rentCar.cnicImage;
       this.taxFileImage = rentCar.taxFileImage;
     }

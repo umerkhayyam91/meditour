@@ -13,14 +13,11 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const ambulanceAuthController = {
   async register(req, res, next) {
     const ambulanceRegisterSchema = Joi.object({
-      companyFirstName: Joi.string().required(),
-      companyLastName: Joi.string().required(),
+      companyName: Joi.string().required(),
       companyLicenseNo: Joi.string().required(),
-      licenceExpiry: Joi.string().required(),
-      ownerFirstName: Joi.string().required(),
-      ownerLastName: Joi.string().required(),
+      companyEmergencyNo: Joi.string().required(),
+      ownerName: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      expiryDate: Joi.string().required(),
       companyAddress: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
@@ -35,7 +32,6 @@ const ambulanceAuthController = {
       accountNumber: Joi.string().required(),
       companyLogo: Joi.string().required(),
       licenseImage: Joi.string().required(),
-      ownerImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
     });
@@ -47,31 +43,27 @@ const ambulanceAuthController = {
     }
 
     const {
-        companyFirstName,
-        companyLastName,
-        companyLicenseNo,
-        licenceExpiry,
-        ownerFirstName,
-        ownerLastName,
-        cnicOrPassportNo,
-        expiryDate,
-        companyAddress,
-        state,
-        country,
-        website,
-        twitter,
-        facebook,
-        instagram,
-        incomeTaxNo,
-        salesTaxNo,
-        bankName,
-        accountHolderName,
-        accountNumber,
-        companyLogo,
-        licenseImage,
-        ownerImage,
-        cnicImage,
-        taxFileImage
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      ownerName,
+      cnicOrPassportNo,
+      companyAddress,
+      state,
+      country,
+      website,
+      twitter,
+      facebook,
+      instagram,
+      incomeTaxNo,
+      salesTaxNo,
+      bankName,
+      accountHolderName,
+      accountNumber,
+      companyLogo,
+      licenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
 
     let accessToken;
@@ -80,14 +72,11 @@ const ambulanceAuthController = {
     let agency;
     try {
       const agencyToRegister = new Agency({
-        companyFirstName,
-        companyLastName,
+        companyName,
         companyLicenseNo,
-        licenceExpiry,
-        ownerFirstName,
-        ownerLastName,
+        companyEmergencyNo,
+        ownerName,
         cnicOrPassportNo,
-        expiryDate,
         companyAddress,
         state,
         country,
@@ -102,9 +91,8 @@ const ambulanceAuthController = {
         accountNumber,
         companyLogo,
         licenseImage,
-        ownerImage,
         cnicImage,
-        taxFileImage
+        taxFileImage,
       });
 
       agency = await agencyToRegister.save();
@@ -112,10 +100,7 @@ const ambulanceAuthController = {
       // token generation
       accessToken = JWTService.signAccessToken({ _id: agency._id }, "365d");
 
-      refreshToken = JWTService.signRefreshToken(
-        { _id: agency._id },
-        "365d"
-      );
+      refreshToken = JWTService.signRefreshToken({ _id: agency._id }, "365d");
     } catch (error) {
       return next(error);
     }
@@ -125,7 +110,6 @@ const ambulanceAuthController = {
     await JWTService.storeAccessToken(accessToken, agency._id);
 
     // 6. response send
-
 
     return res
       .status(201)
@@ -150,7 +134,8 @@ const ambulanceAuthController = {
 
     try {
       // match username
-      agency = await Agency.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      agency = await Agency.findOne({ email: { $regex: emailRegex } });
       if (!agency) {
         const error = {
           status: 401,
@@ -184,10 +169,7 @@ const ambulanceAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken(
-      { _id: agency._id },
-      "365d"
-    );
+    const accessToken = JWTService.signAccessToken({ _id: agency._id }, "365d");
     const refreshToken = JWTService.signRefreshToken(
       { _id: agency._id },
       "365d"
@@ -262,18 +244,37 @@ const ambulanceAuthController = {
 
     return res
       .status(200)
-      .json({ message: "User updated successfully", travelAgency: existingUser });
+      .json({
+        message: "User updated successfully",
+        travelAgency: existingUser,
+      });
   },
 
   async updateProfile(req, res, next) {
     const agencySchema = Joi.object({
+      companyName: Joi.string(),
+      companyLicenseNo: Joi.string(),
+      companyEmergencyNo: Joi.string(),
+      ownerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      companyAddress: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      licenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = agencySchema.validate(req.body);
@@ -282,13 +283,28 @@ const ambulanceAuthController = {
       return next(error);
     }
     const {
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      ownerName,
+      cnicOrPassportNo,
+      companyAddress,
+      state,
+      phoneNumber,
+      currentPassword,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      licenseImage,
+      cnicImage,
+      taxFileImage
     } = req.body;
     const agencyId = req.user._id;
 
@@ -300,14 +316,42 @@ const ambulanceAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, agency.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      agency.password = hashedPassword;
+    }
+
     // Update only the provided fields
-    if (website) agency.website = website;
-    if (facebook) agency.facebook = facebook;
-    if (twitter) agency.twitter = twitter;
-    if (instagram) agency.instagram = instagram;
-    if (bankName) agency.bankName = bankName;
-    if (accountHolderName) agency.accountHolderName = accountHolderName;
-    if (accountNumber) agency.accountNumber = accountNumber;
+    if (companyName) rentCar.companyName = companyName;
+    if (companyLicenseNo) rentCar.companyLicenseNo = companyLicenseNo;
+    if (companyEmergencyNo) rentCar.companyEmergencyNo = companyEmergencyNo;
+    if (ownerName) rentCar.ownerName = ownerName;
+    if (cnicOrPassportNo) rentCar.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) rentCar.companyAddress = companyAddress;
+    if (state) rentCar.state = state;
+    if (phoneNumber) rentCar.phoneNumber = phoneNumber;
+    if (website) rentCar.website = website;
+    if (facebook) rentCar.facebook = facebook;
+    if (twitter) rentCar.twitter = twitter;
+    if (instagram) rentCar.instagram = instagram;
+    if (incomeTaxNo) rentCar.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) rentCar.salesTaxNo = salesTaxNo;
+    if (bankName) rentCar.bankName = bankName;
+    if (accountHolderName) rentCar.accountHolderName = accountHolderName;
+    if (accountNumber) rentCar.accountNumber = accountNumber;
+    if (licenseImage) rentCar.licenseImage = licenseImage;
+    if (cnicImage) rentCar.cnicImage = cnicImage;
+    if (taxFileImage) rentCar.taxFileImage = taxFileImage;
 
     // Save the updated test
     await agency.save();

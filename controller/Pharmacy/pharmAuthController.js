@@ -7,26 +7,24 @@ const PharmDTO = require("../../dto/pharm.js");
 const JWTService = require("../../services/JWTService.js");
 const RefreshToken = require("../../models/token.js");
 const AccessToken = require("../../models/accessToken.js");
-const LabDTO = require("../../dto/lab.js")
+const LabDTO = require("../../dto/lab.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const pharmAuthController = {
+const pharmAuthController = { 
   async register(req, res, next) {
     const pharmRegisterSchema = Joi.object({
-      pharmImage: Joi.string().required(),
-      ownerImage: Joi.string().required(),
+      pharmacyLogo: Joi.string().required(),
+      pharmacyLicenseImage: Joi.string().required(),
+      cnicImage: Joi.string().required(),
       taxFileImage: Joi.string().required(),
-      pharmFirstName: Joi.string().required(),
-      pharmLastName: Joi.string().required(),
-      pharmLicenseNumber: Joi.string().required(),
-      licenceExpiryDate: Joi.string().required(),
-      OwnerFirstName: Joi.string().required(),
-      OwnerMiddleName: Joi.string().required(),
-      OwnerLastName: Joi.string().required(),
+      pharmacyFirstName: Joi.string().required(),
+      pharmacyLastName: Joi.string().required(),
+      pharmacyLicenseNumber: Joi.string().required(),
+      ownerName: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      cnicOrPassportExpiry: Joi.string().required(),
-      pharmAddress: Joi.string().required(),
+      pharmacyAddress: Joi.string().required(),
+      emergencyNo: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -47,16 +45,17 @@ const pharmAuthController = {
     }
 
     const {
-      pharmFirstName,
-      pharmLastName,
-      pharmLicenseNumber,
-      licenceExpiryDate,
-      OwnerFirstName,
-      OwnerMiddleName,
-      OwnerLastName,
+      pharmacyLogo,
+      pharmacyLicenseImage,
+      cnicImage,
+      taxFileImage,
+      pharmacyFirstName,
+      pharmacyLastName,
+      pharmacyLicenseNumber,
+      ownerName,
       cnicOrPassportNo,
-      cnicOrPassportExpiry,
-      pharmAddress,
+      pharmacyAddress,
+      emergencyNo,
       state,
       country,
       website,
@@ -68,9 +67,6 @@ const pharmAuthController = {
       bankName,
       accountHolderName,
       accountNumber,
-      pharmImage,
-      ownerImage,
-      taxFileImage,
     } = req.body;
 
     let accessToken;
@@ -79,16 +75,17 @@ const pharmAuthController = {
     let pharm;
     try {
       const pharmToRegister = new Pharmacy({
-        pharmFirstName,
-        pharmLastName,
-        pharmLicenseNumber,
-        licenceExpiryDate,
-        OwnerFirstName,
-        OwnerMiddleName,
-        OwnerLastName,
+        pharmacyLogo,
+        pharmacyLicenseImage,
+        cnicImage,
+        taxFileImage,
+        pharmacyFirstName,
+        pharmacyLastName,
+        pharmacyLicenseNumber,
+        ownerName,
         cnicOrPassportNo,
-        cnicOrPassportExpiry,
-        pharmAddress,
+        pharmacyAddress,
+        emergencyNo,
         state,
         country,
         website,
@@ -100,9 +97,6 @@ const pharmAuthController = {
         bankName,
         accountHolderName,
         accountNumber,
-        pharmImage,
-        ownerImage,
-        taxFileImage,
       });
 
       pharm = await pharmToRegister.save();
@@ -119,20 +113,8 @@ const pharmAuthController = {
     await JWTService.storeRefreshToken(refreshToken, pharm._id);
     await JWTService.storeAccessToken(accessToken, pharm._id);
 
-    // send tokens in cookie
-    // res.cookie("accessToken", accessToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
-
-    // res.cookie("refreshToken", refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24,
-    //   httpOnly: true,
-    // });
-
     // 6. response send
 
-    // const pharmDTO = new PharmDTO(pharm);
 
     return res
       .status(201)
@@ -157,7 +139,8 @@ const pharmAuthController = {
 
     try {
       // match username
-      pharm = await Pharmacy.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      pharm = await Pharmacy.findOne({ email: { $regex: emailRegex } });
       if (!pharm) {
         const error = {
           status: 401,
@@ -174,8 +157,6 @@ const pharmAuthController = {
 
         return next(error);
       }
-
-      
 
       // match password
 
@@ -194,7 +175,10 @@ const pharmAuthController = {
     }
 
     const accessToken = JWTService.signAccessToken({ _id: pharm._id }, "365d");
-    const refreshToken = JWTService.signRefreshToken({ _id: pharm._id }, "365d");
+    const refreshToken = JWTService.signRefreshToken(
+      { _id: pharm._id },
+      "365d"
+    );
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
@@ -280,13 +264,30 @@ const pharmAuthController = {
 
   async updateProfile(req, res, next) {
     const pharmSchema = Joi.object({
+      pharmacyFirstName: Joi.string(),
+      pharmacyLastName: Joi.string(),
+      pharmacyLicenseNumber: Joi.string(),
+      ownerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      pharmacyAddress: Joi.string(),
+      emergencyNo: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      pharmacyLicenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = pharmSchema.validate(req.body);
@@ -295,13 +296,29 @@ const pharmAuthController = {
       return next(error);
     }
     const {
+      pharmacyFirstName,
+      pharmacyLastName,
+      pharmacyLicenseNumber,
+      ownerName,
+      cnicOrPassportNo,
+      pharmacyAddress,
+      emergencyNo,
+      state,
+      phoneNumber,
+      currentPassword,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      pharmacyLicenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
     const pharmId = req.user._id;
 
@@ -313,14 +330,43 @@ const pharmAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, pharm.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      pharm.password = hashedPassword;
+    }
+
     // Update only the provided fields
+    if (pharmacyFirstName) pharm.pharmacyFirstName = pharmacyFirstName;
+    if (pharmacyLastName) pharm.pharmacyLastName = pharmacyLastName;
+    if (pharmacyLicenseNumber) pharm.pharmacyLicenseNumber = pharmacyLicenseNumber;
+    if (ownerName) pharm.ownerName = ownerName;
+    if (cnicOrPassportNo) pharm.cnicOrPassportNo = cnicOrPassportNo;
+    if (pharmacyAddress) pharm.pharmacyAddress = pharmacyAddress;
+    if (emergencyNo) pharm.emergencyNo = emergencyNo;
+    if (state) pharm.state = state;
+    if (phoneNumber) pharm.phoneNumber = phoneNumber;
     if (website) pharm.website = website;
     if (facebook) pharm.facebook = facebook;
     if (twitter) pharm.twitter = twitter;
     if (instagram) pharm.instagram = instagram;
+    if (incomeTaxNo) pharm.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) pharm.salesTaxNo = salesTaxNo;
     if (bankName) pharm.bankName = bankName;
     if (accountHolderName) pharm.accountHolderName = accountHolderName;
     if (accountNumber) pharm.accountNumber = accountNumber;
+    if (pharmacyLicenseImage) pharm.pharmacyLicenseImage = pharmacyLicenseImage;
+    if (cnicImage) pharm.cnicImage = cnicImage;
+    if (taxFileImage) pharm.taxFileImage = taxFileImage;
 
     // Save the updated test
     await pharm.save();
@@ -395,7 +441,7 @@ const pharmAuthController = {
     let accessId;
     try {
       accessId = JWTService.verifyAccessToken(accessToken)._id;
-      console.log(accessId)
+      console.log(accessId);
     } catch (e) {
       const error = {
         status: 401,
@@ -442,14 +488,15 @@ const pharmAuthController = {
       //   httpOnly: true,
       // });
       const pharm = await Pharmacy.findOne({ _id: id });
-  
+
       const pharmDto = new PharmDTO(pharm);
-  
-      return res.status(200).json({ pharm: pharmDto, auth: true, accessToken: accessToken });
+
+      return res
+        .status(200)
+        .json({ pharm: pharmDto, auth: true, accessToken: accessToken });
     } catch (e) {
       return next(e);
     }
-
   },
 };
 

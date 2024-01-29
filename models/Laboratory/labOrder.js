@@ -10,8 +10,8 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
   labId: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+        ref: "Laboratory",
   },
   testName: {
     type: String,

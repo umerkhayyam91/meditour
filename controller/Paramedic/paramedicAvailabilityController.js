@@ -8,7 +8,7 @@ const {
 const docAvailabilityController = {
   async addAvailability(req, res, next) {
     try {
-      const { availability, hospitalId, availabilityType } = req.body;
+      const { availability, hospitalId, availabilityType, consultancyType } = req.body;
       const doctorId = req.user._id;
 
       // Check if doctor availability already exists
@@ -25,7 +25,7 @@ const docAvailabilityController = {
       }
 
       // Check if the availability is for the clinic or a specific hospital
-      if (hospitalId && availabilityType == "hospital") {
+      if (hospitalId && availabilityType == "hospital" && consultancyType=="physical") {
         // Find or create hospitalAvailability
         let hospitalAvailability =
           doctorAvailability.hospitalAvailabilities.find(
@@ -35,7 +35,7 @@ const docAvailabilityController = {
         if (!hospitalAvailability) {
           hospitalAvailability = {
             hospitalId: hospitalId,
-            availability: [],
+            physicalAvailability: [],
           };
           doctorAvailability.hospitalAvailabilities.push(hospitalAvailability);
           await doctorAvailability.save();
@@ -44,11 +44,11 @@ const docAvailabilityController = {
           );
         }
 
-        hospitalAvailability.availability =
-          hospitalAvailability.availability || [];
+        hospitalAvailability.physicalAvailability =
+          hospitalAvailability.physicalAvailability || [];
 
         availability.forEach((dayAvailability) => {
-          const existingDay = hospitalAvailability.availability.find(
+          const existingDay = hospitalAvailability.physicalAvailability.find(
             (day) => day.dayOfWeek === dayAvailability.dayOfWeek
           );
 
@@ -56,16 +56,53 @@ const docAvailabilityController = {
             existingDay.periods = dayAvailability.periods;
           } else {
             const newAvailability = { ...dayAvailability }; // Create a copy
-            hospitalAvailability.availability.push(newAvailability);
+            hospitalAvailability.physicalAvailability.push(newAvailability);
           }
         });
 
         await doctorAvailability.save();
-      } else if (availabilityType == "clinic") {
+
+
+      }else if (hospitalId && availabilityType == "hospital" && consultancyType=="video"){
+        let hospitalAvailability =
+        doctorAvailability.hospitalAvailabilities.find(
+          (hospital) => String(hospital.hospitalId) === String(hospitalId)
+        );
+
+      if (!hospitalAvailability) {
+        hospitalAvailability = {
+          hospitalId: hospitalId,
+          videoAvailability: [],
+        };
+        doctorAvailability.hospitalAvailabilities.push(hospitalAvailability);
+        await doctorAvailability.save();
+        hospitalAvailability = doctorAvailability.hospitalAvailabilities.find(
+          (hospital) => String(hospital.hospitalId) === String(hospitalId)
+        );
+      }
+
+      hospitalAvailability.videoAvailability =
+        hospitalAvailability.videoAvailability || [];
+
+      availability.forEach((dayAvailability) => {
+        const existingDay = hospitalAvailability.videoAvailability.find(
+          (day) => day.dayOfWeek === dayAvailability.dayOfWeek
+        );
+
+        if (existingDay) {
+          existingDay.periods = dayAvailability.periods;
+        } else {
+          const newAvailability = { ...dayAvailability }; // Create a copy
+          hospitalAvailability.videoAvailability.push(newAvailability);
+        }
+      });
+
+      await doctorAvailability.save();
+      } else if (availabilityType == "clinic" && consultancyType=="physical") {
         // Update or add new clinic availability for each day
         availability.forEach((dayAvailability) => {
           const existingDay =
-            doctorAvailability.clinicAvailability.availability.find(
+            doctorAvailability.clinicAvailability.physicalAvailability.find(
               (day) => day.dayOfWeek === dayAvailability.dayOfWeek
             );
 
@@ -74,7 +111,25 @@ const docAvailabilityController = {
             existingDay.periods = dayAvailability.periods;
           } else {
             // Add new day's availability
-            doctorAvailability.clinicAvailability.availability.push(
+            doctorAvailability.clinicAvailability.physicalAvailability.push(
+              dayAvailability
+            );
+          }
+        });
+      } else if (availabilityType == "clinic" && consultancyType=="video") {
+        // Update or add new clinic availability for each day
+        availability.forEach((dayAvailability) => {
+          const existingDay =
+            doctorAvailability.clinicAvailability.videoAvailability.find(
+              (day) => day.dayOfWeek === dayAvailability.dayOfWeek
+            );
+
+          if (existingDay) {
+            // Update existing day's availability
+            existingDay.periods = dayAvailability.periods;
+          } else {
+            // Add new day's availability
+            doctorAvailability.clinicAvailability.videoAvailability.push(
               dayAvailability
             );
           }

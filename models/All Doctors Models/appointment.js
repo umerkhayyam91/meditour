@@ -20,23 +20,20 @@ const appointmentSchema = new mongoose.Schema(
     },
     endTime: {
       type: String,
-      required: true,
     },
     appointmentType: {
       type: String,
-      enum: ["videoConsultation", "inHouse", "clinic"],
+      enum: ["videoConsultation", "physical"],
     },
     status: {
       type: String,
-      required: true,
+      enum: ["pending", "completed"],
     },
     ePrescription: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
     },
     notes: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
     },
   },
   {

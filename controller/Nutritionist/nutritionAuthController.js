@@ -151,7 +151,8 @@ const docAuthController = {
 
     try {
       // match username
-      doc = await Nutritionist.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      doc = await Nutritionist.findOne({ email: { $regex: emailRegex } });
       if (!doc) {
         const error = {
           status: 401,
@@ -262,13 +263,34 @@ const docAuthController = {
 
   async updateProfile(req, res, next) {
     const docSchema = Joi.object({
+      name: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      qualification: Joi.string(),
+      speciality: Joi.string(),
+      services : Joi.string(),
+      clinicName : Joi.string(),
+      clinicAddress : Joi.string(),
+      clinicExperiences : Joi.string(),
+      pmdcNumber : Joi.string(),
+      emergencyNo: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      doctorImage: Joi.string(),
+      cnicImage: Joi.string(),
+      pmdcImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = docSchema.validate(req.body);
@@ -277,13 +299,33 @@ const docAuthController = {
       return next(error);
     }
     const {
+      name,
+      cnicOrPassportNo,
+      qualification,
+      speciality,
+      services ,
+      clinicName ,
+      clinicAddress ,
+      clinicExperiences ,
+      pmdcNumber ,
+      emergencyNo,
+      state,
+      phoneNumber,
+      currentPassword,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      doctorImage,
+      cnicImage,
+      pmdcImage,
+      taxFileImage,
     } = req.body;
     const docId = req.user._id;
 
@@ -295,14 +337,47 @@ const docAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, doc.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      doc.password = hashedPassword;
+    }
+
     // Update only the provided fields
+    if (name) doc.name = name;
+    if (cnicOrPassportNo) doc.cnicOrPassportNo = cnicOrPassportNo;
+    if (qualification) doc.qualification = qualification;
+    if (speciality) doc.speciality = speciality;
+    if (services) doc.services = services;
+    if (clinicName) doc.clinicName = clinicName;
+    if (clinicAddress) doc.clinicAddress = clinicAddress;
+    if (clinicExperiences) doc.clinicExperiences = clinicExperiences;
+    if (pmdcNumber) doc.pmdcNumber = pmdcNumber;
+    if (emergencyNo) doc.emergencyNo = emergencyNo; 
+    if (state) doc.state = state;
+    if (phoneNumber) doc.phoneNumber = phoneNumber;
     if (website) doc.website = website;
     if (facebook) doc.facebook = facebook;
     if (twitter) doc.twitter = twitter;
     if (instagram) doc.instagram = instagram;
+    if (incomeTaxNo) doc.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) doc.salesTaxNo = salesTaxNo;
     if (bankName) doc.bankName = bankName;
     if (accountHolderName) doc.accountHolderName = accountHolderName;
     if (accountNumber) doc.accountNumber = accountNumber;
+    if (doctorImage) doc.doctorImage = doctorImage;
+    if (cnicImage) doc.cnicImage = cnicImage;
+    if (pmdcImage) doc.pmdcImage = pmdcImage;
+    if (taxFileImage) doc.taxFileImage = taxFileImage;
 
     // Save the updated test
     await doc.save();

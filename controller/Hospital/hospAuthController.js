@@ -15,18 +15,14 @@ const hospAuthController = {
   async register(req, res, next) {
     const pharmRegisterSchema = Joi.object({
       hospitalLogo: Joi.string().required(),
-      pmdcImage: Joi.string().required(),
+      registrationImage: Joi.string().required(),
       taxFileImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
-      hospitalFirstName: Joi.string().required(),
-      hospitalLastName: Joi.string().required(),
-      pmdcNumber: Joi.string().required(),
-      pmdcExpiryDate: Joi.string().required(),
-      authFirstName: Joi.string().required(),
-      authMiddleName: Joi.string().required(),
-      authLastName: Joi.string().required(),
+      hospitalName: Joi.string().required(),
+      hospitalRegNo: Joi.string().required(),
+      emergencyNo: Joi.string().required(),
+      ownerName: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      cnicOrPassportExpiry: Joi.string().required(),
       hospitalAddress: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
@@ -48,31 +44,27 @@ const hospAuthController = {
     }
 
     const {
-        hospitalLogo,
-        pmdcImage,
-        taxFileImage,
-        cnicImage,
-        hospitalFirstName,
-        hospitalLastName,
-        pmdcNumber,
-        pmdcExpiryDate,
-        authFirstName,
-        authMiddleName,
-        authLastName,
-        cnicOrPassportNo,
-        cnicOrPassportExpiry,
-        hospitalAddress,
-        state,
-        country,
-        website,
-        twitter,
-        facebook,
-        instagram,
-        incomeTaxNo,
-        salesTaxNo,
-        bankName,
-        accountHolderName,
-        accountNumber
+      hospitalLogo,
+      registrationImage,
+      taxFileImage,
+      cnicImage,
+      hospitalName,
+      hospitalRegNo,
+      emergencyNo,
+      ownerName,
+      cnicOrPassportNo,
+      hospitalAddress,
+      state,
+      country,
+      website,
+      twitter,
+      facebook,
+      instagram,
+      incomeTaxNo,
+      salesTaxNo,
+      bankName,
+      accountHolderName,
+      accountNumber,
     } = req.body;
 
     let accessToken;
@@ -82,18 +74,14 @@ const hospAuthController = {
     try {
       const hospToRegister = new Hospital({
         hospitalLogo,
-        pmdcImage,
+        registrationImage,
         taxFileImage,
         cnicImage,
-        hospitalFirstName,
-        hospitalLastName,
-        pmdcNumber,
-        pmdcExpiryDate,
-        authFirstName,
-        authMiddleName,
-        authLastName,
+        hospitalName,
+        hospitalRegNo,
+        emergencyNo,
+        ownerName,
         cnicOrPassportNo,
-        cnicOrPassportExpiry,
         hospitalAddress,
         state,
         country,
@@ -105,7 +93,7 @@ const hospAuthController = {
         salesTaxNo,
         bankName,
         accountHolderName,
-        accountNumber
+        accountNumber,
       });
 
       hospital = await hospToRegister.save();
@@ -122,12 +110,11 @@ const hospAuthController = {
     await JWTService.storeRefreshToken(refreshToken, hospital._id);
     await JWTService.storeAccessToken(accessToken, hospital._id);
 
-
     // const hospDto = new HospDTO(hospital);
 
     return res
       .status(201)
-      .json({ Hospital: hospital, auth: true, token: accessToken });
+      .json({ hospital: hospital, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {
@@ -148,7 +135,8 @@ const hospAuthController = {
 
     try {
       // match username
-      hosp = await Hospital.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      hosp = await Hospital.findOne({ email: { $regex: emailRegex }  });
       if (!hosp) {
         const error = {
           status: 401,
@@ -183,10 +171,7 @@ const hospAuthController = {
     }
 
     const accessToken = JWTService.signAccessToken({ _id: hosp._id }, "365d");
-    const refreshToken = JWTService.signRefreshToken(
-      { _id: hosp._id },
-      "365d"
-    );
+    const refreshToken = JWTService.signRefreshToken({ _id: hosp._id }, "365d");
     // update refresh token in database
     try {
       await RefreshToken.updateOne(
@@ -226,7 +211,7 @@ const hospAuthController = {
 
     return res
       .status(200)
-      .json({ Hospital: hospDto, auth: true, token: accessToken });
+      .json({ hospital: hospDto, auth: true, token: accessToken });
   },
 
   async completeSignup(req, res, next) {
@@ -272,13 +257,29 @@ const hospAuthController = {
 
   async updateProfile(req, res, next) {
     const hospSchema = Joi.object({
+      hospitalName: Joi.string(),
+      hospitalRegNo: Joi.string(),
+      emergencyNo: Joi.string(),
+      OwnerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      hospitalAddress: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      registrationImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = hospSchema.validate(req.body);
@@ -287,13 +288,28 @@ const hospAuthController = {
       return next(error);
     }
     const {
+      hospitalName,
+      hospitalRegNo,
+      emergencyNo,
+      OwnerName,
+      cnicOrPassportNo,
+      hospitalAddress,
+      state,
+      phoneNumber,
+      currentPassword,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      registrationImage,
+      cnicImage,
+      taxFileImage
     } = req.body;
     const hospId = req.user._id;
 
@@ -305,21 +321,48 @@ const hospAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, hosp.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      hosp.password = hashedPassword;
+    }
+
     // Update only the provided fields
+    if (hospitalName) hosp.hospitalName = hospitalName;
+    if (hospitalRegNo) hosp.hospitalRegNo = hospitalRegNo;
+    if (emergencyNo) hosp.emergencyNo = emergencyNo;
+    if (OwnerName) hosp.OwnerName = OwnerName;
+    if (cnicOrPassportNo) hosp.cnicOrPassportNo = cnicOrPassportNo;
+    if (hospitalAddress) hosp.hospitalAddress = hospitalAddress;
+    if (state) hosp.state = state;
+    if (phoneNumber) hosp.phoneNumber = phoneNumber;
     if (website) hosp.website = website;
     if (facebook) hosp.facebook = facebook;
     if (twitter) hosp.twitter = twitter;
     if (instagram) hosp.instagram = instagram;
+    if (incomeTaxNo) hosp.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) hosp.salesTaxNo = salesTaxNo;
     if (bankName) hosp.bankName = bankName;
     if (accountHolderName) hosp.accountHolderName = accountHolderName;
     if (accountNumber) hosp.accountNumber = accountNumber;
-
+    if (registrationImage) hosp.registrationImage = registrationImage;
+    if (cnicImage) hosp.cnicImage = cnicImage;
+    if (taxFileImage) hosp.taxFileImage = taxFileImage;
     // Save the updated test
     await hosp.save();
 
     return res
       .status(200)
-      .json({ message: "Hospital updated successfully", Hospital: hosp });
+      .json({ message: "Hospital updated successfully", hospital: hosp });
   },
 
   async logout(req, res, next) {

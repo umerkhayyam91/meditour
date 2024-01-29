@@ -4,16 +4,13 @@ class PharmDTO {
       this.email = pharm.email;
       this.phoneNumber = pharm.phoneNumber;
       this.password = pharm.password;
-      this.pharmFirstName = pharm.pharmFirstName;
-      this.pharmLastName = pharm.pharmLastName;
-      this.pharmLicenseNumber = pharm.pharmLicenseNumber;
-      this.licenceExpiryDate = pharm.licenceExpiryDate;
-      this.OwnerFirstName = pharm.OwnerFirstName;
-      this.OwnerMiddleName = pharm.OwnerMiddleName;
-      this.OwnerLastName = pharm.OwnerLastName;
+      this.pharmacyFirstName = pharm.pharmacyFirstName;
+      this.pharmacyLastName = pharm.pharmacyLastName;
+      this.pharmacyLicenseNumber = pharm.pharmacyLicenseNumber;
+      this.OwnerName = pharm.OwnerName;
       this.cnicOrPassportNo = pharm.cnicOrPassportNo;
-      this.cnicOrPassportExpiry = pharm.cnicOrPassportExpiry;
-      this.pharmAddress = pharm.pharmAddress;
+      this.pharmacyAddress = pharm.pharmacyAddress;
+      this.emergencyNo = pharm.emergencyNo;
       this.state = pharm.state;
       this.country = pharm.country;
       this.website = pharm.website;
@@ -25,8 +22,9 @@ class PharmDTO {
       this.bankName = pharm.bankName;
       this.accountHolderName = pharm.accountHolderName;
       this.accountNumber = pharm.accountNumber;
-      this.pharmImage = pharm.pharmImage;
-      this.ownerImage = pharm.ownerImage;
+      this.pharmacyLogo = pharm.pharmacyLogo;
+      this.pharmacyLicenseImage = pharm.pharmacyLicenseImage;
+      this.cnicImage = pharm.cnicImage;
       this.taxFileImage = pharm.taxFileImage;
     }
   }

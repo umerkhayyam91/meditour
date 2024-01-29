@@ -4,15 +4,11 @@ class hospitalDTO {
       this.email = hospital.email;
       this.phoneNumber = hospital.phoneNumber;
       this.password = hospital.password;
-      this.hospitalFirstName = hospital.hospitalFirstName;
-      this.hospitalLastName = hospital.hospitalLastName;
-      this.pmdcNumber = hospital.pmdcNumber;
-      this.pmdcExpiryDate = hospital.pmdcExpiryDate;
-      this.authFirstName = hospital.authFirstName;
-      this.authMiddleName = hospital.authMiddleName;
-      this.authLastName = hospital.authLastName;
+      this.hospitalName = hospital.hospitalName;
+      this.hospitalRegNo = hospital.hospitalRegNo;
+      this.emergencyNo = hospital.emergencyNo;
+      this.ownerName = hospital.ownerName;
       this.cnicOrPassportNo = hospital.cnicOrPassportNo;
-      this.cnicOrPassportExpiry = hospital.cnicOrPassportExpiry;
       this.hospitalAddress = hospital.hospitalAddress;
       this.state = hospital.state;
       this.country = hospital.country;
@@ -26,7 +22,7 @@ class hospitalDTO {
       this.accountHolderName = hospital.accountHolderName;
       this.accountNumber = hospital.accountNumber;
       this.hospitalLogo = hospital.hospitalLogo;
-      this.pmdcImage = hospital.pmdcImage;
+      this.registrationImage = hospital.registrationImage;
       this.taxFileImage = hospital.taxFileImage;
       this.cnicImage = hospital.cnicImage;
     }

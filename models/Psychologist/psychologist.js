@@ -15,19 +15,7 @@ const psychologistSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    gender: {
-      type: String,
-      required: true,
-    },
-    fatherName: {
-      type: String,
-      required: true,
-    },
     cnicOrPassportNo: {
-      type: String,
-      required: true,
-    },
-    cnicOrPassportExpiry: {
       type: String,
       required: true,
     },
@@ -43,19 +31,7 @@ const psychologistSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    clinicFirstName: {
-      type: String,
-      required: true,
-    },
-    clinicLastName: {
-      type: String,
-      required: true,
-    },
-    pmdcLiscenceNo: {
-      type: String,
-      required: true,
-    },
-    pmdcExpiryDate: {
+    clinicName: {
       type: String,
       required: true,
     },
@@ -63,7 +39,11 @@ const psychologistSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    clinicExperiences: {
+    clinicExperiences: {  
+      type: String,
+      required: true,
+    },
+    pmdcNumber: {
       type: String,
       required: true,
     },

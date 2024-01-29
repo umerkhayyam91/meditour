@@ -142,24 +142,23 @@ const ambulanceCrudController = {
     // Save the updated ambulance
     await existingAmbulance.save();
 
-    return res
-      .status(200)
-      .json({
-        message: "Test updated successfully",
-        ambulance: existingAmbulance,
-      });
+    return res.status(200).json({
+      message: "Test updated successfully",
+      ambulance: existingAmbulance,
+    });
   },
 
   async deleteAmbulance(req, res, next) {
     const ambulanceId = req.query.ambulanceId;
-    const existingAmbulance = await Abulance.findById(ambulanceId);
+    const existingAmbulance = await Ambulance.findById(ambulanceId);
 
     if (!existingAmbulance) {
       const error = new Error("Ambulance not found!");
       error.status = 404;
       return next(error);
     }
-    await Ambulance.deleteOne({ ambulanceId });
+    await Ambulance.deleteOne({ _id: ambulanceId });
+    console.log(existingAmbulance)
     return res.status(200).json({ message: "Ambulance deleted successfully" });
   },
 

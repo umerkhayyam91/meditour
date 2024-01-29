@@ -1,7 +1,19 @@
 const express = require("express");
 const app = express();
+const whitelist = ["http://localhost:3000", "https://meditour.global"];
 const cors = require("cors");
-app.use(cors());
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 const dbConnect = require("./database/index");
@@ -23,6 +35,7 @@ const rentCarRouter = require("./routes/rentCar");
 const donationRouter = require("./routes/donation");
 const hotelRouter = require("./routes/hotel");
 const insuranceRouter = require("./routes/insurance");
+const userRouter = require("./routes/user");
 
 app.use(labRouter);
 app.use(pharmRouter);
@@ -38,6 +51,7 @@ app.use(rentCarRouter);
 app.use(donationRouter);
 app.use(hotelRouter);
 app.use(insuranceRouter);
+app.use(userRouter);
 
 dbConnect();
 app.use(ErrorHandler);

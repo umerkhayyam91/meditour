@@ -79,9 +79,13 @@ const labTestController = {
       req.body;
     const labId = req.user._id;
     console.log(labId);
+    const testId = req.query.testId;
+    const test = await Tests.findById(testId);
     try {
-      const testInUse = await Tests.exists({ testName, labId });
-
+      let testInUse = await Tests.exists({ testName, labId });
+      if (testName == test.testName) {
+        testInUse = null;
+      }
       if (testInUse) {
         const error = new Error("Test already added, use another TestName!");
         error.status = 409;
@@ -91,7 +95,6 @@ const labTestController = {
       return next(error);
     }
 
-    const testId = req.query.testId;
     const existingTest = await Tests.findById(testId);
 
     if (!existingTest) {
@@ -124,7 +127,7 @@ const labTestController = {
       error.status = 404;
       return next(error);
     }
-    await Tests.deleteOne({ testId });
+    await Tests.deleteOne({ _id: testId });
     return res.status(200).json({ message: "Test deleted successfully" });
   },
 

@@ -1,5 +1,5 @@
 const JWTService = require("../services/JWTService");
-const User = require("../models/user");
+const User = require("../models/User/user");
 const labDto = require("../dto/lab");
 const pharmDto = require("../dto/pharm");
 const docDto = require("../dto/doctor");
@@ -13,7 +13,8 @@ const agencyDto = require("../dto/travelAgency");
 const rentCarDTO = require("../dto/rentCar");
 const donationDTO = require("../dto/donation");
 const hotelDTO = require("../dto/hotel");
-const insuranceDTO = require("../dto/insurance");
+const insuranceDTO = require("../dto/Insurance/insurance");
+const userDTO = require("../dto/user");
 const Laboratory = require("../models/Laboratory/laboratory");
 const AmbulanceCompany = require("../models/Ambulance/ambulanceCompany");
 const Pharmacy = require("../models/Pharmacy/pharmacy");
@@ -25,7 +26,7 @@ const Paramedic = require("../models/Paramedic/paramedic");
 const Psychologist = require("../models/Psychologist/psychologist");
 const Agency = require("../models/Travel Agency/travelAgency");
 const RentCar = require("../models/Rent A Car/rentCar");
-const Donation = require("../models/Donation/donation");
+const Donation = require("../models/Donation/donationCompany");
 const Hotel = require("../models/Hotel/hotel");
 const Insurance = require("../models/Insurance/insurance");
 const AccessToken = require("../models/accessToken");
@@ -110,12 +111,12 @@ const auth = async (req, res, next) => {
       return;
     } else if (req.originalUrl.includes("/ambulance")) {
       try {
-        console.log(_id);
+        // console.log(_id);
         user = await AmbulanceCompany.findOne({ _id: _id });
       } catch (error) {
         return next(error);
       }
-      console.log(user);
+      // console.log(user);
       const ambulanceDTO = new ambulanceDto(user);
 
       req.user = ambulanceDTO;
@@ -227,6 +228,18 @@ const auth = async (req, res, next) => {
       const insuranceDto = new insuranceDTO(user);
 
       req.user = insuranceDto;
+
+      next();
+      return;
+    } else if (req.originalUrl.includes("/user")) {
+      try {
+        user = await User.findOne({ _id: _id });
+      } catch (error) {
+        return next(error);
+      }
+      const userDto = new userDTO(user);
+
+      req.user = userDto;
 
       next();
       return;

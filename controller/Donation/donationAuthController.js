@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const Donation = require("../../models/Donation/donation.js");
+const Donation = require("../../models/Donation/donationCompany.js");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
 const donationDTO = require("../../dto/donation.js");
@@ -13,16 +13,12 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const donationAuthController = {
   async register(req, res, next) {
     const donationRegisterSchema = Joi.object({
-      companyFirstName: Joi.string().required(),
-      companyLastName: Joi.string().required(),
+      companyName: Joi.string().required(),
       companyLicenseNo: Joi.string().required(),
-      licenceExpiry: Joi.string().required(),
-      ownerFirstName: Joi.string().required(),
-      ownerLastName: Joi.string().required(),
+      companyEmergencyNo: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      expiryDate: Joi.string().required(),
+      ownerName: Joi.string().required(),
       companyAddress: Joi.string().required(),
-      companyExperiences: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -36,7 +32,6 @@ const donationAuthController = {
       accountNumber: Joi.string().required(),
       companyLogo: Joi.string().required(),
       licenseImage: Joi.string().required(),
-      ownerImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
     });
@@ -48,16 +43,12 @@ const donationAuthController = {
     }
 
     const {
-      companyFirstName,
-      companyLastName,
+      companyName,
       companyLicenseNo,
-      licenceExpiry,
-      ownerFirstName,
-      ownerLastName,
+      companyEmergencyNo,
       cnicOrPassportNo,
-      expiryDate,
+      ownerName,
       companyAddress,
-      companyExperiences,
       state,
       country,
       website,
@@ -71,7 +62,6 @@ const donationAuthController = {
       accountNumber,
       companyLogo,
       licenseImage,
-      ownerImage,
       cnicImage,
       taxFileImage,
     } = req.body;
@@ -82,16 +72,12 @@ const donationAuthController = {
     let donation;
     try {
       const donationToRegister = new Donation({
-        companyFirstName,
-        companyLastName,
+        companyName,
         companyLicenseNo,
-        licenceExpiry,
-        ownerFirstName,
-        ownerLastName,
+        companyEmergencyNo,
         cnicOrPassportNo,
-        expiryDate,
+        ownerName,
         companyAddress,
-        companyExperiences,
         state,
         country,
         website,
@@ -105,7 +91,6 @@ const donationAuthController = {
         accountNumber,
         companyLogo,
         licenseImage,
-        ownerImage,
         cnicImage,
         taxFileImage,
       });
@@ -149,7 +134,8 @@ const donationAuthController = {
 
     try {
       // match username
-      donation = await Donation.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      donation = await Donation.findOne({ email: { $regex: emailRegex } });
       if (!donation) {
         const error = {
           status: 401,
@@ -183,7 +169,10 @@ const donationAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: donation._id }, "365d");
+    const accessToken = JWTService.signAccessToken(
+      { _id: donation._id },
+      "365d"
+    );
     const refreshToken = JWTService.signRefreshToken(
       { _id: donation._id },
       "365d"
@@ -256,23 +245,37 @@ const donationAuthController = {
     // Save the updated test
     await existingUser.save();
 
-    return res
-      .status(200)
-      .json({
-        message: "User updated successfully",
-        donation: existingUser,
-      });
+    return res.status(200).json({
+      message: "User updated successfully",
+      donation: existingUser,
+    });
   },
 
   async updateProfile(req, res, next) {
     const donationSchema = Joi.object({
+      companyName: Joi.string(),
+      companyLicenseNo: Joi.string(),
+      companyEmergencyNo: Joi.string(),
+      OwnerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      companyAddress: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      licenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = donationSchema.validate(req.body);
@@ -281,13 +284,28 @@ const donationAuthController = {
       return next(error);
     }
     const {
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      OwnerName,
+      cnicOrPassportNo,
+      companyAddress,
+      state,
+      phoneNumber,
+      currentPassword,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      licenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
     const donationId = req.user._id;
 
@@ -299,14 +317,42 @@ const donationAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, donation.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      donation.password = hashedPassword;
+    }
+
     // Update only the provided fields
+    if (companyName) donation.companyName = companyName;
+    if (companyLicenseNo) donation.companyLicenseNo = companyLicenseNo;
+    if (companyEmergencyNo) donation.companyEmergencyNo = companyEmergencyNo;
+    if (OwnerName) donation.OwnerName = OwnerName;
+    if (cnicOrPassportNo) donation.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) donation.companyAddress = companyAddress;
+    if (state) donation.state = state;
+    if (phoneNumber) donation.phoneNumber = phoneNumber;
     if (website) donation.website = website;
     if (facebook) donation.facebook = facebook;
     if (twitter) donation.twitter = twitter;
     if (instagram) donation.instagram = instagram;
+    if (incomeTaxNo) donation.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) donation.salesTaxNo = salesTaxNo;
     if (bankName) donation.bankName = bankName;
     if (accountHolderName) donation.accountHolderName = accountHolderName;
     if (accountNumber) donation.accountNumber = accountNumber;
+    if (licenseImage) donation.licenseImage = licenseImage;
+    if (cnicImage) donation.cnicImage = cnicImage;
+    if (taxFileImage) donation.taxFileImage = taxFileImage;
 
     // Save the updated test
     await donation.save();

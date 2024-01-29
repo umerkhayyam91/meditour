@@ -4,16 +4,12 @@ class donationDTO {
       this.email = donation.email;
       this.phoneNumber = donation.phoneNumber;
       this.password = donation.password;
-      this.companyFirstName = donation.companyFirstName;
-      this.companySecondName = donation.companySecondName;
+      this.companyName = donation.companyName;
       this.companyLicenseNo = donation.companyLicenseNo;
-      this.licenceExpiry = donation.licenceExpiry;
-      this.ownerFirstName = donation.ownerFirstName;
-      this.ownerLastName = donation.ownerLastName;
+      this.companyEmergencyNo = donation.companyEmergencyNo;
+      this.ownerName = donation.ownerName;
       this.cnicOrPassportNo = donation.cnicOrPassportNo;
-      this.expiryDate = donation.expiryDate;
       this.companyAddress = donation.companyAddress;
-      this.companyExperiences = donation.companyExperiences;
       this.state = donation.state;
       this.country = donation.country;
       this.website = donation.website;
@@ -27,7 +23,6 @@ class donationDTO {
       this.accountNumber = donation.accountNumber;
       this.companyLogo = donation.companyLogo;
       this.licenseImage = donation.licenseImage;
-      this.ownerImage = donation.ownerImage;
       this.cnicImage = donation.cnicImage;
       this.taxFileImage = donation.taxFileImage;
     }
