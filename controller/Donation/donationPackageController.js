@@ -180,12 +180,25 @@ const donationPackageController = {
     try {
       const donationId = req.user._id;
       const criteriaType = req.query.criteriaType;
+      if (!criteriaType) {
+        const error = new Error("Criteria Type not found!");
+        error.status = 404;
+        return next(error);
+      }
 
-      const packages = await Package.find({ donationId }).populate("criteriaId");
+      const packages = await Package.find({ donationId })
+      .populate({
+        path: "criteriaId",
+        match: { criteriaName: criteriaType }, // Include the match condition
+      })
+      .exec();
+
+    // Filter out the packages where criteriaId is null (no matching criteriaName)
+    const filteredPackages = packages.filter((pkg) => pkg.criteriaId !== null);
+    
         
-      // const medDto = new medDTO(packages);
       return res.status(200).json({
-        packages: packages,
+        packages: filteredPackages,
         auth: true
       });
     } catch (error) {
