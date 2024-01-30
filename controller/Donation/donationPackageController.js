@@ -154,17 +154,28 @@ const donationPackageController = {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const packagePerPage = 10;
       const donationId = req.user._id;
+      const criteriaType = req.query.criteriaType;
       const totalPackages = await Package.countDocuments({ donationId }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalPackages / packagePerPage); // Calculate the total number of pages
-
+      let packages;
       const skip = (page - 1) * packagePerPage; // Calculate the number of posts to skip based on the current page
+      if (criteriaType) {
+        packages = await Package.find({ donationId })
+          .populate({
+            path: "criteriaId",
+            match: { criteriaName: criteriaType }, // Include the match condition
+          })
+          .exec();
 
-      const packages = await Package.find({ donationId })
-        .skip(skip)
-        .limit(packagePerPage);
+        // Filter out the packages where criteriaId is null (no matching criteriaName)
+        packages = packages.filter((pkg) => pkg.criteriaId !== null);
+      } else {
+         packages = await Package.find({ donationId })
+          .skip(skip)
+          .limit(packagePerPage);
+      }
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
-      // const medDto = new medDTO(packages);
       return res.status(200).json({
         packages: packages,
         auth: true,
@@ -176,37 +187,39 @@ const donationPackageController = {
     }
   },
 
+  
+  //..........dummyApi............//
   async getCategoryPackages(req, res, next) {
     try {
       const donationId = req.user._id;
       const criteriaType = req.query.criteriaType;
-      if (!criteriaType) {
-        const error = new Error("Criteria Type not found!");
-        error.status = 404;
-        return next(error);
-      }
+      // if (!criteriaType) {
+      //   const error = new Error("Criteria Type not found!");
+      //   error.status = 404;
+      //   return next(error);
+      // }
 
       const packages = await Package.find({ donationId })
-      .populate({
-        path: "criteriaId",
-        match: { criteriaName: criteriaType }, // Include the match condition
-      })
-      .exec();
+        .populate({
+          path: "criteriaId",
+          match: { criteriaName: criteriaType }, // Include the match condition
+        })
+        .exec();
 
-    // Filter out the packages where criteriaId is null (no matching criteriaName)
-    const filteredPackages = packages.filter((pkg) => pkg.criteriaId !== null);
-    
-        
+      // Filter out the packages where criteriaId is null (no matching criteriaName)
+      const filteredPackages = packages.filter(
+        (pkg) => pkg.criteriaId !== null
+      );
+
       return res.status(200).json({
         packages: filteredPackages,
-        auth: true
+        auth: true,
       });
     } catch (error) {
       return next(error);
     }
   },
 
-  //..........dummyApi............//
   async addDonation(req, res, next) {
     try {
       const { packageId, mrNo, donorName, donationPurpose, donationAmount } =
