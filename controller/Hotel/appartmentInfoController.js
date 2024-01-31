@@ -71,6 +71,7 @@ const appartmentInfoController = {
       return next(error);
     }
     const {
+      
       propertyName,
       starRating,
       customName,
@@ -126,8 +127,10 @@ const appartmentInfoController = {
       chargesOfPets,
     } = req.body;
     let appartment;
+    const hotelId = req.user._id;
     try {
       const appartmentInfoToRegister = new appartmentInfo({
+        hotelId,
         propertyName,
         starRating,
         customName,
@@ -398,6 +401,63 @@ const appartmentInfoController = {
         appartment: existingAppartment,
       });
   },
-  };
+
+  async deleteAppartment(req, res, next) {
+    const appartmentId = req.query.appartmentId;
+    const existingAppartment = await appartmentInfo.findById(appartmentId);
+
+    if (!existingAppartment) {
+      const error = new Error("Appartment not found!");
+      error.status = 404;
+      return next(error);
+    }
+    await appartmentInfo.deleteOne({  _id:appartmentId });
+    return res.status(200).json({ message: "Appartment deleted successfully" });
+  },
+
+  async getAppartment(req, res, next) {
+    try {
+      const appartmentId = req.query.appartmentId;
+      const appartment = await appartmentInfo.findById(appartmentId);
+
+      if (!appartment) {
+        const error = new Error("Appartment not found!");
+        error.status = 404;
+        return next(error);
+      }
+      return res.status(200).json({ appartment });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async getAllAppartments(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      const appartmentsPerPage = 10;
+      const hotelId = req.user._id;
+      const totalAppartment = await appartmentInfo.countDocuments({
+        hotelId,
+      }); // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalAppartment / appartmentsPerPage); // Calculate the total number of pages
+
+      const skip = (page - 1) * appartmentsPerPage; // Calculate the number of posts to skip based on the current page
+
+      const appartments = await appartmentInfo.find({ hotelId })
+        .skip(skip)
+        .limit(appartmentsPerPage);
+      let previousPage = page > 1 ? page - 1 : null;
+      let nextPage = page < totalPages ? page + 1 : null;
+      return res.status(200).json({
+        appartments: appartments,
+        auth: true,
+        previousPage: previousPage,
+        nextPage: nextPage,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
+ };
 
 module.exports = appartmentInfoController;

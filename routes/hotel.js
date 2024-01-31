@@ -29,9 +29,8 @@ router.post("/hotel/resetPassword", VerificationController.resetPassword);
 
 router.post("/hotel/addAppartment", auth, appartmentInfoController.addAppartment);
 router.put("/hotel/editAppartment",auth, appartmentInfoController.editAppartment);
-
-
-
-
+router.delete("/hotel/deleteAppartment",auth, appartmentInfoController.deleteAppartment);
+router.get("/hotel/getAppartment",auth, appartmentInfoController.getAppartment);
+router.get("/hotel/getAllAppartments",auth, appartmentInfoController.getAllAppartments);
 module.exports = router;
  
