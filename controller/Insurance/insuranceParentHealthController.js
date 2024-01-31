@@ -5,8 +5,8 @@ const parentHealthDTO = require("../../dto/Insurance/parentHealth.js");
 const insuranceHealthController = {
   async addParentHealth(req, res, next) {
     const insuranceRegisterSchema = Joi.object({
-      ageCriteria: Joi.string(),
-      hospitalizationLimit: Joi.string(),
+      ageCriteria: Joi.object(),
+      hospitalizationLimit: Joi.object(),
       packageName: Joi.string(),
       packageLogo: Joi.string(),
       hospitalizationPerPerson: Joi.string(),
@@ -100,15 +100,15 @@ const insuranceHealthController = {
 
   async editParentHealth(req, res, next) {
     const insuranceHealthSchema = Joi.object({
-      ageCriteria: Joi.string(),
-      hospitalizationLimit: Joi.string(),
+      ageCriteria: Joi.object(),
+      hospitalizationLimit: Joi.object(),
       packageName: Joi.string(),
       packageLogo: Joi.string(),
       hospitalizationPerPerson: Joi.string(),
       dailyRoomAndBoardLimit: Joi.string(),
       claimPayoutRatio: Joi.string(),
-      hospitals: Joi.string(),
-      laboratories: Joi.string(),
+      hospitals: Joi.array(),
+      laboratories: Joi.array(),
       icuCcuLimits: Joi.string(),
       accidentalEmergencyLimits: Joi.string(),
       ambulanceCoverage: Joi.string(),
