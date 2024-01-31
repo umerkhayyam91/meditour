@@ -4,6 +4,7 @@ const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
+const appartmentInfoController = require("../controller/Hotel/appartmentInfoController");
 const router = express.Router();
 const upload = multer({ dest: "temp/" });
 
@@ -23,6 +24,14 @@ router.post("/hotel/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/hotel/confirmEmail", VerificationController.confirmEmail);
 router.post("/hotel/ResetLink", VerificationController.ResetLink);
 router.post("/hotel/resetPassword", VerificationController.resetPassword);
+
+// ....appointment..//
+
+router.post("/hotel/addAppartment", auth, appartmentInfoController.addAppartment);
+router.put("/hotel/editAppartment",auth, appartmentInfoController.editAppartment);
+
+
+
 
 module.exports = router;
  
