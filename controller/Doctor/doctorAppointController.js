@@ -3,7 +3,7 @@ const app = express();
 const Appointment = require("../../models/All Doctors Models/appointment");
 const Patient = require("../../models/user");
 const User = require("../../models/user");
-const AppointmentRequest = require("../../models/Doctor/request");
+const AppointmentRequest = require("../../models/All Doctors Models/request");
 
 const docAppointController = {
   async getAllAppointments(req, res, next) {
@@ -82,8 +82,6 @@ const docAppointController = {
         error.status = 400;
         return next(error);
       }
-      // console.log(patientId);
-      // console.log(doctorId);
       const allAppointments = await Appointment.find({
         doctorId,
         patientId,
@@ -102,49 +100,34 @@ const docAppointController = {
     }
   },
 
-  async getRequests(req, res, next) {
-    try {
-      const doctorId = req.user._id;
-      const allRequests = await AppointmentRequest.find({ doctorId });
-      return res.status(200).json({
-        AppointmentRequests: allRequests,
-        auth: true,
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: "Failure",
-        error: error.message,
-      });
-    }
-  },
+  // async addAppoints(req, res, next) {
+  //   try {
+  //     const { date, startTime, endTime, appointmentType } = req.body;
+  //     const doctorId = req.user._id;
 
-  //   async addAppoints(req, res, next) {
-  //     try {
-  //       const { date, startTime, endTime } = req.body;
-  //       const doctorId = req.user._id;
+  //     // Create a new appointment
+  //     const newAppointment = new Appointment({
+  //       doctorId,
+  //       patientId: "656867ce85953ba14f2c9ff8",
+  //       date,
+  //       startTime,
+  //       endTime,
+  //       appointmentType
+  //     });
 
-  //       // Create a new appointment
-  //       const newAppointment = new Appointment({
-  //         doctorId,
-  //         patientId: "656867ce85953ba14f2c9ff8",
-  //         date,
-  //         startTime,
-  //         endTime,
+  //     // Save the new appointment to the database
+  //     const savedAppointment = await newAppointment.save();
+
+  //     res
+  //       .status(201)
+  //       .json({
+  //         appointment: savedAppointment,
+  //         message: "Appointment added successfully",
   //       });
-
-  //       // Save the new appointment to the database
-  //       const savedAppointment = await newAppointment.save();
-
-  //       res
-  //         .status(201)
-  //         .json({
-  //           appointment: savedAppointment,
-  //           message: "Appointment added successfully",
-  //         });
-  //     } catch (error) {
-  //       next(error);
-  //     }
-  //   },
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // },
 
   //   async addAppoints(req, res, next) {
   //     try {

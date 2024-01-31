@@ -3,7 +3,7 @@ const app = express();
 const Appointment = require("../../models/All Doctors Models/appointment");
 const Patient = require("../../models/user");
 const User = require("../../models/user");
-const AppointmentRequest = require("../../models/Doctor/request");
+const AppointmentRequest = require("../../models/All Doctors Models/request");
 
 const nutritionAppointController = {
   async getAllAppointments(req, res, next) {

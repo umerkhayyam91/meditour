@@ -13,9 +13,10 @@ const Paramedic = require("../models/Paramedic/paramedic");
 const Psychologist = require("../models/Psychologist/psychologist");
 const Agency = require("../models/Travel Agency/travelAgency");
 const RentCar = require("../models/Rent A Car/rentCar");
-const Donation = require("../models/Donation/donation");
+const Donation = require("../models/Donation/donationCompany");
 const Hotel = require("../models/Hotel/hotel");
 const Insurance = require("../models/Insurance/insurance");
+const User = require("../models/User/user");
 const ResetToken = require("../models/resetToken");
 const bcrypt = require("bcrypt");
 app.use(express.json());
@@ -26,38 +27,141 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
 const userTypeFunction = async function (userModel, email, newPassword) {
   let user;
-  let Model;
+  if (userModel === "Laboratory") {
+    user = await Laboratory.find({ email });
+  } else if (userModel === "Pharmacy") {
+    user = await Pharmacy.find({ email });
+  } else if (userModel === "Doctor") {
+    user = await Doctor.find({ email });
+  } else if (userModel === "Hospital") {
+    user = await Hospital.find({ email });
+  } else if (userModel === "Ambulance") {
+    user = await AmbulanceCompany.find({ email });
+  } else if (userModel === "Physiotherapist") {
+    user = await Physiotherapist.find({ email });
+  } else if (userModel === "Nutritionist") {
+    user = await Nutritionist.find({ email });
+  } else if (userModel === "Paramedic") {
+    user = await Paramedic.find({ email });
+  } else if (userModel === "Psychologist") {
+    user = await Psychologist.find({ email });
+  } else if (userModel === "Agency") {
+    user = await Agency.find({ email });
+  } else if (userModel === "RentCar") {
+    user = await RentCar.find({ email });
+  } else if (userModel === "Donation") {
+    user = await Donation.find({ email });
+  } else if (userModel === "Hotel") {
+    user = await Hotel.find({ email });
+  } else if (userModel === "Insurance") {
+    user = await Insurance.find({ email });
+  } else if (userModel === "User") {
+    user = await User.find({ email });
+  }
+  if (!user) {
+    return res
+      .status(404)
+      .json({ status: "Failure", message: "User not found" });
+  }
+  console.log(user);
+  // In a real application, you should update the user's password in your database
+  // For this demo, we'll just log the new password
+  console.log(`Password for ${email} reset to: ${newPassword}`);
 
-  try {
-    // Dynamically reference the model based on userModel
-    Model = eval(userModel);
-    user = await Model.findOne({ email });
-
-    if (!user) {
-      return res
-        .status(404)
-        .json({ status: "Failure", message: "User not found" });
-    }
-
-    console.log(user);
-
-    // In a real application, you should update the user's password in your database
-    // For this demo, we'll just log the new password
-    console.log(`Password for ${email} reset to: ${newPassword}`);
-
-    // Delete the token from the tokens object after it's used
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-    await Model.updateOne(
+  // Delete the token from the tokens object after it's used
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  if (userModel === "Laboratory") {
+    await Laboratory.updateOne(
       { email: email },
       { password: hashedNewPassword },
       { runValidators: true }
     );
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ status: "Error", message: "Internal Server Error" });
+  } else if (userModel === "Pharmacy") {
+    await Pharmacy.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Doctor") {
+    await Doctor.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Hospital") {
+    await Hospital.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Ambulance") {
+    await AmbulanceCompany.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Physiotherapist") {
+    await Physiotherapist.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Nutritionist") {
+    await Nutritionist.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Paramedic") {
+    await Paramedic.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Psychologist") {
+    await Psychologist.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Agency") {
+    await Agency.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "RentCar") {
+    await RentCar.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Donation") {
+    await Donation.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Hotel") {
+    await Hotel.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "Insurance") {
+    await Insurance.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
+  } else if (userModel === "User") {
+    await User.updateOne(
+      { email: email },
+      { password: hashedNewPassword },
+      { runValidators: true }
+    );
   }
 };
-
 
 const verificationController = {
   async sendCodeToEmail(req, res, next) {
@@ -91,6 +195,8 @@ const verificationController = {
       emailExists = await Hotel.exists({ email });
     } else if (req.originalUrl.includes("/insurance")) {
       emailExists = await Insurance.exists({ email });
+    } else if (req.originalUrl.includes("/user")) {
+      emailExists = await User.exists({ email });
     }
     if (emailExists) {
       const error = new Error("Email already exists!");
@@ -163,6 +269,7 @@ const verificationController = {
 
   async ResetLink(req, res, next) {
     try {
+      console.log("object")
       let { email } = req.body;
       let existingUser;
       let userType;
@@ -184,12 +291,11 @@ const verificationController = {
         try {
           existingUser = await Pharmacy.findOne({ email });
           userType = "Pharmacy";
+          console.log("2nd")
           // userTypeInUrl = "pharm"
         } catch (error) {
           return next(error);
         }
-        next();
-        return;
       } else if (req.originalUrl.includes("/doc")) {
         try {
           existingUser = await Doctor.findOne({ email });
@@ -286,14 +392,22 @@ const verificationController = {
         } catch (error) {
           return next(error);
         }
+      } else if (req.originalUrl.includes("/user")) {
+        try {
+          existingUser = await User.findOne({ email });
+          userType = "User";
+          // userTypeInUrl = "rentCar"
+        } catch (error) {
+          return next(error);
+        }
       }
+      console.log("anything")
 
       if (!existingUser) {
         return res
           .status(404)
           .json({ status: "failure", message: "Email not found" });
       }
-
       // Generate a random password reset token
       const resetToken = uuidv4();
       // Save the resetToken and associated email in your database
@@ -302,17 +416,39 @@ const verificationController = {
       tokens[resetToken] = { email, userType };
       console.log(tokens);
       // Create a reset link with the token
-      const baseUrl = "http://localhost:3000"
-      let resetLink
-      if(userType=="Ambulance"){
-         resetLink = `${baseUrl}/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
-      }else if(userType=="Physiotherapist"){
-         resetLink = `${baseUrl}/homeservices/physiotherapist/forgot-password2?token=${resetToken}`;
-      }else if(userType=="Nutritionist"){
-         resetLink = `${baseUrl}/homeservices/nutritionist/forgot-password2?token=${resetToken}`;
-      } else {
-        resetLink = `${baseUrl}/homeservices/ambulanceservices/password-updates?token=${resetToken}`;
-      }
+      const baseUrl = "http://localhost:3000";
+      let resetLink;
+      if (userType == "Ambulance") {
+        resetLink = `${baseUrl}/homeservicesambulanceservices//update-password?token=${resetToken}`;
+      } else if (userType == "Physiotherapist") {
+        resetLink = `${baseUrl}/homeservices/physiotherapist/update-password?token=${resetToken}`;
+      } else if (userType == "Nutritionist") {
+        resetLink = `${baseUrl}/homeservices/nutritionist/update-password?token=${resetToken}`;
+      } else if (userType == "Paramedic") {
+        resetLink = `${baseUrl}/homeservices/paramedicstaff/update-password?token=${resetToken}`;
+      } else if (userType == "Psychologist") {
+        resetLink = `${baseUrl}/homeservices/psychologist/update-password?token=${resetToken}`;
+      } else if (userType == "Laboratory") {
+        resetLink = `${baseUrl}/laboratory/update-password?token=${resetToken}`;
+      } else if (userType == "Hospital") {
+        resetLink = `${baseUrl}/medicalservices/hospital/update-password?token=${resetToken}`;
+      } else if (userType == "Pharmacy") {
+        resetLink = `${baseUrl}/pharmacy/update-password?token=${resetToken}`;
+      } else if (userType == "Doctor") {
+        resetLink = `${baseUrl}/medicalservices/doctor/update-password?token=${resetToken}`;
+      } else if (userType == "RentCar") {
+        resetLink = `${baseUrl}/traveltourism/rentAcar/update-password?token=${resetToken}`;
+      } else if (userType == "Agency") {
+        resetLink = `${baseUrl}/traveltourism/travelAgency/update-password?token=${resetToken}`;
+      } else if (userType == "Donation") {
+        resetLink = `${baseUrl}/donation/update-password?token=${resetToken}`;
+      } else if (userType == "Hotel") {
+        resetLink = `${baseUrl}/traveltourism/hotel/forgot-password?token=${resetToken}`;
+      } else if (userType == "Insurance") {
+        resetLink = `${baseUrl}/Insurance/update-password?token=${resetToken}`;
+      } else if (userType == "User") {
+        resetLink = `${baseUrl}/Insurance/update-password?token=${resetToken}`;
+      } 
 
       var transporter = nodemailer.createTransport({
         service: "gmail",
@@ -337,14 +473,6 @@ const verificationController = {
           message: `Password reset link sent to ${email}`,
         });
       });
-      // mailgun.messages().send(data, (error, body) => {
-      //     if (error) {
-      //         console.error('Error sending email:', error);
-      //         return res.status(500).json({ status: 'failure', message: 'Failed to send email' });
-      //     }
-
-      //     return res.json({ status: 'success', message: 'Password reset link sent to your email' });
-      // });
     } catch (error) {
       console.error("Error:", error);
       return res

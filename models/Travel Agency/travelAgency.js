@@ -11,30 +11,19 @@ const travelAgencySchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
-    companyFirstName: {
-      type: String,
-    },
-    companyLastName: {
+    companyName: {
       type: String,
     },
     companyLicenseNo: {
       type: String,
     },
-    licenceExpiry: {
+    companyEmergencyNo: {
       type: String,
     },
-    ownerFirstName: {
+    ownerName: {
       type: String,
-    },
-    ownerLastName: {
-      type: String,
-      required: true,
     },
     cnicOrPassportNo: {
-      type: String,
-      required: true,
-    },
-    expiryDate: {
       type: String,
       required: true,
     },
@@ -87,10 +76,6 @@ const travelAgencySchema = new mongoose.Schema(
       required: true,
     },
     licenseImage: {
-      type: String,
-      required: true,
-    },
-    ownerImage: {
       type: String,
       required: true,
     },

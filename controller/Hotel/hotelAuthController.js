@@ -13,15 +13,12 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const hotelAuthController = {
   async register(req, res, next) {
     const hotelRegisterSchema = Joi.object({
-      hotelName: Joi.string().required(),
-      hotelLastName: Joi.string().required(),
-      licenseNo: Joi.string().required(),
-      licenceExpiry: Joi.string().required(),
-      ownerName: Joi.string().required(),
-      fatherName: Joi.string().required(),
+      companyName: Joi.string().required(),
+      companyLicenseNo: Joi.string().required(),
+      companyEmergencyNo: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
-      expiryDate: Joi.string().required(),
-      hotelAddress: Joi.string().required(),
+      ownerName: Joi.string().required(),
+      companyAddress: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -33,9 +30,8 @@ const hotelAuthController = {
       bankName: Joi.string().required(),
       accountHolderName: Joi.string().required(),
       accountNumber: Joi.string().required(),
-      hotelLogo: Joi.string().required(),
+      companyLogo: Joi.string().required(),
       licenseImage: Joi.string().required(),
-      ownerImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
     });
@@ -47,15 +43,12 @@ const hotelAuthController = {
     }
 
     const {
-      hotelName,
-      hotelLastName,
-      licenseNo,
-      licenceExpiry,
-      ownerName,
-      fatherName,
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
       cnicOrPassportNo,
-      expiryDate,
-      hotelAddress,
+      ownerName,
+      companyAddress,
       state,
       country,
       website,
@@ -67,9 +60,8 @@ const hotelAuthController = {
       bankName,
       accountHolderName,
       accountNumber,
-      hotelLogo,
+      companyLogo,
       licenseImage,
-      ownerImage,
       cnicImage,
       taxFileImage,
     } = req.body;
@@ -80,31 +72,27 @@ const hotelAuthController = {
     let hotel;
     try {
       const hotelToRegister = new Hotel({
-        hotelName,
-        hotelLastName,
-        licenseNo,
-        licenceExpiry,
-        ownerName,
-        fatherName,
-        cnicOrPassportNo,
-        expiryDate,
-        hotelAddress,
-        state,
-        country,
-        website,
-        twitter,
-        facebook,
-        instagram,
-        incomeTaxNo,
-        salesTaxNo,
-        bankName,
-        accountHolderName,
-        accountNumber,
-        hotelLogo,
-        licenseImage,
-        ownerImage,
-        cnicImage,
-        taxFileImage,
+        companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      cnicOrPassportNo,
+      ownerName,
+      companyAddress,
+      state,
+      country,
+      website,
+      twitter,
+      facebook,
+      instagram,
+      incomeTaxNo,
+      salesTaxNo,
+      bankName,
+      accountHolderName,
+      accountNumber,
+      companyLogo,
+      licenseImage,
+      cnicImage,
+      taxFileImage,
       });
 
       hotel = await hotelToRegister.save();
@@ -146,7 +134,8 @@ const hotelAuthController = {
 
     try {
       // match username
-      hotel = await Hotel.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      hotel = await Hotel.findOne({ email: { $regex: emailRegex }   });
       if (!hotel) {
         const error = {
           status: 401,
@@ -261,13 +250,29 @@ const hotelAuthController = {
 
   async updateProfile(req, res, next) {
     const hotelSchema = Joi.object({
+      companyName: Joi.string(),
+      companyLicenseNo: Joi.string(),
+      companyEmergencyNo: Joi.string(),
+      ownerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      companyAddress: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      licenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = hotelSchema.validate(req.body);
@@ -276,13 +281,28 @@ const hotelAuthController = {
       return next(error);
     }
     const {
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      ownerName,
+      cnicOrPassportNo,
+      companyAddress,
+      state,
+      phoneNumber,
+      currentPassword,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      licenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
     const hotelId = req.user._id;
 
@@ -294,14 +314,42 @@ const hotelAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, hotel.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      hotel.password = hashedPassword;
+    }
+
     // Update only the provided fields
-    if (website) hotel.website = website;
-    if (facebook) hotel.facebook = facebook;
-    if (twitter) hotel.twitter = twitter;
-    if (instagram) hotel.instagram = instagram;
-    if (bankName) hotel.bankName = bankName;
-    if (accountHolderName) hotel.accountHolderName = accountHolderName;
-    if (accountNumber) hotel.accountNumber = accountNumber;
+    if (companyName) hosp.companyName = companyName;
+    if (companyLicenseNo) hosp.companyLicenseNo = companyLicenseNo;
+    if (companyEmergencyNo) hosp.companyEmergencyNo = companyEmergencyNo;
+    if (ownerName) hosp.ownerName = ownerName;
+    if (cnicOrPassportNo) hosp.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) hosp.companyAddress = companyAddress;
+    if (state) hosp.state = state;
+    if (phoneNumber) hosp.phoneNumber = phoneNumber;
+    if (website) hosp.website = website;
+    if (facebook) hosp.facebook = facebook;
+    if (twitter) hosp.twitter = twitter;
+    if (instagram) hosp.instagram = instagram;
+    if (incomeTaxNo) hosp.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) hosp.salesTaxNo = salesTaxNo;
+    if (bankName) hosp.bankName = bankName;
+    if (accountHolderName) hosp.accountHolderName = accountHolderName;
+    if (accountNumber) hosp.accountNumber = accountNumber;
+    if (licenseImage) hosp.licenseImage = licenseImage;
+    if (cnicImage) hosp.cnicImage = cnicImage;
+    if (taxFileImage) hosp.taxFileImage = taxFileImage;
 
     // Save the updated test
     await hotel.save();
@@ -422,6 +470,6 @@ const hotelAuthController = {
       return next(e);
     }
   },
-};
+}
 
 module.exports = hotelAuthController;

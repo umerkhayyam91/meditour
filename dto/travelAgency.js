@@ -4,14 +4,11 @@ class travelAgencyDTO {
       this.email = agency.email;
       this.phoneNumber = agency.phoneNumber;
       this.password = agency.password;
-      this.companyFirstName = agency.companyFirstName;
-      this.companyLastName = agency.companyLastName;
+      this.companyName = agency.companyName;
       this.companyLicenseNo = agency.companyLicenseNo;
-      this.licenceExpiry = agency.licenceExpiry;
-      this.ownerFirstName = agency.ownerFirstName;
-      this.ownerLastName = agency.ownerLastName;
+      this.companyEmergencyNo = agency.companyEmergencyNo;
+      this.ownerName = agency.ownerName;
       this.cnicOrPassportNo = agency.cnicOrPassportNo;
-      this.expiryDate = agency.expiryDate;
       this.companyAddress = agency.companyAddress;
       this.state = agency.state;
       this.country = agency.country;
@@ -26,7 +23,6 @@ class travelAgencyDTO {
       this.accountNumber = agency.accountNumber;
       this.companyLogo = agency.companyLogo;
       this.licenseImage = agency.licenseImage;
-      this.ownerImage = agency.ownerImage;
       this.cnicImage = agency.cnicImage;
       this.taxFileImage = agency.taxFileImage;
     }

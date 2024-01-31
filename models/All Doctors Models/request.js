@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const appointmentRequestSchema = new mongoose.Schema({
   patientId: {
@@ -12,13 +12,21 @@ const appointmentRequestSchema = new mongoose.Schema({
   requestedDateTime: {
     type: String,
   },
+  appointmentType: {
+    type: String,
+    enum: ["videoConsultation", "physical"],
+  },
   status: {
     type: String,
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending',
+    enum: ["pending", "accept", "reject"],
+    default: "pending",
   },
 });
 
-const AppointmentRequest = mongoose.model('AppointmentRequest', appointmentRequestSchema, 'appointmentRequests');
+const AppointmentRequest = mongoose.model(
+  "AppointmentRequest",
+  appointmentRequestSchema,
+  "appointmentRequests"
+);
 
 module.exports = AppointmentRequest;

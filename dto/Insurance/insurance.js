@@ -4,15 +4,11 @@ class insuranceDTO {
       this.email = insurance.email;
       this.phoneNumber = insurance.phoneNumber;
       this.password = insurance.password;
-      this.companyFirstName = insurance.companyFirstName;
-      this.companyLastName = insurance.companyLastName;
-      this.licenseNo = insurance.licenseNo;
-      this.licenceExpiry = insurance.licenceExpiry;
-      this.ownerFirstName = insurance.ownerFirstName;
-      this.ownerLastName = insurance.ownerLastName;
+      this.companyName = insurance.companyName;
+      this.companyLicenseNo = insurance.companyLicenseNo;
+      this.companyEmergencyNo = insurance.companyEmergencyNo;
+      this.ownerName = insurance.ownerName;
       this.cnicOrPassportNo = insurance.cnicOrPassportNo;
-      this.expiryDate = insurance.expiryDate;
-      this.companyExperiences = insurance.companyExperiences;
       this.companyAddress = insurance.companyAddress;
       this.state = insurance.state;
       this.country = insurance.country;
@@ -27,7 +23,6 @@ class insuranceDTO {
       this.accountNumber = insurance.accountNumber;
       this.companyLogo = insurance.companyLogo;
       this.licenseImage = insurance.licenseImage;
-      this.ownerImage = insurance.ownerImage;
       this.cnicImage = insurance.cnicImage;
       this.taxFileImage = insurance.taxFileImage;
     }

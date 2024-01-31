@@ -15,18 +15,6 @@ const paramedicSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    gender: {
-      type: String,
-      required: true,
-    },
-    fatherName: {
-      type: String,
-      required: true,
-    },
-    DOB: {
-      type: String,
-      required: true,
-    },
     cnicOrPassportNo: {
       type: String,
       required: true,
@@ -47,23 +35,15 @@ const paramedicSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    clinicLastName: {
-      type: String,
-      required: true,
-    },
-    clinicLicenseNo: {
-      type: String,
-      required: true,
-    },
-    licenceExpiryDate: {
-      type: String,
-      required: true,
-    },
     clinicAddress: {
       type: String,
       required: true,
     },
     clinicExperiences: {
+      type: String,
+      required: true,
+    },
+    pmdcNumber: {
       type: String,
       required: true,
     },
@@ -123,7 +103,7 @@ const paramedicSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    licenseImage: {
+    pmdcImage: {
       type: String,
       required: true,
     },

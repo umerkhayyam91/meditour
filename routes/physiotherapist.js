@@ -3,6 +3,8 @@ const physioAuthController = require("../controller/Physiotherapist/physioAuthCo
 const VerificationController = require("../controller/verificationController");
 const physioAvailabilityController = require("../controller/Physiotherapist/physioAvailabilityController")
 const physioAppointController = require("../controller/Physiotherapist/physioAppointController")
+const generalRequestController = require("../controller/All Doctors Controllers/generalRequestController")
+const physioDashController = require("../controller/Physiotherapist/physioDashController")
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -19,6 +21,10 @@ router.put("/physio/updateProfile", auth, physioAuthController.updateProfile);
 router.post("/physio/logout", auth, physioAuthController.logout);
 router.post("/physio/refresh", auth, physioAuthController.refresh);
 
+//............Dashboard.................
+router.get("/physio/dashDetails", auth, physioDashController.dashDetails);
+router.get("/physio/graph", auth, physioDashController.graph);
+
 //............availability............
 router.post("/physio/addAvailability", auth, physioAvailabilityController.addAvailability);
 router.get("/physio/getAvailability", auth, physioAvailabilityController.getAvailability);
@@ -27,7 +33,13 @@ router.get("/physio/getAvailability", auth, physioAvailabilityController.getAvai
 router.get("/physio/getAllAppointments", auth, physioAppointController.getAllAppointments);
 router.get("/physio/getAllPatients", auth, physioAppointController.getAllPatients);
 router.get("/physio/patientHistory", auth, physioAppointController.patientHistory);
-router.get("/physio/getRequests", auth, physioAppointController.getRequests);
+// router.post("/physio/addAppoints", auth, generalRequestController.addAppoints);
+
+
+//.............Appointment Requests........................
+router.get("/physio/getRequests", auth, generalRequestController.getRequests);
+router.post("/physio/acceptRequest", auth, generalRequestController.acceptRequest);
+router.delete("/physio/rejectRequest", auth, generalRequestController.rejectRequest);
 
 
 //..............verification.........

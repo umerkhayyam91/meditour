@@ -11,34 +11,23 @@ const hotelSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
-    hotelName: {
+    companyName: {
       type: String,
     },
-    hotelLastName: {
+    companyLicenseNo: {
       type: String,
     },
-    licenseNo: {
-      type: String,
-    },
-    licenceExpiry: {
+    companyEmergencyNo: {
       type: String,
     },
     ownerName: {
       type: String,
     },
-    fatherName: {
-      type: String,
-      required: true,
-    },
     cnicOrPassportNo: {
       type: String,
       required: true,
     },
-    expiryDate: {
-      type: String,
-      required: true,
-    },
-    hotelAddress: {
+    companyAddress: {
       type: String,
       required: true,
     },  
@@ -82,15 +71,11 @@ const hotelSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    hotelLogo: {
+    companyLogo: {
       type: String,
       required: true,
     },
     licenseImage: {
-      type: String,
-      required: true,
-    },
-    ownerImage: {
       type: String,
       required: true,
     },

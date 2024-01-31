@@ -10,20 +10,15 @@ const AccessToken = require("../../models/accessToken.js");
 
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
-const ambulanceAuthController = {
+const rentCarAuthController = {
   async register(req, res, next) {
-    const ambulanceRegisterSchema = Joi.object({
-      ownerName: Joi.string().required(),
-      fatherName: Joi.string().required(),
-      cnicOrPassportNo: Joi.string().required(),
-      expiryDate: Joi.string().required(),
+    const rentCarRegisterSchema = Joi.object({
       companyName: Joi.string().required(),
-      companyLastName: Joi.string().required(),
-      licenseNo: Joi.string().required(),
-      licenseExpiry: Joi.string().required(),
+      companyLicenseNo: Joi.string().required(),
+      companyEmergencyNo: Joi.string().required(),
+      cnicOrPassportNo: Joi.string().required(),
+      ownerName: Joi.string().required(),
       companyAddress: Joi.string().required(),
-      companyExperiences: Joi.string().required(),
-      emergencyNo: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -37,45 +32,37 @@ const ambulanceAuthController = {
       accountNumber: Joi.string().required(),
       companyLogo: Joi.string().required(),
       licenseImage: Joi.string().required(),
-      ownerImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
     });
-
-    const { error } = ambulanceRegisterSchema.validate(req.body);
+    const { error } = rentCarRegisterSchema.validate(req.body);
 
     if (error) {
       return next(error);
     }
 
     const {
-        ownerName,
-        fatherName,
-        cnicOrPassportNo,
-        expiryDate,
-        companyName,
-        companyLastName,
-        licenseNo,
-        licenseExpiry,
-        companyAddress,
-        companyExperiences,
-        emergencyNo,
-        state,
-        country,
-        website,
-        twitter,
-        facebook,
-        instagram,
-        incomeTaxNo,
-        salesTaxNo,
-        bankName,
-        accountHolderName,
-        accountNumber,
-        companyLogo,
-        licenseImage,
-        ownerImage,
-        cnicImage,
-        taxFileImage
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      cnicOrPassportNo,
+      ownerName,
+      companyAddress,
+      state,
+      country,
+      website,
+      twitter,
+      facebook,
+      instagram,
+      incomeTaxNo,
+      salesTaxNo,
+      bankName,
+      accountHolderName,
+      accountNumber,
+      companyLogo,
+      licenseImage,
+      cnicImage,
+      taxFileImage,
     } = req.body;
 
     let accessToken;
@@ -84,17 +71,12 @@ const ambulanceAuthController = {
     let rentCar;
     try {
       const rentCarToRegister = new RentCar({
-        ownerName,
-        fatherName,
-        cnicOrPassportNo,
-        expiryDate,
         companyName,
-        companyLastName,
-        licenseNo,
-        licenseExpiry,
+        companyLicenseNo,
+        companyEmergencyNo,
+        cnicOrPassportNo,
+        ownerName,
         companyAddress,
-        companyExperiences,
-        emergencyNo,
         state,
         country,
         website,
@@ -108,9 +90,8 @@ const ambulanceAuthController = {
         accountNumber,
         companyLogo,
         licenseImage,
-        ownerImage,
         cnicImage,
-        taxFileImage
+        taxFileImage,
       });
 
       rentCar = await rentCarToRegister.save();
@@ -152,7 +133,8 @@ const ambulanceAuthController = {
 
     try {
       // match username
-      rentCar = await RentCar.findOne({ email: email });
+      const emailRegex = new RegExp(email, "i");
+      rentCar = await RentCar.findOne({ email: { $regex: emailRegex } });
       if (!rentCar) {
         const error = {
           status: 401,
@@ -186,7 +168,10 @@ const ambulanceAuthController = {
       return next(error);
     }
 
-    const accessToken = JWTService.signAccessToken({ _id: rentCar._id }, "365d");
+    const accessToken = JWTService.signAccessToken(
+      { _id: rentCar._id },
+      "365d"
+    );
     const refreshToken = JWTService.signRefreshToken(
       { _id: rentCar._id },
       "365d"
@@ -259,23 +244,37 @@ const ambulanceAuthController = {
     // Save the updated test
     await existingUser.save();
 
-    return res
-      .status(200)
-      .json({
-        message: "User updated successfully",
-        rentCar: existingUser,
-      });
+    return res.status(200).json({
+      message: "User updated successfully",
+      rentCar: existingUser,
+    });
   },
 
   async updateProfile(req, res, next) {
     const rentCarSchema = Joi.object({
+      companyName: Joi.string(),
+      companyLicenseNo: Joi.string(),
+      companyEmergencyNo: Joi.string(),
+      ownerName: Joi.string(),
+      cnicOrPassportNo: Joi.string(),
+      companyAddress: Joi.string(),
+      state: Joi.string(),
+      phoneNumber: Joi.string(),
+      currentPassword: Joi.string(),
+      password: Joi.string().pattern(passwordPattern),
+      confirmPassword: Joi.ref("password"),
       website: Joi.string(),
       twitter: Joi.string(),
       facebook: Joi.string(),
       instagram: Joi.string(),
+      incomeTaxNo: Joi.string(),
+      salesTaxNo: Joi.string(),
       bankName: Joi.string(),
       accountHolderName: Joi.string(),
       accountNumber: Joi.string(),
+      licenseImage: Joi.string(),
+      cnicImage: Joi.string(),
+      taxFileImage: Joi.string(),
     });
 
     const { error } = rentCarSchema.validate(req.body);
@@ -284,13 +283,28 @@ const ambulanceAuthController = {
       return next(error);
     }
     const {
+      companyName,
+      companyLicenseNo,
+      companyEmergencyNo,
+      ownerName,
+      cnicOrPassportNo,
+      companyAddress,
+      state,
+      phoneNumber,
+      currentPassword,
+      password,
       website,
       twitter,
       facebook,
       instagram,
+      incomeTaxNo,
+      salesTaxNo,
       bankName,
       accountHolderName,
       accountNumber,
+      licenseImage,
+      cnicImage,
+      taxFileImage
     } = req.body;
     const rentCarId = req.user._id;
 
@@ -302,14 +316,42 @@ const ambulanceAuthController = {
       return next(error);
     }
 
+    if (currentPassword && password) {
+      const match = await bcrypt.compare(currentPassword, rentCar.password);
+
+      if (!match) {
+        const error = {
+          status: 401,
+          message: "Invalid Password",
+        };
+
+        return next(error);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      rentCar.password = hashedPassword;
+    }
+
     // Update only the provided fields
+    if (companyName) rentCar.companyName = companyName;
+    if (companyLicenseNo) rentCar.companyLicenseNo = companyLicenseNo;
+    if (companyEmergencyNo) rentCar.companyEmergencyNo = companyEmergencyNo;
+    if (ownerName) rentCar.ownerName = ownerName;
+    if (cnicOrPassportNo) rentCar.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) rentCar.companyAddress = companyAddress;
+    if (state) rentCar.state = state;
+    if (phoneNumber) rentCar.phoneNumber = phoneNumber;
     if (website) rentCar.website = website;
     if (facebook) rentCar.facebook = facebook;
     if (twitter) rentCar.twitter = twitter;
     if (instagram) rentCar.instagram = instagram;
+    if (incomeTaxNo) rentCar.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) rentCar.salesTaxNo = salesTaxNo;
     if (bankName) rentCar.bankName = bankName;
     if (accountHolderName) rentCar.accountHolderName = accountHolderName;
     if (accountNumber) rentCar.accountNumber = accountNumber;
+    if (licenseImage) rentCar.licenseImage = licenseImage;
+    if (cnicImage) rentCar.cnicImage = cnicImage;
+    if (taxFileImage) rentCar.taxFileImage = taxFileImage;
 
     // Save the updated test
     await rentCar.save();
@@ -360,7 +402,7 @@ const ambulanceAuthController = {
       };
 
       return next(error);
-    } 
+    }
 
     try {
       const match = RefreshToken.findOne({
@@ -432,4 +474,4 @@ const ambulanceAuthController = {
   },
 };
 
-module.exports = ambulanceAuthController;
+module.exports = rentCarAuthController;
