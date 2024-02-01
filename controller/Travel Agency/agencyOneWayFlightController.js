@@ -32,7 +32,7 @@ const agencyOneWayFlightController = {
       cancelationDuration: Joi.string().required(),
       cancelationDeduct: Joi.string().required(),
       ticketsCount: Joi.string().required(),
-      cnicancelPolicyDescriptioncImage: Joi.string().required(),
+      cancelPolicyDescription: Joi.string().required(),
       meditourPrice: Joi.string().required(),
       actualPrice: Joi.string().required()
     });
@@ -67,7 +67,7 @@ const agencyOneWayFlightController = {
       cancelationDuration,
       cancelationDeduct,
       ticketsCount,
-      cnicancelPolicyDescriptioncImage,
+      cancelPolicyDescription,
       meditourPrice,
       actualPrice
     } = req.body;
@@ -101,7 +101,7 @@ const agencyOneWayFlightController = {
         cancelationDuration,
         cancelationDeduct,
         ticketsCount,
-        cnicancelPolicyDescriptioncImage,
+        cancelPolicyDescription,
         meditourPrice,
         actualPrice
       });
@@ -142,7 +142,7 @@ const agencyOneWayFlightController = {
       cancelationDuration: Joi.string(),
       cancelationDeduct: Joi.string(),
       ticketsCount: Joi.string(),
-      cnicancelPolicyDescriptioncImage: Joi.string(),
+      cancelPolicyDescription: Joi.string(),
       meditourPrice: Joi.string(),
       actualPrice: Joi.string()
     });
@@ -177,7 +177,7 @@ const agencyOneWayFlightController = {
       cancelationDuration,
       cancelationDeduct,
       ticketsCount,
-      cnicancelPolicyDescriptioncImage,
+      cancelPolicyDescription,
       meditourPrice,
       actualPrice
     } = req.body;
@@ -218,7 +218,7 @@ const agencyOneWayFlightController = {
     if (cancelationDuration) existingFlight.cancelationDuration = cancelationDuration;
     if (cancelationDeduct) existingFlight.cancelationDeduct = cancelationDeduct;
     if (ticketsCount) existingFlight.ticketsCount = ticketsCount;
-    if (cnicancelPolicyDescriptioncImage) existingFlight.cnicancelPolicyDescriptioncImage = cnicancelPolicyDescriptioncImage;
+    if (cancelPolicyDescription) existingFlight.cancelPolicyDescription = cancelPolicyDescription;
     if (meditourPrice) existingFlight.meditourPrice = meditourPrice;
     if (actualPrice) existingFlight.actualPrice = actualPrice;
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const agencyAuthController = require("../controller/Travel Agency/agencyAuthController");
 const agencyOneWayFlightController = require("../controller/Travel Agency/agencyOneWayFlightController");
+const agencyRoundTripFlightController = require("../controller/Travel Agency/agencyRoundTripFlightController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
@@ -24,6 +25,13 @@ router.put("/agency/editOneWayFlight", auth, agencyOneWayFlightController.editOn
 router.delete("/agency/deleteOneWayFlight", auth, agencyOneWayFlightController.deleteOneWayFlight);
 router.get("/agency/getOneWayFlight", auth, agencyOneWayFlightController.getOneWayFlight);
 router.get("/agency/getAllOneWayFlight", auth, agencyOneWayFlightController.getAllOneWayFlight);
+
+//...............round-trip flight...................//
+router.post("/agency/addRoundTripFlight", auth, agencyRoundTripFlightController.addRoundTripFlight);
+router.put("/agency/editRoundTripFlight", auth, agencyRoundTripFlightController.editRoundTripFlight);
+router.delete("/agency/deleteRoundTripFlight", auth, agencyRoundTripFlightController.deleteRoundTripFlight);
+router.get("/agency/getRoundTripFlight", auth, agencyRoundTripFlightController.getRoundTripFlight);
+router.get("/agency/getAllRoundTripFlight", auth, agencyRoundTripFlightController.getAllRoundTripFlight);
 
 
 //..............verification.........

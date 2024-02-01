@@ -95,7 +95,7 @@ const oneWayFlightSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    cnicancelPolicyDescriptioncImage: {
+    cancelPolicyDescription: {
       type: String,
       required: true,
     },
