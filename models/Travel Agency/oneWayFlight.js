@@ -22,7 +22,7 @@ const oneWayFlightSchema = new mongoose.Schema(
     to: {
       type: String,
     },
-    class: {
+    className: {
       type: String,
     },
     departTime: {
@@ -54,13 +54,26 @@ const oneWayFlightSchema = new mongoose.Schema(
     nextFlightNo: {
       type: String,
     },
-    departTime: {
+    afterStayDepartTime: {
       type: String,
       required: true,
     },
-    designationTime: {
+    afterStayDesignationTime: {
       type: String,
       required: true,
+    },
+    winglets: {
+      type: Boolean
+    },
+    webBrowsing: {
+      type: Boolean
+    },
+    streamingEntertainment: {
+      type: Boolean
+    },
+    lightMealAvailability: {
+      flightA: Boolean,
+      flightB: Boolean
     },
     handBag: {
       type: String,
