@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const appartmentInfoSchema = new mongoose.Schema({
+const bnbInfoSchema = new mongoose.Schema({
   hotelId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Hotel",
@@ -20,19 +20,19 @@ const appartmentInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  streetAddress: {
+  alternativeContactNo: {
     type: String,
     required: true,
   },
-  addressLine2: {
+  province: {
     type: String,
     required: true,
   },
-  city: {
+  propertyAddress: {
     type: String,
     required: true,
   },
-  postCode: {
+  zipCode: {
     type: String,
     required: true,
   },
@@ -40,118 +40,54 @@ const appartmentInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  partOfCompany: {
-    type: String,
-    enum: ["yes", "No"],
-    required: true,
-  },
-  nameOfCompany: {
-    type: String,
-    required: true,
-  },
-  channelManager: {
-    type: String,
-    enum: ["I use a channel manager", "I don't use a channel manager"],
-    
-  },
-  nameOfManager: {
-    type: String,
-    required: true,
-  },
-  numberOfAppartments: {
-    type: String,
-    required: true,
-  },
-  numberOfBedroom: {
-    type: String,
-    required: true,
-  },
-  numberOfLivingroom: {
-    type: String,
-    required: true,
-  },
-  numberOfBathroom: {
-    type: String,
-    required: true,
-  },
 
-  typeOfAppartments: {
+  roomType: {
     type: String,
     required: true,
   },
-  kindOfBeds: {
+  roomName: {
     type: String,
     required: true,
   },
-  numberOfBed: {
+  smokingPolicy: {
     type: String,
     required: true,
   },
-  addAnotherBed: {
+  noOfAllRooms: {
     type: String,
     required: true,
   },
-  noOfStayingGuests: {
+  bedKinds: {
     type: String,
     required: true,
   },
-  privateBathroom: {
-    type: Boolean,
-    required: true,
-  },
-  numberOfSofaBed: {
+  bedNo: {
     type: String,
     required: true,
   },
-  guest: {
+  guestNo: {
     type: String,
     required: true,
   },
-  appartmentSize: {
-    type: String,
-  },
-  basePricePerNight: {
-    type: String,
-  },
-  isParkingAvailable: {
+  roomSize: {
     type: String,
     required: true,
   },
-  parkingtype: {
-    type: String,
-    enum: ["Private", "Public"],
-  },
-  siteParking: {
-    type: String,
-    enum: ["onsite", "offsite"],
-  },
-  reservation: {
-    type: String,
-    enum: ["Reservation Needed", "No Reservation Needed"],
-  },
-  priceOfParking: {
-    type: String,
-  },
-  breakfast: {
+  pricePerNight: {
     type: String,
     required: true,
   },
-  priceOfBreakfast: {
+  priceForMeditour: {
     type: String,
-    enum: ["No", "yes, it's included in the price", "yes, its optional"],
+    required: true,
   },
-  kindOfBreakfast: {
+  parkingAvailability: {
     type: String,
-    enum: [
-      "Continental",
-      "American",
-      "Buffet",
-      "A la carte",
-      "Breakfast to go",
-      "italian",
-      "Full English/Irish",
-      "Vegetarian",
-    ],
+    required: true,
+  },
+  parkingPrice: {
+    type: String,
+    required: true,
   },
   language: {
     type: String,
@@ -177,13 +113,12 @@ const appartmentInfoSchema = new mongoose.Schema({
   },
   extraBed: {
     type: String,
-    enum: ["yes", "no"],
+    enum: ["yes", "No"],
   },
-  selectedNumberOfBed: {
+  addExtraBed: {
     type: String,
-    required: true,
   },
-  extraBedAccomodateGuest: {
+  guestsInExtraBeds: {
     type: String,
     enum: ["Children upyo 2 years old in cribs", "Children", "Adults"],
   },
@@ -198,6 +133,8 @@ const appartmentInfoSchema = new mongoose.Schema({
       "Electric Kettle",
       "Balcony",
       "Terrace",
+      "All Rooms",
+      "Some Room",
     ],
   },
   propertyphoto: {
@@ -216,28 +153,25 @@ const appartmentInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  smoking: {
-    type: String,
-    enum: ["Yes", "No"],
-  },
+
   accomodateChildren: {
     type: String,
     enum: ["Yes", "No"],
   },
-  minimumStay: {
-    type: String,
-    required: true,
-   },
+
   pets: {
     type: String,
-    enum: ["Yes", "No"],  },
+    enum: ["Yes", "No"],
+  },
   chargesOfPets: {
     type: String,
     required: true,
   },
   addAnotherProperty: {
     type: String,
+ 
   },
 });
 
-module.exports = mongoose.model("AppartmentInfo",appartmentInfoSchema,"appartments info");
+
+module.exports= mongoose.model("bnbInfo" , bnbInfoSchema, "bnb info")

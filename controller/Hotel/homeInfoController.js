@@ -1,17 +1,15 @@
 const express = require("express");
 const app = express();
-const appartmentDTO = require("../../dto/appartment");
-const appartmentInfo = require("../../models/Hotel/appartmentInfo.js");
 const Joi = require("joi");
-const JWTService = require("../../services/JWTService.js");
-const RefreshToken = require("../../models/token.js");
-const AccessToken = require("../../models/accessToken.js");
-const bcrypt = require("bcryptjs");
+const homeInfo = require("../../models/Hotel/homeInfo");
+const homeDTO = require("../../dto/home");
 
-const appartmentInfoController = {
-  async addAppartment(req, res, next) {
-    const appartmentInfoSchema = Joi.object({
 
+const homeInfoController = {
+  async addHome(req, res, next) {
+    const homeInfoSchema  = Joi.object({
+      guestBook: Joi.string().required(),
+      similarPropertyCategory: Joi.string().required(),
       propertyName: Joi.string().required(),
       starRating: Joi.string().required(),
       customName: Joi.string().required(),
@@ -67,12 +65,14 @@ const appartmentInfoController = {
       chargesOfPets: Joi.string().required(),
       addAnotherProperty: Joi.string(),
     });
-    const { error } = appartmentInfoSchema.validate(req.body);
+    const { error } = homeInfoSchema.validate(req.body);
 
     if (error) {
       return next(error);
     }
     const {
+      guestBook,
+      similarPropertyCategory,
       propertyName,
       starRating,
       customName,
@@ -128,11 +128,13 @@ const appartmentInfoController = {
       chargesOfPets,
       addAnotherProperty,
     } = req.body;
-    let appartment;
+    let home;
     const hotelId = req.user._id;
     try {
-      const appartmentInfoToRegister = new appartmentInfo({
+      const homeInfoToRegister = new homeInfo({
         hotelId,
+        guestBook,
+      similarPropertyCategory,
         propertyName,
         starRating,
         customName,
@@ -189,19 +191,21 @@ const appartmentInfoController = {
         addAnotherProperty,
       });
 
-      appartment = await appartmentInfoToRegister.save();
+      home = await homeInfoToRegister.save();
     } catch (error) {
       return next(error);
     }
-    console.log(appartment);
-    const appartmentDto = new appartmentDTO(appartment);
-    console.log(appartmentDTO);
+    console.log(home);
+    const homeDto = new homeDTO(home);
+    console.log(homeDTO);
 
-    return res.status(201).json({ Appartment: appartmentDto, auth: true });
+    return res.status(201).json({ Home: homeDto, auth: true });
   },
   // update
-  async editAppartment(req, res, next) {
-    const appartmentInfoSchema = Joi.object({
+  async editHome(req, res, next) {
+    const homeInfoSchema = Joi.object({
+      guestBook: Joi.string().required(),
+      similarPropertyCategory: Joi.string().required(),
       propertyName: Joi.string().required(),
       starRating: Joi.string().required(),
       customName: Joi.string().required(),
@@ -257,12 +261,14 @@ const appartmentInfoController = {
       chargesOfPets: Joi.string().required(),
       addAnotherProperty: Joi.string(),
     });
-    const { error } = appartmentInfoSchema.validate(req.body);
+    const { error } = homeInfoSchema.validate(req.body);
 
     if (error) {
       return next(error);
     }
     const {
+      guestBook,
+      similarPropertyCategory,
       propertyName,
       starRating,
       customName,
@@ -319,141 +325,142 @@ const appartmentInfoController = {
       addAnotherProperty,
     } = req.body;
 
-    const hotelAppartmentId = req.user._id;
+    const hotelHomeId = req.user._id;
 
-    const appartmentId = req.query.appartmentId;
-    const existingAppartment = await appartmentInfo.findById(appartmentId);
+    const homeId = req.query.homeId;
+    const existingHome = await homeInfo.findById(homeId);
 
-    if (!existingAppartment) {
-      const error = new Error("Appartment not found!");
+    if (!existingHome) {
+      const error = new Error("Home not found!");
       error.status = 404;
       return next(error);
     }
-    // fields
-
-    if (propertyName) existingAppartment.propertyName = propertyName;
-    if (starRating) existingAppartment.starRating = starRating;
-    if (customName) existingAppartment.customName = customName;
-    if (contactNumber) existingAppartment.contactNumber = contactNumber;
-    if (streetAddress) existingAppartment.streetAddress = streetAddress;
-    if (addressLine2) existingAppartment.addressLine2 = addressLine2;
-    if (city) existingAppartment.city = city;
-    if (postCode) existingAppartment.postCode = postCode;
-    if (country) existingAppartment.country = country;
-    if (partOfCompany) existingAppartment.partOfCompany = partOfCompany;
-    if (channelManager) existingAppartment.channelManager = channelManager;
-    if (nameOfCompany) existingAppartment.nameOfCompany = nameOfCompany;
-    if (nameOfManager) existingAppartment.nameOfManager = nameOfManager;
-    if (numberOfBedroom) existingAppartment.numberOfBedroom = numberOfBedroom;
+    // fields to 
+    if (guestBook) existingHome.guestBook = guestBook;
+    if (similarPropertyCategory) existingHome.similarPropertyCategory = similarPropertyCategory;
+    if (propertyName) existingHome.propertyName = propertyName;
+    if (starRating) existingHome.starRating = starRating;
+    if (customName) existingHome.customName = customName;
+    if (contactNumber) existingHome.contactNumber = contactNumber;
+    if (streetAddress) existingHome.streetAddress = streetAddress;
+    if (addressLine2) existingHome.addressLine2 = addressLine2;
+    if (city) existingHome.city = city;
+    if (postCode) existingHome.postCode = postCode;
+    if (country) existingHome.country = country;
+    if (partOfCompany) existingHome.partOfCompany = partOfCompany;
+    if (channelManager) existingHome.channelManager = channelManager;
+    if (nameOfCompany) existingHome.nameOfCompany = nameOfCompany;
+    if (nameOfManager) existingHome.nameOfManager = nameOfManager;
+    if (numberOfBedroom) existingHome.numberOfBedroom = numberOfBedroom;
     if (numberOfLivingroom)
-      existingAppartment.numberOfLivingroom = numberOfLivingroom;
+      existingHome.numberOfLivingroom = numberOfLivingroom;
     if (numberOfBathroom)
-      existingAppartment.numberOfBathroom = numberOfBathroom;
+      existingHome.numberOfBathroom = numberOfBathroom;
     if (numberOfAppartments)
-      existingAppartment.numberOfAppartments = numberOfAppartments;
+      existingHome.numberOfAppartments = numberOfAppartments;
     if (typeOfAppartments)
-      existingAppartment.typeOfAppartments = typeOfAppartments;
-    if (kindOfBeds) existingAppartment.kindOfBeds = kindOfBeds;
-    if (numberOfBed) existingAppartment.numberOfBed = numberOfBed;
-    if (addAnotherBed) existingAppartment.addAnotherBed = addAnotherBed;
-    if (ownerImage) existingAppartment.ownerImage = ownerImage;
-    if (cnicImage) existingAppartment.cnicImage = cnicImage;
-    if (taxFileImage) existingAppartment.taxFileImage = taxFileImage;
+      existingHome.typeOfAppartments = typeOfAppartments;
+    if (kindOfBeds) existingHome.kindOfBeds = kindOfBeds;
+    if (numberOfBed) existingHome.numberOfBed = numberOfBed;
+    if (addAnotherBed) existingHome.addAnotherBed = addAnotherBed;
+    if (ownerImage) existingHome.ownerImage = ownerImage;
+    if (cnicImage) existingHome.cnicImage = cnicImage;
+    if (taxFileImage) existingHome.taxFileImage = taxFileImage;
     if (noOfStayingGuests)
-      existingAppartment.noOfStayingGuests = noOfStayingGuests;
-    if (privateBathroom) existingAppartment.privateBathroom = privateBathroom;
-    if (numberOfSofaBed) existingAppartment.numberOfSofaBed = numberOfSofaBed;
-    if (guest) existingAppartment.guest = guest;
-    if (appartmentSize) existingAppartment.appartmentSize = appartmentSize;
-    if (basePricePerNight) existingAppartment.basePricePerNight = basePricePerNight;
+      existingHome.noOfStayingGuests = noOfStayingGuests;
+    if (privateBathroom) existingHome.privateBathroom = privateBathroom;
+    if (numberOfSofaBed) existingHome.numberOfSofaBed = numberOfSofaBed;
+    if (guest) existingHome.guest = guest;
+    if (appartmentSize) existingHome.appartmentSize = appartmentSize;
+    if (basePricePerNight) existingHome.basePricePerNight = basePricePerNight;
     if (isParkingAvailable)
-      existingAppartment.isParkingAvailable = isParkingAvailable;
-    if (parkingtype) existingAppartment.parkingtype = parkingtype;
-    if (siteParking) existingAppartment.siteParking = siteParking;
-    if (reservation) existingAppartment.reservation = reservation;
-    if (priceOfParking) existingAppartment.priceOfParking = priceOfParking;
-    if (breakfast) existingAppartment.breakfast = breakfast;
+      existingHome.isParkingAvailable = isParkingAvailable;
+    if (parkingtype) existingHome.parkingtype = parkingtype;
+    if (siteParking) existingHome.siteParking = siteParking;
+    if (reservation) existingHome.reservation = reservation;
+    if (priceOfParking) existingHome.priceOfParking = priceOfParking;
+    if (breakfast) existingHome.breakfast = breakfast;
     if (priceOfBreakfast)
-      existingAppartment.priceOfBreakfast = priceOfBreakfast;
-    if (kindOfBreakfast) existingAppartment.kindOfBreakfast = kindOfBreakfast;
-    if (language) existingAppartment.language = language;
-    if (facillities) existingAppartment.facillities = facillities;
-    if (extraBed) existingAppartment.extraBed = extraBed;
+      existingHome.priceOfBreakfast = priceOfBreakfast;
+    if (kindOfBreakfast) existingHome.kindOfBreakfast = kindOfBreakfast;
+    if (language) existingHome.language = language;
+    if (facillities) existingHome.facillities = facillities;
+    if (extraBed) existingHome.extraBed = extraBed;
     if (selectedNumberOfBed)
-      existingAppartment.selectedNumberOfBed = selectedNumberOfBed;
+      existingHome.selectedNumberOfBed = selectedNumberOfBed;
     if (extraBedAccomodateGuest)
-      existingAppartment.extraBedAccomodateGuest = extraBedAccomodateGuest;
-    if (amenities) existingAppartment.amenities = amenities;
-    if (propertyphoto) existingAppartment.propertyphoto = propertyphoto;
+      existingHome.extraBedAccomodateGuest = extraBedAccomodateGuest;
+    if (amenities) existingHome.amenities = amenities;
+    if (propertyphoto) existingHome.propertyphoto = propertyphoto;
     if (advanceCancelfreeofCharge)
-      existingAppartment.advanceCancelfreeofCharge = advanceCancelfreeofCharge;
-    if (checkInForm) existingAppartment.checkInForm = checkInForm;
-    if (checkOutForm) existingAppartment.checkOutForm = checkOutForm;
-    if (smoking) existingAppartment.smoking = smoking;
+      existingHome.advanceCancelfreeofCharge = advanceCancelfreeofCharge;
+    if (checkInForm) existingHome.checkInForm = checkInForm;
+    if (checkOutForm) existingHome.checkOutForm = checkOutForm;
+    if (smoking) existingHome.smoking = smoking;
     if (accomodateChildren)
-      existingAppartment.accomodateChildren = accomodateChildren;
-    if (minimumStay) existingAppartment.minimumStay = minimumStay;
-    if (pets) existingAppartment.pets = pets;
-    if (chargesOfPets) existingAppartment.chargesOfPets = chargesOfPets;
-    if (addAnotherProperty) existingAppartment.addAnotherProperty = addAnotherProperty;
-    
-    await existingAppartment.save();
+      existingHome.accomodateChildren = accomodateChildren;
+    if (minimumStay) existingHome.minimumStay = minimumStay;
+    if (pets) existingHome.pets = pets;
+    if (chargesOfPets) existingHome.chargesOfPets = chargesOfPets;
+    if (addAnotherProperty) existingHome.addAnotherProperty = addAnotherProperty;
+
+    await existingHome.save();
 
     return res.status(200).json({
       message: " updated successfully",
-      appartment: existingAppartment,
+      home: existingHome,
     });
   },
 
-  async deleteAppartment(req, res, next) {
-    const appartmentId = req.query.appartmentId;
-    const existingAppartment = await appartmentInfo.findById(appartmentId);
+  async deleteHome(req, res, next) {
+    const homeId = req.query.homeId;
+    const existingHome = await homeInfo.findById(homeId);
 
-    if (!existingAppartment) {
-      const error = new Error("Appartment not found!");
+    if (!existingHome) {
+      const error = new Error("Home not found!");
       error.status = 404;
       return next(error);
     }
-    await appartmentInfo.deleteOne({ _id: appartmentId });
-    return res.status(200).json({ message: "Appartment deleted successfully" });
+    await homeInfo.deleteOne({ _id: homeId });
+    return res.status(200).json({ message: "Home deleted successfully" });
   },
 
-  async getAppartment(req, res, next) {
+  async getHome(req, res, next) {
     try {
-      const appartmentId = req.query.appartmentId;
-      const appartment = await appartmentInfo.findById(appartmentId);
+      const homeId = req.query.homeId;
+      const home = await homeInfo .findById(homeId);
 
-      if (!appartment) {
-        const error = new Error("Appartment not found!");
+      if (!home) {
+        const error = new Error("Home not found!");
         error.status = 404;
         return next(error);
       }
-      return res.status(200).json({ appartment });
+      return res.status(200).json({ home});
     } catch (error) {
       return next(error);
     }
   },
 
-  async getAllAppartments(req, res, next) {
+  async getAllHomes(req, res, next) {
     try {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
-      const appartmentsPerPage = 10;
+      const homePerPage = 10;
       const hotelId = req.user._id;
-      const totalAppartment = await appartmentInfo.countDocuments({
+      const totalHome = await homeInfo.countDocuments({
         hotelId,
       }); // Get the total number of posts for the user
-      const totalPages = Math.ceil(totalAppartment / appartmentsPerPage); // Calculate the total number of pages
+      const totalPages = Math.ceil(totalHome / homePerPage); // Calculate the total number of pages
 
-      const skip = (page - 1) * appartmentsPerPage; // Calculate the number of posts to skip based on the current page
+      const skip = (page - 1) * homePerPage; // Calculate the number of posts to skip based on the current page
 
-      const appartments = await appartmentInfo
+      const homes = await homeInfo
         .find({ hotelId })
         .skip(skip)
-        .limit(appartmentsPerPage);
+        .limit(homePerPage);
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
       return res.status(200).json({
-        appartments: appartments,
+        homes: homes,
         auth: true,
         previousPage: previousPage,
         nextPage: nextPage,
@@ -464,4 +471,4 @@ const appartmentInfoController = {
   },
 };
 
-module.exports = appartmentInfoController;
+module.exports = homeInfoController;

@@ -5,6 +5,8 @@ const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
 const appartmentInfoController = require("../controller/Hotel/appartmentInfoController");
+const BnbInfoController = require("../controller/Hotel/bnbInfoController");
+const homeInfoController = require("../controller/Hotel/homeInfoController");
 const router = express.Router();
 const upload = multer({ dest: "temp/" });
 
@@ -25,12 +27,31 @@ router.post("/hotel/confirmEmail", VerificationController.confirmEmail);
 router.post("/hotel/ResetLink", VerificationController.ResetLink);
 router.post("/hotel/resetPassword", VerificationController.resetPassword);
 
-// ....appointment..//
+// ....appointment crud..//
 
 router.post("/hotel/addAppartment", auth, appartmentInfoController.addAppartment);
 router.put("/hotel/editAppartment",auth, appartmentInfoController.editAppartment);
 router.delete("/hotel/deleteAppartment",auth, appartmentInfoController.deleteAppartment);
 router.get("/hotel/getAppartment",auth, appartmentInfoController.getAppartment);
 router.get("/hotel/getAllAppartments",auth, appartmentInfoController.getAllAppartments);
+
+
+// ..B&B CRUD...//
+router.post("/hotel/addBnb", auth, BnbInfoController.addBnb);
+router.put("/hotel/updateBnb",auth, BnbInfoController.updateBnb);
+router.delete("/hotel/deleteBnb",auth, BnbInfoController.deleteBnb);
+router.get("/hotel/getBnb",auth, BnbInfoController.getBnb);
+router.get("/hotel/getAllBnb",auth, BnbInfoController.getAllBnb);
+
+
+// ..HOME CRUD...//
+router.post("/hotel/addHome", auth, homeInfoController.addHome);
+router.put("/hotel/editHome",auth, homeInfoController.editHome);
+router.delete("/hotel/deleteHome",auth, homeInfoController.deleteHome);
+router.get("/hotel/getHome",auth, homeInfoController.getHome);
+router.get("/hotel/getAllHomes",auth, homeInfoController.getAllHomes);
+
+
+
 module.exports = router;
  
