@@ -1,9 +1,9 @@
 class appartmentDTO{
     constructor(appartment){
         this._id = appartment._id;
-        this.propertyName= appartment.propertyName;
+        this.appartmentNo= appartment.appartmentNo;
         this.starRating= appartment.starRating;
-        this.customName= appartment.propertyName;
+        this.customName= appartment.appartmentNo;
         this.contactNumber= appartment.contactNumber;
         this.streetAddress= appartment.streetAddress;
         this.addressLine2= appartment.addressLine2;

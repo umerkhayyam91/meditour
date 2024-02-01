@@ -11,7 +11,7 @@ const bcrypt = require("bcryptjs");
 const appartmentInfoController = {
   async addAppartment(req, res, next) {
     const appartmentInfoSchema = Joi.object({
-      propertyName: Joi.string().required(),
+      appartmentNo: Joi.string().required(),
       starRating: Joi.string().required(),
       customName: Joi.string().required(),
       contactNumber: Joi.string().required(),
@@ -72,7 +72,7 @@ const appartmentInfoController = {
     }
     const {
       
-      propertyName,
+      appartmentNo,
       starRating,
       customName,
       contactNumber,
@@ -131,7 +131,7 @@ const appartmentInfoController = {
     try {
       const appartmentInfoToRegister = new appartmentInfo({
         hotelId,
-        propertyName,
+        appartmentNo,
         starRating,
         customName,
         contactNumber,
@@ -199,7 +199,7 @@ const appartmentInfoController = {
   // update
   async editAppartment(req, res, next) {
     const appartmentInfoSchema = Joi.object({
-      propertyName: Joi.string().required(),
+      appartmentNo: Joi.string().required(),
       starRating: Joi.string().required(),
       customName: Joi.string().required(),
       contactNumber: Joi.string().required(),
@@ -259,7 +259,7 @@ const appartmentInfoController = {
       return next(error);
     }
     const {
-      propertyName,
+      appartmentNo,
       starRating,
       customName,
       contactNumber,
@@ -326,7 +326,7 @@ const appartmentInfoController = {
     }
     // fields
 
-    if (propertyName) existingAppartment.propertyName = propertyName;
+    if (appartmentNo) existingAppartment.appartmentNo = appartmentNo;
     if (starRating) existingAppartment.starRating = starRating;
     if (customName) existingAppartment.customName = customName;
     if (contactNumber) existingAppartment.contactNumber = contactNumber;

@@ -5,7 +5,7 @@ const appartmentInfoSchema= new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "Hotel",
       },
-        propertyName: {
+        appartmentNo: {
           type: String,
           required: true,
         },
