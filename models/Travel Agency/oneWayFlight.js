@@ -1,5 +1,27 @@
 const mongoose = require("mongoose");
 
+const tripSchema = new mongoose.Schema({
+  companyName: String,
+  flightsNo: String,
+  companyLogo: String,
+  from: String,
+  to: String,
+  className: String,
+  departTime: String,
+  designationTime: String,
+  passengers: String,
+  infant: String,
+  directOrStay: {
+    type: String,
+    enum: ["direct", "stay"]
+  },
+  stayDesignation: String,
+  stayduration: String,
+  nextFlightNo: String,
+  afterStayDepartTime: String,
+  afterStayDesignationTime: String,
+});
+
 const oneWayFlightSchema = new mongoose.Schema(
   {
     agencyId: {
