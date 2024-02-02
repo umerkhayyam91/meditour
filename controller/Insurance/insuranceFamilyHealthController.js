@@ -22,6 +22,7 @@ const insuranceHealthController = {
       OPD: Joi.string(),
       waitingPeriod: Joi.string(),
       policyDocument: Joi.string(),
+      claimProcess: Joi.string(),
       heading: Joi.string(),
       description: Joi.string(),
       actualPrice: Joi.string(),
@@ -53,6 +54,7 @@ const insuranceHealthController = {
       OPD,
       waitingPeriod,
       policyDocument,
+      claimProcess,
       heading,
       description,
       actualPrice,
@@ -82,6 +84,7 @@ const insuranceHealthController = {
         OPD,
         waitingPeriod,
         policyDocument,
+        claimProcess,
         heading,
         description,
         actualPrice,
@@ -117,6 +120,7 @@ const insuranceHealthController = {
       OPD: Joi.string(),
       waitingPeriod: Joi.string(),
       policyDocument: Joi.string(),
+      claimProcess: Joi.string(),
       heading: Joi.string(),
       description: Joi.string(),
       actualPrice: Joi.string(),
@@ -147,6 +151,7 @@ const insuranceHealthController = {
       OPD,
       waitingPeriod,
       policyDocument,
+      claimProcess,
       heading,
       description,
       actualPrice,
@@ -187,6 +192,7 @@ const insuranceHealthController = {
     if (OPD) existingInsurance.OPD = OPD;
     if (waitingPeriod) existingInsurance.waitingPeriod = waitingPeriod;
     if (policyDocument) existingInsurance.policyDocument = policyDocument;
+    if (claimProcess) existingInsurance.claimProcess = claimProcess;
     if (heading) existingInsurance.heading = heading;
     if (description) existingInsurance.description = description;
     if (actualPrice) existingInsurance.actualPrice = actualPrice;
