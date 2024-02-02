@@ -61,10 +61,10 @@ const insuranceGeneralController = {
       if (search) {
         const regex = new RegExp(search, "i"); // Create a case-insensitive regular expression
         console.log(search);
-        totalLabs = await Laboratory.countDocuments({ hospitalName: regex });
+        totalLabs = await Laboratory.countDocuments({ labFirstName: regex });
         totalPages = Math.ceil(totalLabs / labPerPage); // Calculate the total number of pages
         skip = (page - 1) * labPerPage; // Calculate the number of posts to skip based on the current page
-        labs = await Laboratory.find({ hospitalName: regex })
+        labs = await Laboratory.find({ labFirstName: regex })
           .skip(skip)
           .limit(labPerPage);
 

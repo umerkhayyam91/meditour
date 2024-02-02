@@ -27,6 +27,23 @@ const insuranceRequestController = {
           } catch (error) {
             return next(error);
           }
+      },
+
+      async addRequests(req,res,next){
+        const {insuranceId, userId, userName, insuranceFor} = req.body;
+        insuranceCompanyId = req.user._id;
+        const request = await new InsuranceRequest({
+          insuranceCompanyId,
+          insuranceId,
+          userId,
+          userName,
+          insuranceFor
+        })
+        await request.save();
+         res.status(200).json({
+          request: request,
+          auth: true,
+        });
       }
     }
   

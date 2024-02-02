@@ -1,6 +1,5 @@
 const Joi = require("joi");
 const User = require("../../models/User/user");
-// const VerificationCode = require("../models/verificationCode");
 const bcrypt = require("bcryptjs");
 const UserDTO = require("../../dto/user.js");
 const JWTService = require("../../services/JWTService.js");
@@ -26,6 +25,7 @@ const authController = {
     const userRegisterSchema = Joi.object({
       name: Joi.string().required(),
       email: Joi.string().required(),
+      gender: Joi.string().required(),
       phone: Joi.string().required(),
       password: Joi.string().pattern(passwordPattern).required(),
     });
@@ -36,7 +36,7 @@ const authController = {
       return next(error);
     }
   
-    const { name, email, phone, password } = req.body;
+    const { name, email, gender, phone, password } = req.body;
     const emailExists = await User.findOne({ email });
   
     if (emailExists) {
@@ -61,6 +61,7 @@ const authController = {
       const userToRegister = new User({
         name,
         email,
+        gender,
         mrNo,
         phone,
         password: hashedPassword,
