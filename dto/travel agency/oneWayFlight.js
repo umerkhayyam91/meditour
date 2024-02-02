@@ -1,7 +1,7 @@
 class oneWayFlightDTO {
     constructor(flight) {
       this._id = flight._id;
-      this.agencyId = flight.flightId;
+      this.agencyId = flight.agencyId;
       this.companyName = flight.companyName;
       this.flightsNo = flight.flightsNo;
       this.companyLogo = flight.companyLogo;
