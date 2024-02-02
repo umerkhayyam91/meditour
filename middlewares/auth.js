@@ -9,7 +9,7 @@ const physioDto = require("../dto/physio");
 const nutritionistDto = require("../dto/nutritionist");
 const paramedicDto = require("../dto/nutritionist");
 const psychologistDto = require("../dto/psychologist");
-const agencyDto = require("../dto/travelAgency");
+const agencyDto = require("../dto/travel agency/travelAgency");
 const rentCarDTO = require("../dto/rentCar");
 const donationDTO = require("../dto/donation");
 const hotelDTO = require("../dto/hotel");
@@ -209,7 +209,7 @@ const auth = async (req, res, next) => {
       return;
     } else if (req.originalUrl.includes("/hotel")) {
       try {
-        user = await Hotel.findOne({ _id: _id });
+        user = await Hotel.findOne({_id: _id });
       } catch (error) {
         return next(error);
       }
@@ -219,7 +219,8 @@ const auth = async (req, res, next) => {
 
       next();
       return;
-    } else if (req.originalUrl.includes("/insurance")) {
+
+    }else if (req.originalUrl.includes("/insurance")) {
       try {
         user = await Insurance.findOne({ _id: _id });
       } catch (error) {

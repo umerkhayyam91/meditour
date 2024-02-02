@@ -7,14 +7,16 @@ const insuranceSchema = new mongoose.Schema(
       ref: "Insurance",
     },
     yourAgeCriteria: {
-      type: String,
+      startAge: String,
+      endAge: String,
     },
     spouseAgeCriteria: {
-      type: String,
+      startAge: String,
+      endAge: String,
     },
     kidsAge: {
-      ageStart: String,
-      ageEnd: String,
+      startAge: String,
+      endAge: String,
     },
     hospitalizationLimit: {
       startlimit: String,

@@ -4,9 +4,11 @@ const individualhealthDTO = require("../../dto/Insurance/individualHealth.js");
 
 const insuranceHealthController = {
   async addIndividualHealth(req, res, next) {
+    console.log("object");
     const insuranceRegisterSchema = Joi.object({
-      ageCriteria: Joi.string(),
-      hospitalizationLimit: Joi.string(),
+      ageCriteria: Joi.object(),
+      hospitalizationLimit: Joi.object(),
+      gender: Joi.string(),
       packageName: Joi.string(),
       packageLogo: Joi.string(),
       hospitalizationPerPerson: Joi.string(),
@@ -34,10 +36,12 @@ const insuranceHealthController = {
     if (error) {
       return next(error);
     }
+    console.log("objects");
 
     const {
       ageCriteria,
       hospitalizationLimit,
+      gender,
       packageName,
       packageLogo,
       hospitalizationPerPerson,
@@ -67,6 +71,7 @@ const insuranceHealthController = {
         insuranceId,
         ageCriteria,
         hospitalizationLimit,
+        gender,
         packageName,
         packageLogo,
         hospitalizationPerPerson,
@@ -89,6 +94,7 @@ const insuranceHealthController = {
         perYear,
       });
 
+      console.log("objectss");
       insurance = await insuranceToRegister.save();
       const individualhealthDto = new individualhealthDTO(insurance);
 
@@ -102,15 +108,16 @@ const insuranceHealthController = {
 
   async editIndividualHealth(req, res, next) {
     const insuranceHealthSchema = Joi.object({
-      ageCriteria: Joi.string(),
-      hospitalizationLimit: Joi.string(),
+      ageCriteria: Joi.object(),
+      hospitalizationLimit: Joi.object(),
+      gender: Joi.string(),
       packageName: Joi.string(),
       packageLogo: Joi.string(),
       hospitalizationPerPerson: Joi.string(),
       dailyRoomAndBoardLimit: Joi.string(),
       claimPayoutRatio: Joi.string(),
-      hospitals: Joi.string(),
-      laboratories: Joi.string(),
+      hospitals: Joi.array(),
+      laboratories: Joi.array(),
       icuCcuLimits: Joi.string(),
       accidentalEmergencyLimits: Joi.string(),
       ambulanceCoverage: Joi.string(),
@@ -134,6 +141,7 @@ const insuranceHealthController = {
     const {
       ageCriteria,
       hospitalizationLimit,
+      gender,
       packageName,
       packageLogo,
       hospitalizationPerPerson,
@@ -166,11 +174,13 @@ const insuranceHealthController = {
       error.status = 404;
       return next(error);
     }
-
+console.log(ageCriteria);
     // Update only the provided fields
     if (ageCriteria) existingInsurance.ageCriteria = ageCriteria;
     if (hospitalizationLimit)
       existingInsurance.hospitalizationLimit = hospitalizationLimit;
+    if (gender)
+      existingInsurance.gender = gender;
     if (packageName) existingInsurance.packageName = packageName;
     if (packageLogo) existingInsurance.packageLogo = packageLogo;
     if (hospitalizationPerPerson)
