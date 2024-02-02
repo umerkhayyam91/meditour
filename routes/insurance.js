@@ -61,6 +61,7 @@ router.get("/insurance/getAllFamilyTravel", auth, insuranceFamilyTravelControlle
 
 //..............insurance requests.................//
 router.get("/insurance/getAllRequests", auth, insuranceRequestController.getAllRequests);
+router.post("/insurance/addRequests", auth, insuranceRequestController.addRequests);
 
 //..............general.................//
 router.get("/insurance/getHospitals", auth, insuranceGeneralController.getHospitals);

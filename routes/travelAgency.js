@@ -2,6 +2,7 @@ const express = require("express");
 const agencyAuthController = require("../controller/Travel Agency/agencyAuthController");
 const agencyOneWayFlightController = require("../controller/Travel Agency/agencyOneWayFlightController");
 const agencyRoundTripFlightController = require("../controller/Travel Agency/agencyRoundTripFlightController");
+const agencyMultiTripFlightController = require("../controller/Travel Agency/agencyMultiTripFlightController");
 const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
@@ -33,6 +34,12 @@ router.delete("/agency/deleteRoundTripFlight", auth, agencyRoundTripFlightContro
 router.get("/agency/getRoundTripFlight", auth, agencyRoundTripFlightController.getRoundTripFlight);
 router.get("/agency/getAllRoundTripFlight", auth, agencyRoundTripFlightController.getAllRoundTripFlight);
 
+//...............multi-trip flight...................//
+router.post("/agency/addMultiTripFlight", auth, agencyMultiTripFlightController.addMultiTripFlight);
+router.put("/agency/editMultiTripFlight", auth, agencyMultiTripFlightController.editMultiTripFlight);
+router.delete("/agency/deleteMultiTripFlight", auth, agencyMultiTripFlightController.deleteMultiTripFlight);
+router.get("/agency/getMultiTripFlight", auth, agencyMultiTripFlightController.getMultiTripFlight);
+router.get("/agency/getAllMultiTripFlight", auth, agencyMultiTripFlightController.getAllMultiTripFlight);
 
 //..............verification.........
 router.post("/agency/sendCodeToEmail", VerificationController.sendCodeToEmail);
