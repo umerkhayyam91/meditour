@@ -400,7 +400,7 @@ const appartmentInfoController = {
     await existingAppartment.save();
 
     return res.status(200).json({
-      message: " updated successfully",
+      message: " Appartment updated successfully",
       appartment: existingAppartment,
     });
   },

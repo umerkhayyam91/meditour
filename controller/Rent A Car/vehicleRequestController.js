@@ -50,7 +50,7 @@ async getRequest(req,res,next){
         const vehicleCompanyId = req.user._id;
         const requests = await vehicleRequest.find({ vehicleCompanyId , status: "pending"});
         if (requests.length == 0) {
-          const error = new Error("No Requests found!");
+          const error = new Error(" No Request for Vehicle found!");
           error.status = 404;
           return next(error);
         }
@@ -67,7 +67,7 @@ async acceptRequest(req, res, next) {
       const vehicleCompanyId = req.query.vehicleCompanyId;
       const requests = await vehicleRequest.findById(vehicleCompanyId);
       if (!requests) {
-        const error = new Error("request not found!");
+        const error = new Error("Request for Vehicle not found!");
         error.status = 404;
         return next(error);
       }
@@ -83,7 +83,7 @@ async acceptRequest(req, res, next) {
       await onRequest.save();
       return res.status(200).json({
         auth: true,
-        message: " Accepted Successfully",
+        message: "  Request for Vehicle Accepted Successfully",
       });
     } catch (error) {
       return next(error);
@@ -94,14 +94,14 @@ async acceptRequest(req, res, next) {
         const vehicleCompanyId = req.query.vehicleCompanyId;
         const requests = await vehicleRequest.findById(vehicleCompanyId);
         if (!requests) {
-        const error = new Error(" request not found!");
+        const error = new Error(" Request for Vehicle not found!");
         error.status = 404;
         return next(error);
       }
       await vehicleRequest.findByIdAndDelete(vehicleCompanyId);
       return res.status(200).json({
         auth: true,
-        message: "rejected successfully",
+        message: " Request for Vehicle rejected successfully",
       });
     } catch (error) {
       return next(error);

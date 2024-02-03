@@ -136,7 +136,7 @@ async editVehicle(req, res, next) {
   await existingVehicle.save();
   
   return res.status(200).json({
-    message: " updated successfully",
+    message: "Vehicle updated successfully",
     vehicle: existingVehicle,
   });
   },
@@ -152,7 +152,7 @@ async editVehicle(req, res, next) {
   }
   await vehicleDetail.deleteOne({ _id: vehicleId });
   console.log(existingVehicle)
-  return res.status(200).json({ message: " deleted successfully" });
+  return res.status(200).json({ message: "Vehicle deleted successfully" });
   },
   
   async getVehicle(req, res, next) {

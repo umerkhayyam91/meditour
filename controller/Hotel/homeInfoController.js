@@ -407,7 +407,7 @@ const homeInfoController = {
     await existingHome.save();
 
     return res.status(200).json({
-      message: " updated successfully",
+      message: " Home updated successfully",
       home: existingHome,
     });
   },
