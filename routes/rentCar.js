@@ -37,6 +37,9 @@ router.get("/rentCar/getAllVehicles",auth, vehicleDetailController.getAllVehicle
 
 router.post("/rentCar/addRequests", auth, vehicleRequestController.addRequests);
 router.get("/rentCar/getAllRequests", auth, vehicleRequestController.getAllRequests);
+router.post("/rentCar/acceptRequest", auth, vehicleRequestController.acceptRequest);
+router.post("/rentCar/rejectRequest", auth, vehicleRequestController.rejectRequest);
+
 
 
 module.exports = router;
