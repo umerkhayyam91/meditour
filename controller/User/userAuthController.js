@@ -29,34 +29,34 @@ const authController = {
       phone: Joi.string().required(),
       password: Joi.string().pattern(passwordPattern).required(),
     });
-  
+
     const { error } = userRegisterSchema.validate(req.body);
-  
+
     if (error) {
       return next(error);
     }
-  
+
     const { name, email, gender, phone, password } = req.body;
     const emailExists = await User.findOne({ email });
-  
+
     if (emailExists) {
       const error = {
         status: 401,
         message: 'Email Already Registered',
       };
-  
+
       return next(error);
     }
-  
+
     let accessToken;
     let refreshToken;
     const hashedPassword = await bcrypt.hash(password, 10);
-  
+
     let user;
     try {
       // Get the next unique mrNo
       const mrNo = await getNextMrNo();
-  
+
       // Create a new user with the generated mrNo
       const userToRegister = new User({
         name,
@@ -66,9 +66,9 @@ const authController = {
         phone,
         password: hashedPassword,
       });
-  
+
       user = await userToRegister.save();
-  
+
       // Token generation
       accessToken = JWTService.signAccessToken({ _id: user._id }, '365d');
       refreshToken = JWTService.signRefreshToken({ _id: user._id }, '365d');
@@ -76,10 +76,10 @@ const authController = {
       return next(error);
     }
     await JWTService.storeRefreshToken(refreshToken, user._id);
-  await JWTService.storeAccessToken(accessToken, user._id);
+    await JWTService.storeAccessToken(accessToken, user._id);
 
-  // Response send
-  return res.status(201).json({ user, auth: true, token: accessToken });
+    // Response send
+    return res.status(201).json({ user, auth: true, token: accessToken });
   },
 
   async login(req, res, next) {

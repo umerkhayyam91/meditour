@@ -1,9 +1,8 @@
 const express = require("express");
 const app = express();
-const OneWayFlightDTO = require("../../dto/travel agency/oneWayFlight");
-const OneWayFlight = require("../../models/Travel Agency/oneWayFlight");
 const Flight = require("../../models/Travel Agency/flight");
 const Joi = require("joi");
+const flightDTO = require("../../dto/travel agency/flight");
 
 const agencyOneWayFlightController = {
   async addOneWayFlight(req, res, next) {
@@ -79,14 +78,15 @@ const agencyOneWayFlightController = {
         ticketsCount,
         cancelPolicyDescription,
         meditourPrice,
-        actualPrice
+        actualPrice,
+        flightType: "oneWay"
       });
 
       flight = await flightToRegister.save();
     } catch (error) {
       return next(error);
     }
-    const flightDto = new OneWayFlightDTO(flight);
+    const flightDto = new flightDTO(flight);
 
     return res.status(201).json({ flight: flightDto, auth: true });
   },
