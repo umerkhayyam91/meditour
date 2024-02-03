@@ -4,6 +4,8 @@ const VerificationController = require("../controller/verificationController");
 const auth = require('../middlewares/auth');
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
+const vehicleDetailController = require("../controller/Rent A Car/vehicleDetailController");
+const vehicleRequestController = require("../controller/Rent A Car/vehicleRequestController");
 const router = express.Router();
 const upload = multer({ dest: "temp/" });
 
@@ -23,6 +25,19 @@ router.post("/rentCar/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/rentCar/confirmEmail", VerificationController.confirmEmail);
 router.post("/rentCar/ResetLink", VerificationController.ResetLink);
 router.post("/rentCar/resetPassword", VerificationController.resetPassword);
+
+// ...crud vehicle details
+
+router.post("/rentCar/addVehicle", auth, vehicleDetailController.addVehicle);
+router.put("/rentCar/editVehicle",auth, vehicleDetailController.editVehicle);
+router.delete("/rentCar/deleteVehicle",auth, vehicleDetailController.deleteVehicle);
+router.get("/rentCar/getVehicle",auth, vehicleDetailController.getVehicle);
+router.get("/rentCar/getAllVehicles",auth, vehicleDetailController.getAllVehicles);
+// ..... vehicle requests
+
+router.post("/rentCar/addRequests", auth, vehicleRequestController.addRequests);
+router.get("/rentCar/getAllRequests", auth, vehicleRequestController.getAllRequests);
+
 
 module.exports = router;
  
