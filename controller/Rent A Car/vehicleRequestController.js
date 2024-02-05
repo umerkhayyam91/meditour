@@ -5,15 +5,15 @@ const vehicleRequestController = {
         try {
             const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
             const requestsPerPage = 10;
-            const vehicleCompanyId= req.user._id;
+            const rentACarId= req.user._id;
             const totalVehicle = await vehicleRequest.countDocuments({
-                vehicleCompanyId,
+              rentACarId,
             }); // Get the total number of posts for the user
             const totalPages = Math.ceil(totalVehicle / requestsPerPage); // Calculate the total number of pages
       
             const skip = (page - 1) * requestsPerPage; // Calculate the number of posts to skip based on the current page
       
-            const requests = await vehicleRequest.find({ vehicleCompanyId })
+            const requests = await vehicleRequest.find({ rentACarId })
               .skip(skip)
               .limit(requestsPerPage);
             let previousPage = page > 1 ? page - 1 : null;
@@ -30,9 +30,8 @@ const vehicleRequestController = {
       },
       async addRequests(req,res,next){
         const {rentACarId, userId, userName, vehicleModel} = req.body;
-        vehicleCompanyId = req.user._id;
+        rentACarId = req.user._id;
         const request = new vehicleRequest({
-          vehicleCompanyId,
           rentACarId,
           userId,
           userName,
@@ -47,8 +46,8 @@ const vehicleRequestController = {
 async getRequest(req,res,next){
 
     try {
-        const vehicleCompanyId = req.user._id;
-        const requests = await vehicleRequest.find({ vehicleCompanyId , status: "pending"});
+        const requestId = req.user._id;
+        const requests = await vehicleRequest.find({ requestId , status: "pending"});
         if (requests.length == 0) {
           const error = new Error(" No Request for Vehicle found!");
           error.status = 404;
@@ -64,8 +63,8 @@ async getRequest(req,res,next){
 
 async acceptRequest(req, res, next) {
     try {
-      const vehicleCompanyId = req.query.vehicleCompanyId;
-      const requests = await vehicleRequest.findById(vehicleCompanyId);
+      const requestId = req.query.requestId;
+      const requests = await vehicleRequest.findById(requestId);
       if (!requests) {
         const error = new Error("Request for Vehicle not found!");
         error.status = 404;
@@ -91,14 +90,14 @@ async acceptRequest(req, res, next) {
   },
   async rejectRequest(req, res, next) {
     try {
-        const vehicleCompanyId = req.query.vehicleCompanyId;
-        const requests = await vehicleRequest.findById(vehicleCompanyId);
+        const requestId = req.query.requestId;
+        const requests = await vehicleRequest.findById(requestId);
         if (!requests) {
         const error = new Error(" Request for Vehicle not found!");
         error.status = 404;
         return next(error);
       }
-      await vehicleRequest.findByIdAndDelete(vehicleCompanyId);
+      await vehicleRequest.findByIdAndDelete(requestId);
       return res.status(200).json({
         auth: true,
         message: " Request for Vehicle rejected successfully",
