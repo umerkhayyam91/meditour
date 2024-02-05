@@ -40,4 +40,4 @@ const vehicleDetailSchema= new mongoose.Schema(
 
 
 })
-module.exports=mongoose.model("Vehicle Details", vehicleDetailSchema, "vehicle detail")
+module.exports=mongoose.model("Vehicle Detail", vehicleDetailSchema, "vehicle details")

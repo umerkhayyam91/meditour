@@ -38,5 +38,5 @@ const vehicleRequestSchema = new mongoose.Schema(
 module.exports = mongoose.model(
   "Vehicle Request",
   vehicleRequestSchema,
-  "rentCar vehicles"
+  "vehicle requests"
 );
