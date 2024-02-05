@@ -29,7 +29,7 @@ const vehicleRequestController = {
           }
       },
       async addRequests(req,res,next){
-        const {rentACarId, userId, userName, vehicleModel} = req.body;
+        const { userId, userName, vehicleModel} = req.body;
         rentACarId = req.user._id;
         const request = new vehicleRequest({
           rentACarId,
