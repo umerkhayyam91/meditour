@@ -13,13 +13,13 @@ const vehicleRequestController = {
       
             const skip = (page - 1) * requestsPerPage; // Calculate the number of posts to skip based on the current page
       
-            const vehicles = await vehicleRequest.find({ vehicleCompanyId })
+            const requests = await vehicleRequest.find({ vehicleCompanyId })
               .skip(skip)
               .limit(requestsPerPage);
             let previousPage = page > 1 ? page - 1 : null;
             let nextPage = page < totalPages ? page + 1 : null;
             return res.status(200).json({
-              vehicles: vehicles,
+              requests: requests,
               auth: true,
               previousPage: previousPage,
               nextPage: nextPage,

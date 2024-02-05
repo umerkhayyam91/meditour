@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const vehicleRequestSchema = new mongoose.Schema(
   {
-    vehicleCompanyId: {
+    vehicleId: {
       type: mongoose.Schema.Types.ObjectId,
       // ref: "Vehicle",
     },
@@ -20,6 +20,10 @@ const vehicleRequestSchema = new mongoose.Schema(
     vehicleModel: {
       type: String,
       required: true,
+    },
+    dateAndTime: {
+      type: Date,
+      default: Date.now(),
     },
     status: {
       type: String,
