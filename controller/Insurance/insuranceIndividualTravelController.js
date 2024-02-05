@@ -9,7 +9,6 @@ const insuranceTravelController = {
       packageLogo: Joi.string(),
       medicalCover: Joi.string(),
       coveringUpto: Joi.string(),
-      adndCoverage: Joi.string(),
       repatriationCoverage: Joi.string(),
       medExpensesHospitalizationCoverage: Joi.string(),
       returnOfDependentChildrenCoverage: Joi.string(),
@@ -38,7 +37,6 @@ const insuranceTravelController = {
       packageLogo,
       medicalCover,
       coveringUpto,
-      adndCoverage,
       repatriationCoverage,
       medExpensesHospitalizationCoverage,
       returnOfDependentChildrenCoverage,
@@ -65,7 +63,6 @@ const insuranceTravelController = {
         packageLogo,
         medicalCover,
         coveringUpto,
-        adndCoverage,
         repatriationCoverage,
         medExpensesHospitalizationCoverage,
         returnOfDependentChildrenCoverage,
@@ -100,7 +97,6 @@ const insuranceTravelController = {
       packageLogo: Joi.string(),
       medicalCover: Joi.string(),
       coveringUpto: Joi.string(),
-      adndCoverage: Joi.string(),
       repatriationCoverage: Joi.string(),
       medExpensesHospitalizationCoverage: Joi.string(),
       returnOfDependentChildrenCoverage: Joi.string(),
@@ -128,7 +124,6 @@ const insuranceTravelController = {
       packageLogo,
       medicalCover,
       coveringUpto,
-      adndCoverage,
       repatriationCoverage,
       medExpensesHospitalizationCoverage,
       returnOfDependentChildrenCoverage,
@@ -162,7 +157,6 @@ const insuranceTravelController = {
     if (packageLogo) existingInsurance.packageLogo = packageLogo;
     if (medicalCover) existingInsurance.medicalCover = medicalCover;
     if (coveringUpto) existingInsurance.coveringUpto = coveringUpto;
-    if (adndCoverage) existingInsurance.adndCoverage = adndCoverage;
     if (repatriationCoverage)
       existingInsurance.repatriationCoverage = repatriationCoverage;
     if (medExpensesHospitalizationCoverage)
