@@ -28,7 +28,7 @@ const{error}=vehicleDetailSchema.validate(req.body);
 if(error){
     return next (error)
 }
-const vehicleCompanyId = req.user._id;
+// const vehicleId = req.user._id;
 
 const
 {
@@ -68,11 +68,9 @@ try {
 } catch (error) {
   return next(error);
 }
-console.log(vehicle);
 const vehicleDetailDto = new vehicleDetailDTO(vehicle);
-console.log(vehicleDetailDTO);
 
-return res.status(201).json({ Vehicle: vehicleDetailDto, auth: true });
+return res.status(201).json({ vehicle: vehicleDetailDto, auth: true });
 },
 
 
@@ -108,7 +106,7 @@ async editVehicle(req, res, next) {
     actualPricePerHour,
     meditourPricePerHour,
   } = req.body;
-  const vehicleCompanyId = req.user._id;
+  // const vehicleId = req.user._id;
   
   const vehicleId = req.query.vehicleId;
   const existingVehicle = await vehicleDetail.findById(vehicleId);
@@ -136,7 +134,7 @@ async editVehicle(req, res, next) {
   await existingVehicle.save();
   
   return res.status(200).json({
-    message: " updated successfully",
+    message: "Vehicle updated successfully",
     vehicle: existingVehicle,
   });
   },
@@ -152,7 +150,7 @@ async editVehicle(req, res, next) {
   }
   await vehicleDetail.deleteOne({ _id: vehicleId });
   console.log(existingVehicle)
-  return res.status(200).json({ message: " deleted successfully" });
+  return res.status(200).json({ message: "Vehicle deleted successfully" });
   },
   
   async getVehicle(req, res, next) {

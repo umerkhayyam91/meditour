@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const vehicleRequestSchema = new mongoose.Schema(
   {
-    vehicleCompanyId: {
+    vehicleId: {
       type: mongoose.Schema.Types.ObjectId,
       // ref: "Vehicle",
     },
@@ -21,6 +21,10 @@ const vehicleRequestSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    dateAndTime: {
+      type: Date,
+      default: Date.now(),
+    },
     status: {
       type: String,
       enum: ["pending", "accept", "reject"],
@@ -34,5 +38,5 @@ const vehicleRequestSchema = new mongoose.Schema(
 module.exports = mongoose.model(
   "Vehicle Request",
   vehicleRequestSchema,
-  "vehicleRequest"
+  "rentCar vehicles"
 );

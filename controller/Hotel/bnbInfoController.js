@@ -272,7 +272,7 @@ const BnbInfoController = {
     return res
       .status(200)
       .json({
-        message: " updated successfully",
+        message: "B&Bs Updated Successfully",
         bnb: prevBnb,
       });
   },
@@ -281,7 +281,7 @@ const BnbInfoController = {
     const prevBnb = await bnbInfo.findById(bnbId);
 
     if (!prevBnb) {
-        const error = new Error("B&bs not found");
+        const error = new Error("B&Bs not found");
         error.status = 404;
         return next(error);
       }
@@ -295,7 +295,7 @@ const BnbInfoController = {
       const bnb = await bnbInfo.findById(bnbId);
 
       if (!bnb) {
-        const error = new Error("B&bs not found!");
+        const error = new Error("B&Bs not found!");
         error.status = 404;
         return next(error);
       }
