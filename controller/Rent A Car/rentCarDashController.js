@@ -66,81 +66,69 @@ const rentCarDashController = {
           createdAt: { $gte: currentDate, $lt: new Date() },
           rentACarId,
         })
-      console.log(todayRequestCount);
 
-      //  ............total requests.........//
+      //  ............total requests last week.........//
 
       const lastWeek = new Date(currentDate);
       lastWeek.setDate(currentDate.getDate() - 7);
+      const prevWeek = new Date(currentDate);
+      prevWeek.setDate(currentDate.getDate() - 14)
 
-      const totalRequests = await vehicleRequest.countDocuments({
+
+      const thisWeekRequests = await vehicleRequest.countDocuments({
         createdAt: { $gte: lastWeek, $lt: currentDate },
+        rentACarId,
       });
+      const lastWeekRequests = await vehicleRequest.countDocuments({
+        createdAt: { $gte: prevWeek, $lte: lastWeek },
+        rentACarId,
 
-      //  ............total pending requests.........//
-      const lastPenWeek = new Date(currentDate);
-      lastPenWeek.setDate(currentDate.getDate() - 7);
+      })
 
-      const totalPenCount = await vehicleRequest.countDocuments({
-        createdAt: { $gte: lastPenWeek, $lt: currentDate },
+      let requestPercentageChange;
+      if (lastWeekRequests == 0) {
+        requestPercentageChange = thisWeekRequests * 100; // If the day before yesterday's orders are zero, the change is undefined
+      } else {
+        requestPercentageChange = (((thisWeekRequests - lastWeekRequests) / lastWeekRequests) * 100).toFixed(2);
+      }
+
+      if (requestPercentageChange > 0) {
+        requestPercentageChange = "+" + requestPercentageChange + "%";
+      } else {
+        requestPercentageChange = requestPercentageChange + "%";
+      }
+
+      //  ............total pending requests last week.........//
+      const totalPenRequests = await vehicleRequest.countDocuments({
+        createdAt: { $gte: lastWeek, $lt: currentDate },
         status: "pending",
+        rentACarId
       });
-      
-      let percentageChange;
-      if (lastWeek === 0) {
-        percentageChange = totalRequests * 100; // If the day before yesterday's orders are zero, the change is undefined
-      } else {
-        percentageChange = (((totalRequests - totalPenCount) / totalPenCount) * 100).toFixed(2);
-      }
-
-      if (percentageChange > 0) {
-        percentageChange = "+" + percentageChange + "%";
-      } else {
-        percentageChange = percentageChange + "%";
-      }
-
-      //  ............total cancelled requests.........//
-      const lastCancWeek = new Date(currentDate);
-      lastCancWeek.setDate(currentDate.getDate() - 7);
-      const totalCanCount = await vehicleRequest.countDocuments({
-        createdAt: { $gte: lastCancWeek, $lt: currentDate },
-        status: "cancelled",
+      console.log(totalPenRequests)
+      const lastWeekPenRequests = await vehicleRequest.countDocuments({
+        createdAt: { $gte: prevWeek, $lte: lastWeek },
+        status: "pending",
+        rentACarId
       });
-      
-      let cancelPercentageChange;
-      if (lastCancWeek === 0) {
-        cancelPercentageChange = totalCanCount * 100; // If the day before yesterday's orders are zero, the change is undefined
+      console.log(lastWeekPenRequests)
+      let requestPenPercentage;
+      if (lastWeekPenRequests == 0) {
+        requestPenPercentage = totalPenRequests * 100; // If the day before yesterday's orders are zero, the change is undefined
       } else {
-        cancelPercentageChange = (((totalCanCount - lastCancWeek) / lastCancWeek) * 100).toFixed(2);
+        requestPenPercentage = (((totalPenRequests - lastWeekPenRequests) / lastWeekPenRequests) * 100).toFixed(2);
       }
 
-      if (cancelPercentageChange > 0) {
-        cancelPercentageChange = "+" + cancelPercentageChange + "%";
+      if (requestPenPercentage > 0) {
+        requestPenPercentage = "+" + requestPenPercentage + "%";
       } else {
-        cancelPercentageChange = cancelPercentageChange + "%";
+        requestPenPercentage = requestPenPercentage + "%";
       }
 
-      let pendingPercentageChange;
-      if (lastPenWeek === 0) {
-        pendingPercentageChange = totalPenCount * 100; // If the day before yesterday's orders are zero, the change is undefined
-      } else {
-        pendingPercentageChange = (((totalPenCount - lastPenWeek) / lastPenWeek) * 100).toFixed(2);
-      }
-
-      if (pendingPercentageChange > 0) {
-        pendingPercentageChange = "+" + pendingPercentageChange + "%";
-      } else {
-        pendingPercentageChange = pendingPercentageChange + "%";
-      }
 
       res.json({
-        todayRequestCount,
-        totalRequests,
-        percentageChange,
-        totalPenCount,
-        totalCanCount,
-        cancelPercentageChange,
-        pendingPercentageChange,
+        todayRequestCount: todayRequestCount,
+        requestPercentageChange: requestPercentageChange,
+        requestPenPercentage: requestPenPercentage
       });
     } catch (error) {
       next(error);
