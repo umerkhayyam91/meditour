@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
-const vehicleRequestSchema = new mongoose.Schema(
+const acceptedRequestsSchema = new mongoose.Schema(
   {
-    vehicleId: {
-      type: mongoose.Schema.Types.ObjectId,
-      // ref: "Vehicle",
-    },
     rentACarId: {
       type: mongoose.Schema.Types.ObjectId,
     },
@@ -12,7 +8,6 @@ const vehicleRequestSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       // ref: "Users",
     },
-
     userName: {
       type: String,
       required: true,
@@ -21,18 +16,15 @@ const vehicleRequestSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["pending", "accept", "reject"],
-      default: "pending"
-    },
+    
   },
   {
     timestamps: true,
   }
 );
 module.exports = mongoose.model(
-  "Vehicle Request",
-  vehicleRequestSchema,
-  "vehicle requests"
+  "Accepted Request",
+  acceptedRequestsSchema,
+  "accepted requests"
 );
+

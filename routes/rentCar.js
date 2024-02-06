@@ -6,6 +6,7 @@ const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
 const vehicleDetailController = require("../controller/Rent A Car/vehicleDetailController");
 const vehicleRequestController = require("../controller/Rent A Car/vehicleRequestController");
+const rentCarDashController = require("../controller/Rent A Car/rentCarDashController");
 const router = express.Router();
 const upload = multer({ dest: "temp/" });
 
@@ -39,6 +40,10 @@ router.post("/rentCar/addRequests", auth, vehicleRequestController.addRequests);
 router.get("/rentCar/getAllRequests", auth, vehicleRequestController.getAllRequests);
 router.post("/rentCar/acceptRequest", auth, vehicleRequestController.acceptRequest);
 router.post("/rentCar/rejectRequest", auth, vehicleRequestController.rejectRequest);
+//  dashboard
+router.get("/rentCar/dashDetails", auth,rentCarDashController.dashDetails);
+router.get("/rentCar/graph", auth,rentCarDashController.graph);
+
 
 
 

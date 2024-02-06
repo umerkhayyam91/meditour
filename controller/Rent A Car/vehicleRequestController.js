@@ -1,3 +1,4 @@
+const acceptedRequests = require("../../models/Rent A Car/acceptedRequests");
 const vehicleRequest = require("../../models/Rent A Car/vehicleRequest");
 
 const vehicleRequestController = {
@@ -32,6 +33,7 @@ const vehicleRequestController = {
         const { userId, userName, vehicleModel} = req.body;
         rentACarId = req.user._id;
         const request = new vehicleRequest({
+          vehicleId,
           rentACarId,
           userId,
           userName,
@@ -73,7 +75,10 @@ async acceptRequest(req, res, next) {
       
       requests.status = "accept";
       await requests.save();
-      const onRequest = new vehicleRequest({
+
+      // accepted Requests
+
+      const onRequest = new acceptedRequests({
         rentACarId: requests.rentACarId,
         userId: requests.userId,
         userName: requests.userName,
@@ -82,7 +87,7 @@ async acceptRequest(req, res, next) {
       await onRequest.save();
       return res.status(200).json({
         auth: true,
-        message: "  Request for Vehicle Accepted Successfully",
+        message: "Request for Vehicle Accepted Successfully",
       });
     } catch (error) {
       return next(error);
