@@ -6,9 +6,8 @@ const agencyRequestController = {
         try {
             const currentDate = new Date();
             // Set the time to the beginning of the days
-            // currentDate.setHours(0, 0, 0, 0);
-            const currentWeekStart = moment(currentDate).subtract(7, "days");
-            console.log(currentWeekStart)
+            currentDate.setHours(0, 0, 0, 0);
+            const lastMonth = moment(currentDate).subtract(30, "days");
             const agencyId = req.user._id;
             const todayFlightBooking = await AgencyBooking.countDocuments({
                 createdAt: { $gte: currentDate, $lt: new Date() },
@@ -21,12 +20,12 @@ const agencyRequestController = {
                 requestType: "tour"
               })
               const lastMonthFlightBooking = await AgencyBooking.countDocuments({
-                createdAt: { $gte: currentDate, $lt: new Date() },
+                createdAt: { $gte: lastMonth, $lt: new Date() },
                 agencyId,
                 requestType: "flight"
               })
               const lastMonthTourBooking = await AgencyBooking.countDocuments({
-                createdAt: { $gte: currentDate, $lt: new Date() },
+                createdAt: { $gte: lastMonth, $lt: new Date() },
                 agencyId,
                 requestType: "tour"
               })
