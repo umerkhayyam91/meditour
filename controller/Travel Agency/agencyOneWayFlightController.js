@@ -219,12 +219,13 @@ const agencyOneWayFlightController = {
       const agencyId = req.user._id;
       const totalFlights = await Flight.countDocuments({
         agencyId,
+        flightType: "oneWay"
       }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalFlights / flightsPerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * flightsPerPage; // Calculate the number of posts to skip based on the current page
 
-      const flights = await Flight.find({ agencyId })
+      const flights = await Flight.find({ agencyId, flightType: "oneWay" })
         .skip(skip)
         .limit(flightsPerPage);
       let previousPage = page > 1 ? page - 1 : null;

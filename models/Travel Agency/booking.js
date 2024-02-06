@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const requestSchema = new mongoose.Schema(
+const bookingSchema = new mongoose.Schema(
     {
         //both fields(flight and tour)//
         agencyId: {
@@ -19,6 +19,10 @@ const requestSchema = new mongoose.Schema(
         },
         actualPrice: {
             type: String,
+        },
+        requestType: {
+            type: String,
+            enum: ["flight", "tour"]
         },
 
         //tour fields only//
@@ -51,17 +55,13 @@ const requestSchema = new mongoose.Schema(
             type: String,
             enum: ["sold-out", "refund"]
         },
-        requestType: {
-            type: String,
-            enum: ["flight", "tour"]
-        }
     },
     {
         timestamps: true,
     }
 );
 module.exports = mongoose.model(
-    "Agency Request",
-    requestSchema,
-    "agency requests"
+    "Agency Booking",
+    bookingSchema,
+    "agency bookings"
 );

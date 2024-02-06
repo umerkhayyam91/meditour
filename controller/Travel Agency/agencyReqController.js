@@ -1,7 +1,7 @@
-const AgencyRequest = require("../../models/Travel Agency/request")
+const AgencyRequest = require("../../models/Travel Agency/booking")
 
 const agencyRequestController = {
-    async getAllRequests(req, res, next) {
+    async getAllBookings(req, res, next) {
         try {
             const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
             let requestType = req.query.requestType;
@@ -63,7 +63,7 @@ const agencyRequestController = {
 
 
     //.............dummy api................//
-    async addRequests(req, res, next) {
+    async addBookings(req, res, next) {
         const { agencyId, userId, from, to, actualPrice, packageName, totalUser } = req.body;
         const tourId = req.query.tourId;
         // insuranceCompanyId = req.user._id;
