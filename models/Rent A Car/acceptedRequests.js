@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const acceptedRequestsSchema = new mongoose.Schema(
   {
-    
     rentACarId: {
       type: mongoose.Schema.Types.ObjectId,
     },
