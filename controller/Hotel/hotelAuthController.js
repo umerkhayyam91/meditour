@@ -330,26 +330,26 @@ const hotelAuthController = {
     }
 
     // Update only the provided fields
-    if (companyName) hosp.companyName = companyName;
-    if (companyLicenseNo) hosp.companyLicenseNo = companyLicenseNo;
-    if (companyEmergencyNo) hosp.companyEmergencyNo = companyEmergencyNo;
-    if (ownerName) hosp.ownerName = ownerName;
-    if (cnicOrPassportNo) hosp.cnicOrPassportNo = cnicOrPassportNo;
-    if (companyAddress) hosp.companyAddress = companyAddress;
-    if (state) hosp.state = state;
-    if (phoneNumber) hosp.phoneNumber = phoneNumber;
-    if (website) hosp.website = website;
-    if (facebook) hosp.facebook = facebook;
-    if (twitter) hosp.twitter = twitter;
-    if (instagram) hosp.instagram = instagram;
-    if (incomeTaxNo) hosp.incomeTaxNo = incomeTaxNo;
-    if (salesTaxNo) hosp.salesTaxNo = salesTaxNo;
-    if (bankName) hosp.bankName = bankName;
-    if (accountHolderName) hosp.accountHolderName = accountHolderName;
-    if (accountNumber) hosp.accountNumber = accountNumber;
-    if (licenseImage) hosp.licenseImage = licenseImage;
-    if (cnicImage) hosp.cnicImage = cnicImage;
-    if (taxFileImage) hosp.taxFileImage = taxFileImage;
+    if (companyName) hotel.companyName = companyName;
+    if (companyLicenseNo) hotel.companyLicenseNo = companyLicenseNo;
+    if (companyEmergencyNo) hotel.companyEmergencyNo = companyEmergencyNo;
+    if (ownerName) hotel.ownerName = ownerName;
+    if (cnicOrPassportNo) hotel.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) hotel.companyAddress = companyAddress;
+    if (state) hotel.state = state;
+    if (phoneNumber) hotel.phoneNumber = phoneNumber;
+    if (website) hotel.website = website;
+    if (facebook) hotel.facebook = facebook;
+    if (twitter) hotel.twitter = twitter;
+    if (instagram) hotel.instagram = instagram;
+    if (incomeTaxNo) hotel.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) hotel.salesTaxNo = salesTaxNo;
+    if (bankName) hotel.bankName = bankName;
+    if (accountHolderName) hotel.accountHolderName = accountHolderName;
+    if (accountNumber) hotel.accountNumber = accountNumber;
+    if (licenseImage) hotel.licenseImage = licenseImage;
+    if (cnicImage) hotel.cnicImage = cnicImage;
+    if (taxFileImage) hotel.taxFileImage = taxFileImage;
 
     // Save the updated test
     await hotel.save();
