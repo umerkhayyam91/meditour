@@ -313,7 +313,7 @@ const hospAuthController = {
     } = req.body;
     const hospId = req.user._id;
 
-    const hosp = await Pharmacy.findById(hospId);
+    const hosp = await Hospital.findById(hospId);
 
     if (!hosp) {
       const error = new Error("Hospital not found!");
