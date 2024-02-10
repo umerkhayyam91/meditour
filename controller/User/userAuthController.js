@@ -10,12 +10,12 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 
 async function getNextMrNo() {
   // Find the latest user in the database and get their mrNo
-  const latestUser = await User.findOne({}, 'mrNo').sort({ mrNo: -1 });
+  const latestUser = await User.findOne({}, "mrNo").sort({ mrNo: -1 });
 
   // If there are no users yet, start with "000001"
   const nextMrNo = latestUser
-    ? String(Number(latestUser.mrNo) + 1).padStart(6, '0')
-    : '000001';
+    ? String(Number(latestUser.mrNo) + 1).padStart(6, "0")
+    : "000001";
 
   return nextMrNo;
 }
@@ -42,7 +42,7 @@ const authController = {
     if (emailExists) {
       const error = {
         status: 401,
-        message: 'Email Already Registered',
+        message: "Email Already Registered",
       };
 
       return next(error);
@@ -70,8 +70,8 @@ const authController = {
       user = await userToRegister.save();
 
       // Token generation
-      accessToken = JWTService.signAccessToken({ _id: user._id }, '365d');
-      refreshToken = JWTService.signRefreshToken({ _id: user._id }, '365d');
+      accessToken = JWTService.signAccessToken({ _id: user._id }, "365d");
+      refreshToken = JWTService.signRefreshToken({ _id: user._id }, "365d");
     } catch (error) {
       return next(error);
     }

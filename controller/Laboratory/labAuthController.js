@@ -33,6 +33,8 @@ const labAuthController = {
       OwnerName: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
       labAddress: Joi.string().required(),
+      longitude: Joi.string().required(),
+      latitude: Joi.string().required(),
       emergencyNo: Joi.string().required(),
       state: Joi.string().required(),
       website: Joi.string(),
@@ -66,6 +68,8 @@ const labAuthController = {
       OwnerName,
       cnicOrPassportNo,
       labAddress,
+      longitude,
+      latitude,
       emergencyNo,
       state,
       country,
@@ -97,6 +101,8 @@ const labAuthController = {
         OwnerName,
         cnicOrPassportNo,
         labAddress,
+        longitude,
+        latitude,
         emergencyNo,
         state,
         country,
@@ -293,6 +299,8 @@ const labAuthController = {
       OwnerName: Joi.string(),
       cnicOrPassportNo: Joi.string(),
       labAddress: Joi.string(),
+      latitude: Joi.string(),
+      longitude: Joi.string(),
       emergencyNo: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
@@ -325,6 +333,8 @@ const labAuthController = {
       OwnerName,
       cnicOrPassportNo,
       labAddress,
+      longitude,
+      latitude,
       emergencyNo,
       state,
       phoneNumber,
@@ -376,6 +386,8 @@ const labAuthController = {
     if (OwnerName) lab.OwnerName = OwnerName;
     if (cnicOrPassportNo) lab.cnicOrPassportNo = cnicOrPassportNo;
     if (labAddress) lab.labAddress = labAddress;
+    if (longitude) lab.longitude = longitude;
+    if (latitude) lab.latitude = latitude;
     if (emergencyNo) lab.emergencyNo = emergencyNo;
     if (state) lab.state = state;
     if (phoneNumber) lab.phoneNumber = phoneNumber;
