@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-const MultiTripFlightDTO = require("../../dto/travel agency/multiTripFlight");
-const MultiTripFlight = require("../../models/Travel Agency/multiTripFlight");
+const Flight = require("../../models/Travel Agency/flight");
+const flightDTO = require("../../dto/travel agency/flight");
 const Joi = require("joi");
 
 const agencyMultiTripController = {
@@ -66,7 +66,7 @@ const agencyMultiTripController = {
             } = req.body;
             const agencyId = req.user._id;
 
-            const multiTripFlightToRegister = new MultiTripFlight({
+            const multiTripFlightToRegister = new Flight({
                 agencyId,
                 trips,
                 winglets,
@@ -80,10 +80,11 @@ const agencyMultiTripController = {
                 ticketsCount,
                 cancelPolicyDescription,
                 meditourPrice,
-                actualPrice
+                actualPrice,
+                flightType: "multi"
             });
             const multiTripFlight = await multiTripFlightToRegister.save();
-            const flightDto = new MultiTripFlightDTO(multiTripFlight);
+            const flightDto = new flightDTO(multiTripFlight);
 
             return res.status(201).json({ flight: flightDto, auth: true });
         } catch (error) {
@@ -153,7 +154,7 @@ const agencyMultiTripController = {
             } = req.body;
 
             const flightId = req.query.flightId;
-            const existingMultiTripFlight = await MultiTripFlight.findById(flightId);
+            const existingMultiTripFlight = await Flight.findById(flightId);
 
             if (!existingMultiTripFlight) {
                 const error = new Error("Flight not found!");
@@ -169,6 +170,7 @@ const agencyMultiTripController = {
             if (handBag) existingMultiTripFlight.handBag = handBag;
             if (baggageWeight) existingMultiTripFlight.baggageWeight = baggageWeight;
             if (cancelationDuration) existingMultiTripFlight.cancelationDuration = cancelationDuration;
+            if (cancelationDeduct) existingMultiTripFlight.cancelationDeduct = cancelationDeduct;
             if (ticketsCount) existingMultiTripFlight.ticketsCount = ticketsCount;
             if (cancelPolicyDescription) existingMultiTripFlight.cancelPolicyDescription = cancelPolicyDescription;
             if (meditourPrice) existingMultiTripFlight.meditourPrice = meditourPrice;
@@ -188,21 +190,21 @@ const agencyMultiTripController = {
 
     async deleteMultiTripFlight(req, res, next) {
         const flightId = req.query.flightId;
-        const existingAppartment = await MultiTripFlight.findById(flightId);
+        const existingAppartment = await Flight.findById(flightId);
 
         if (!existingAppartment) {
             const error = new Error("Flight not found!");
             error.status = 404;
             return next(error);
         }
-        await MultiTripFlight.deleteOne({ _id: flightId });
+        await Flight.deleteOne({ _id: flightId });
         return res.status(200).json({ message: "Flight deleted successfully" });
     },
 
     async getMultiTripFlight(req, res, next) {
         try {
             const flightId = req.query.flightId;
-            const flight = await MultiTripFlight.findById(flightId);
+            const flight = await Flight.findById(flightId);
 
             if (!flight) {
                 const error = new Error("Flight not found!");
@@ -220,14 +222,15 @@ const agencyMultiTripController = {
             const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
             const flightsPerPage = 10;
             const agencyId = req.user._id;
-            const totalFlights = await MultiTripFlight.countDocuments({
+            const totalFlights = await Flight.countDocuments({
                 agencyId,
+                flightType: "multi"
             }); // Get the total number of posts for the user
             const totalPages = Math.ceil(totalFlights / flightsPerPage); // Calculate the total number of pages
 
             const skip = (page - 1) * flightsPerPage; // Calculate the number of posts to skip based on the current page
 
-            const flights = await MultiTripFlight.find({ agencyId })
+            const flights = await Flight.find({ agencyId,  flightType: "multi" })
                 .skip(skip)
                 .limit(flightsPerPage);
             let previousPage = page > 1 ? page - 1 : null;

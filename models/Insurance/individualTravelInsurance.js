@@ -18,9 +18,6 @@ const insuranceSchema = new mongoose.Schema(
     coveringUpto: {
       type: String,
     },
-    adndCoverage: {
-      type: String,
-    },
     repatriationCoverage: {
       type: String,
     },

@@ -4,7 +4,7 @@ const labOrderController = require("../controller/Laboratory/labOrderController"
 const labDashController = require("../controller/Laboratory/labDashController");
 const labTestController = require("../controller/Laboratory/labTestController");
 const VerificationController = require("../controller/verificationController");
-const auth = require('../middlewares/auth');
+const auth = require("../middlewares/auth");
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
 const router = express.Router();
@@ -13,12 +13,15 @@ const upload = multer({ dest: "temp/" });
 //............auth...........
 router.post("/lab/register", labAuthController.register);
 router.post("/lab/login", labAuthController.login);
-router.post("/lab/uploadFile", upload.single("file"), uploadFileController.uploadFile);
+router.post(
+  "/lab/uploadFile",
+  upload.single("file"),
+  uploadFileController.uploadFile
+);
 router.post("/lab/completeSignup", labAuthController.completeSignup);
 router.put("/lab/updateProfile", auth, labAuthController.updateProfile);
 router.post("/lab/logout", auth, labAuthController.logout);
 router.post("/lab/refresh", auth, labAuthController.refresh);
-
 
 //............Orders....................
 router.get("/lab/getOrders", auth, labOrderController.getOrders);
@@ -29,14 +32,12 @@ router.post("/lab/testing", auth, labOrderController.testing);
 router.get("/lab/dashDetails", auth, labDashController.dashDetails);
 router.get("/lab/graph", auth, labDashController.graph);
 
-
 //............Tests.....................
 router.post("/lab/addTest", auth, labTestController.addTest);
 router.put("/lab/editTest", auth, labTestController.editTest);
 router.delete("/lab/deleteTest", auth, labTestController.deleteTest);
 router.get("/lab/getTest", auth, labTestController.getTest);
 router.get("/lab/getAllTests", auth, labTestController.getAllTests);
-
 
 //..............verification.........
 router.post("/lab/sendCodeToEmail", VerificationController.sendCodeToEmail);

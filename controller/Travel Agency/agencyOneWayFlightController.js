@@ -1,32 +1,37 @@
 const express = require("express");
 const app = express();
-const OneWayFlightDTO = require("../../dto/travel agency/oneWayFlight");
-const OneWayFlight = require("../../models/Travel Agency/oneWayFlight");
+const Flight = require("../../models/Travel Agency/flight");
 const Joi = require("joi");
+const flightDTO = require("../../dto/travel agency/flight");
 
 const agencyOneWayFlightController = {
   async addOneWayFlight(req, res, next) {
     const oneWayFlightSchema = Joi.object({
-      companyName: Joi.string().required(),
-      flightsNo: Joi.string().required(),
-      companyLogo: Joi.string().required(),
-      from: Joi.string().required(),
-      to: Joi.string().required(),
-      className: Joi.string().required(),
-      departTime: Joi.string().required(),
-      designationTime: Joi.string().required(),
-      passengers: Joi.string().required(),
-      infant: Joi.string().required(),
-      directOrStay: Joi.string(),
-      stayDesignation: Joi.string(),
-      stayduration: Joi.string(),
-      nextFlightNo: Joi.string(),
-      afterStayDepartTime: Joi.string(),
-      afterStayDesignationTime: Joi.string(),
+      trips: Joi.array().items(Joi.object({
+        companyName: Joi.string().required(),
+        flightsNo: Joi.string().required(),
+        companyLogo: Joi.string().required(),
+        from: Joi.string().required(),
+        to: Joi.string().required(),
+        className: Joi.string().required(),
+        departTime: Joi.string().required(),
+        designationTime: Joi.string().required(),
+        passengers: Joi.string().required(),
+        infant: Joi.string().required(),
+        directOrStay: Joi.string().valid('direct', 'stay'),
+        stayDesignation: Joi.string(),
+        stayduration: Joi.string(),
+        nextFlightNo: Joi.string(),
+        afterStayDepartTime: Joi.string(),
+        afterStayDesignationTime: Joi.string(),
+    })).required(),
       winglets: Joi.boolean(),
       webBrowsing: Joi.boolean(),
       streamingEntertainment: Joi.boolean(),
-      lightMealAvailability: Joi.object(),
+      lightMealAvailability: Joi.object({
+        flightA: Joi.boolean(),
+        flightB: Joi.boolean(),
+      }),
       handBag: Joi.string().required(),
       baggageWeight: Joi.string().required(),
       cancelationDuration: Joi.string().required(),
@@ -34,7 +39,7 @@ const agencyOneWayFlightController = {
       ticketsCount: Joi.string().required(),
       cancelPolicyDescription: Joi.string().required(),
       meditourPrice: Joi.string().required(),
-      actualPrice: Joi.string().required()
+      actualPrice: Joi.string().required(),
     });
     const { error } = oneWayFlightSchema.validate(req.body);
 
@@ -42,22 +47,7 @@ const agencyOneWayFlightController = {
       return next(error);
     }
     const {
-      companyName,
-      flightsNo,
-      companyLogo,
-      from,
-      to,
-      className,
-      departTime,
-      designationTime,
-      passengers,
-      infant,
-      directOrStay,
-      stayDesignation,
-      stayduration,
-      nextFlightNo,
-      afterStayDepartTime,
-      afterStayDesignationTime,
+      trips,
       winglets,
       webBrowsing,
       streamingEntertainment,
@@ -74,24 +64,9 @@ const agencyOneWayFlightController = {
     let flight;
     const agencyId = req.user._id;
     try {
-      const flightToRegister = new OneWayFlight({
+      const flightToRegister = new Flight({
         agencyId,
-        companyName,
-        flightsNo,
-        companyLogo,
-        from,
-        to,
-        className,
-        departTime,
-        designationTime,
-        passengers,
-        infant,
-        directOrStay,
-        stayDesignation,
-        stayduration,
-        nextFlightNo,
-        afterStayDepartTime,
-        afterStayDesignationTime,
+        trips,
         winglets,
         webBrowsing,
         streamingEntertainment,
@@ -103,40 +78,46 @@ const agencyOneWayFlightController = {
         ticketsCount,
         cancelPolicyDescription,
         meditourPrice,
-        actualPrice
+        actualPrice,
+        flightType: "oneWay"
       });
 
       flight = await flightToRegister.save();
     } catch (error) {
       return next(error);
     }
-    const flightDto = new OneWayFlightDTO(flight);
+    const flightDto = new flightDTO(flight);
 
     return res.status(201).json({ flight: flightDto, auth: true });
   },
   // update
   async editOneWayFlight(req, res, next) {
     const oneWayFlightSchema = Joi.object({
-      companyName: Joi.string(),
-      flightsNo: Joi.string(),
-      companyLogo: Joi.string(),
-      from: Joi.string(),
-      to: Joi.string(),
-      className: Joi.string(),
-      departTime: Joi.string(),
-      designationTime: Joi.string(),
-      passengers: Joi.string(),
-      infant: Joi.string(),
-      directOrStay: Joi.string(),
-      stayDesignation: Joi.string(),
-      stayduration: Joi.string(),
-      nextFlightNo: Joi.string(),
-      afterStayDepartTime: Joi.string(),
-      afterStayDesignationTime: Joi.string(),
+      trips: Joi.array().items(Joi.object({
+        companyName: Joi.string(),
+        flightsNo: Joi.string(),
+        companyLogo: Joi.string(),
+        from: Joi.string(),
+        to: Joi.string(),
+        className: Joi.string(),
+        departTime: Joi.string(),
+        designationTime: Joi.string(),
+        passengers: Joi.string(),
+        infant: Joi.string(),
+        directOrStay: Joi.string().valid('direct', 'stay'),
+        stayDesignation: Joi.string(),
+        stayduration: Joi.string(),
+        nextFlightNo: Joi.string(),
+        afterStayDepartTime: Joi.string(),
+        afterStayDesignationTime: Joi.string(),
+    })),
       winglets: Joi.boolean(),
       webBrowsing: Joi.boolean(),
       streamingEntertainment: Joi.boolean(),
-      lightMealAvailability: Joi.object(),
+      lightMealAvailability: Joi.object({
+        flightA: Joi.boolean(),
+        flightB: Joi.boolean(),
+      }),
       handBag: Joi.string(),
       baggageWeight: Joi.string(),
       cancelationDuration: Joi.string(),
@@ -152,22 +133,7 @@ const agencyOneWayFlightController = {
       return next(error);
     }
     const {
-      companyName,
-      flightsNo,
-      companyLogo,
-      from,
-      to,
-      className,
-      departTime,
-      designationTime,
-      passengers,
-      infant,
-      directOrStay,
-      stayDesignation,
-      stayduration,
-      nextFlightNo,
-      afterStayDepartTime,
-      afterStayDesignationTime,
+      trips,
       winglets,
       webBrowsing,
       streamingEntertainment,
@@ -183,7 +149,7 @@ const agencyOneWayFlightController = {
     } = req.body;
 
     const flightId = req.query.flightId;
-    const existingFlight = await OneWayFlight.findById(flightId);
+    const existingFlight = await Flight.findById(flightId);
 
     if (!existingFlight) {
       const error = new Error("Flight not found!");
@@ -193,22 +159,7 @@ const agencyOneWayFlightController = {
     // fields
 
 
-    if (companyName) existingFlight.companyName = companyName;
-    if (flightsNo) existingFlight.flightsNo = flightsNo;
-    if (companyLogo) existingFlight.companyLogo = companyLogo;
-    if (from) existingFlight.from = from;
-    if (to) existingFlight.to = to;
-    if (className) existingFlight.className = className;
-    if (departTime) existingFlight.departTime = departTime;
-    if (designationTime) existingFlight.designationTime = designationTime;
-    if (passengers) existingFlight.passengers = passengers;
-    if (infant) existingFlight.infant = infant;
-    if (directOrStay) existingFlight.directOrStay = directOrStay;
-    if (stayDesignation) existingFlight.stayDesignation = stayDesignation;
-    if (stayduration) existingFlight.stayduration = stayduration;
-    if (nextFlightNo) existingFlight.nextFlightNo = nextFlightNo;
-    if (afterStayDepartTime) existingFlight.afterStayDepartTime = afterStayDepartTime;
-    if (afterStayDesignationTime) existingFlight.afterStayDesignationTime = afterStayDesignationTime;
+    if (trips) existingFlight.trips = trips;
     if (winglets !== undefined) existingFlight.winglets = winglets;
     if (webBrowsing !== undefined) existingFlight.webBrowsing = webBrowsing;
     if (streamingEntertainment !== undefined) existingFlight.streamingEntertainment = streamingEntertainment;
@@ -234,21 +185,21 @@ const agencyOneWayFlightController = {
 
   async deleteOneWayFlight(req, res, next) {
     const flightId = req.query.flightId;
-    const existingAppartment = await OneWayFlight.findById(flightId);
+    const existingAppartment = await Flight.findById(flightId);
 
     if (!existingAppartment) {
       const error = new Error("Flight not found!");
       error.status = 404;
       return next(error);
     }
-    await OneWayFlight.deleteOne({ _id: flightId });
+    await Flight.deleteOne({ _id: flightId });
     return res.status(200).json({ message: "Flight deleted successfully" });
   },
 
   async getOneWayFlight(req, res, next) {
     try {
       const flightId = req.query.flightId;
-      const flight = await OneWayFlight.findById(flightId);
+      const flight = await Flight.findById(flightId);
 
       if (!flight) {
         const error = new Error("Flight not found!");
@@ -266,14 +217,15 @@ const agencyOneWayFlightController = {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const flightsPerPage = 10;
       const agencyId = req.user._id;
-      const totalFlights = await OneWayFlight.countDocuments({
+      const totalFlights = await Flight.countDocuments({
         agencyId,
+        flightType: "oneWay"
       }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalFlights / flightsPerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * flightsPerPage; // Calculate the number of posts to skip based on the current page
 
-      const flights = await OneWayFlight.find({ agencyId })
+      const flights = await Flight.find({ agencyId, flightType: "oneWay" })
         .skip(skip)
         .limit(flightsPerPage);
       let previousPage = page > 1 ? page - 1 : null;

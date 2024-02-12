@@ -332,26 +332,26 @@ const ambulanceAuthController = {
     }
 
     // Update only the provided fields
-    if (companyName) rentCar.companyName = companyName;
-    if (companyLicenseNo) rentCar.companyLicenseNo = companyLicenseNo;
-    if (companyEmergencyNo) rentCar.companyEmergencyNo = companyEmergencyNo;
-    if (ownerName) rentCar.ownerName = ownerName;
-    if (cnicOrPassportNo) rentCar.cnicOrPassportNo = cnicOrPassportNo;
-    if (companyAddress) rentCar.companyAddress = companyAddress;
-    if (state) rentCar.state = state;
-    if (phoneNumber) rentCar.phoneNumber = phoneNumber;
-    if (website) rentCar.website = website;
-    if (facebook) rentCar.facebook = facebook;
-    if (twitter) rentCar.twitter = twitter;
-    if (instagram) rentCar.instagram = instagram;
-    if (incomeTaxNo) rentCar.incomeTaxNo = incomeTaxNo;
-    if (salesTaxNo) rentCar.salesTaxNo = salesTaxNo;
-    if (bankName) rentCar.bankName = bankName;
-    if (accountHolderName) rentCar.accountHolderName = accountHolderName;
-    if (accountNumber) rentCar.accountNumber = accountNumber;
-    if (licenseImage) rentCar.licenseImage = licenseImage;
-    if (cnicImage) rentCar.cnicImage = cnicImage;
-    if (taxFileImage) rentCar.taxFileImage = taxFileImage;
+    if (companyName) agency.companyName = companyName;
+    if (companyLicenseNo) agency.companyLicenseNo = companyLicenseNo;
+    if (companyEmergencyNo) agency.companyEmergencyNo = companyEmergencyNo;
+    if (ownerName) agency.ownerName = ownerName;
+    if (cnicOrPassportNo) agency.cnicOrPassportNo = cnicOrPassportNo;
+    if (companyAddress) agency.companyAddress = companyAddress;
+    if (state) agency.state = state;
+    if (phoneNumber) agency.phoneNumber = phoneNumber;
+    if (website) agency.website = website;
+    if (facebook) agency.facebook = facebook;
+    if (twitter) agency.twitter = twitter;
+    if (instagram) agency.instagram = instagram;
+    if (incomeTaxNo) agency.incomeTaxNo = incomeTaxNo;
+    if (salesTaxNo) agency.salesTaxNo = salesTaxNo;
+    if (bankName) agency.bankName = bankName;
+    if (accountHolderName) agency.accountHolderName = accountHolderName;
+    if (accountNumber) agency.accountNumber = accountNumber;
+    if (licenseImage) agency.licenseImage = licenseImage;
+    if (cnicImage) agency.cnicImage = cnicImage;
+    if (taxFileImage) agency.taxFileImage = taxFileImage;
 
     // Save the updated test
     await agency.save();

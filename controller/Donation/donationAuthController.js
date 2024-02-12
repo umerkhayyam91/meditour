@@ -256,7 +256,7 @@ const donationAuthController = {
       companyName: Joi.string(),
       companyLicenseNo: Joi.string(),
       companyEmergencyNo: Joi.string(),
-      OwnerName: Joi.string(),
+      ownerName: Joi.string(),
       cnicOrPassportNo: Joi.string(),
       companyAddress: Joi.string(),
       state: Joi.string(),
@@ -287,7 +287,7 @@ const donationAuthController = {
       companyName,
       companyLicenseNo,
       companyEmergencyNo,
-      OwnerName,
+      ownerName,
       cnicOrPassportNo,
       companyAddress,
       state,
@@ -336,7 +336,7 @@ const donationAuthController = {
     if (companyName) donation.companyName = companyName;
     if (companyLicenseNo) donation.companyLicenseNo = companyLicenseNo;
     if (companyEmergencyNo) donation.companyEmergencyNo = companyEmergencyNo;
-    if (OwnerName) donation.OwnerName = OwnerName;
+    if (ownerName) donation.ownerName = ownerName;
     if (cnicOrPassportNo) donation.cnicOrPassportNo = cnicOrPassportNo;
     if (companyAddress) donation.companyAddress = companyAddress;
     if (state) donation.state = state;

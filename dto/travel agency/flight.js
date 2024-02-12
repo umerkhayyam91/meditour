@@ -1,13 +1,8 @@
-class roundTripFlightDTO {
+class flightDTO {
     constructor(flight) {
         this._id = flight._id;
         this.agencyId = flight.agencyId;
-        this.outBoundTrip = flight.outBoundTrip;
-        this.returnTrip = flight.returnTrip;
-        this.winglets = flight.winglets;
-        this.webBrowsing = flight.webBrowsing;
-        this.streamingEntertainment = flight.streamingEntertainment;
-        this.lightMealAvailability = flight.lightMealAvailability;
+        this.trips = flight.trips;
         this.handBag = flight.handBag;
         this.baggageWeight = flight.baggageWeight;
         this.cancelationDuration = flight.cancelationDuration;
@@ -18,4 +13,4 @@ class roundTripFlightDTO {
         this.actualPrice = flight.actualPrice;
     }
 }
-module.exports = roundTripFlightDTO;
+module.exports = flightDTO;

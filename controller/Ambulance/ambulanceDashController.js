@@ -205,11 +205,11 @@ const ambulanceDashController = {
         todayRequestCount,
         requestPercentageChange,
         currentWeekRequestData,
-        previousWeekRequestData,
+        // previousWeekRequestData,
         todayOnRouteCount,
         onRoutePercentageChange,
         currentWeekOnRouteData,
-        previousWeekOnRouteData,
+        // previousWeekOnRouteData,
       });
     } catch (error) {
       next(error);

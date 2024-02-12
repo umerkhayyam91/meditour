@@ -10,6 +10,7 @@ class LabDTO {
     this.OwnerName = lab.OwnerName;
     this.cnicOrPassportNo = lab.cnicOrPassportNo;
     this.labAddress = lab.labAddress;
+    this.loc = lab.loc;
     this.emergencyNo = lab.emergencyNo;
     this.state = lab.state;
     this.country = lab.country;
