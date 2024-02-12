@@ -1,9 +1,11 @@
 const express = require("express");
 const userAuthController = require("../controller/User/userAuthController");
 const VerificationController = require("../controller/verificationController");
+const labTestController = require("../controller/Laboratory/labTestController");
 const auth = require("../middlewares/auth");
 const multer = require("multer");
 const userLabController = require("../controller/User/labController");
+const userPharmacyController = require("../controller/User/pharmacyController");
 const router = express.Router();
 
 //............auth...............
@@ -20,5 +22,13 @@ router.post("/user/resetPassword", VerificationController.resetPassword);
 //.............Laboratory...................//
 router.get("/user/getNearbyLabs", userLabController.getNearbyLabs);
 router.get("/user/getLab", userLabController.getLab);
+router.get("/user/filterLabs", userLabController.filterLabs);
+router.get("/user/getTest", labTestController.getTest);
+router.get("/user/getAllTests", userLabController.getAllTests);
+
+//.............Pharmacy...................//
+router.get("/user/getNearbyPharmacies", userPharmacyController.getNearbyPharmacies);
+router.get("/user/getPharmacy", userPharmacyController.getPharmacy);
+router.get("/user/filterPharmacies", userPharmacyController.filterPharmacies);
 
 module.exports = router;
