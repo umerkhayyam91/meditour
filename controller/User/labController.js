@@ -26,6 +26,40 @@ const userLabController = {
       return next(error);
     }
   },
+  async filterLabs(req, res, next) {
+    try {
+      const minRating = req.body.minRating;
+      const maxRating = req.body.maxRating;
+      const labs = await Laboratory.find({
+        rating: { $gte: minRating, $lte: maxRating },
+        loc: {
+          $near: {
+            $geometry: {
+              type: "Point",
+              coordinates: [longitude, latitude], // Replace with the desired coordinates
+            },
+            $maxDistance: radius, // 1 km radius
+          },
+        },
+      });
+    } catch (error) {}
+  },
+
+  async getLab(req, res, next) {
+    try {
+      const labId = req.query.labId;
+      const lab = await Laboratory.findById(labId);
+
+      if (!lab) {
+        const error = new Error("Laboratory not found!");
+        error.status = 404;
+        return next(error);
+      }
+      return res.status(200).json({ lab });
+    } catch (error) {
+      return next(error);
+    }
+  },
 };
 
 module.exports = userLabController;

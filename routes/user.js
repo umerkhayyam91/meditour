@@ -19,5 +19,6 @@ router.post("/user/resetPassword", VerificationController.resetPassword);
 
 //.............Laboratory...................//
 router.get("/user/getNearbyLabs", userLabController.getNearbyLabs);
+router.get("/user/getLab", userLabController.getLab);
 
 module.exports = router;
