@@ -29,6 +29,7 @@ const labAuthController = {
       taxFileImage: Joi.string().required(),
       labFirstName: Joi.string().required(),
       labLastName: Joi.string().required(),
+      loc: Joi.array().required(),
       labLicenseNumber: Joi.string().required(),
       OwnerName: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
@@ -62,6 +63,7 @@ const labAuthController = {
       taxFileImage,
       labFirstName,
       labLastName,
+      loc,
       labLicenseNumber,
       OwnerName,
       cnicOrPassportNo,
@@ -93,6 +95,7 @@ const labAuthController = {
         taxFileImage,
         labFirstName,
         labLastName,
+        loc,
         labLicenseNumber,
         OwnerName,
         cnicOrPassportNo,
@@ -289,6 +292,7 @@ const labAuthController = {
     const labSchema = Joi.object({
       labFirstName: Joi.string(),
       labLastName: Joi.string(),
+      loc: Joi.array(),
       labLicenseNumber: Joi.string(),
       OwnerName: Joi.string(),
       cnicOrPassportNo: Joi.string(),
@@ -321,6 +325,7 @@ const labAuthController = {
     const {
       labFirstName,
       labLastName,
+      loc,
       labLicenseNumber,
       OwnerName,
       cnicOrPassportNo,
@@ -372,6 +377,7 @@ const labAuthController = {
     // Update only the provided fields
     if (labFirstName) lab.labFirstName = labFirstName;
     if (labLastName) lab.labLastName = labLastName;
+    if (loc) lab.loc = loc;
     if (labLicenseNumber) lab.labLicenseNumber = labLicenseNumber;
     if (OwnerName) lab.OwnerName = OwnerName;
     if (cnicOrPassportNo) lab.cnicOrPassportNo = cnicOrPassportNo;

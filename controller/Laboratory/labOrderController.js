@@ -71,7 +71,16 @@ const labOrderController = {
         return next(error);
       }
       const id = req.query.id;
-      const result = await Laboratory.findOneAndUpdate(
+      const order = await Order.findById(id);
+      if (newStatus == "completed" && order.results == "") {
+        const error = {
+          status: 404,
+          message: "Plaese Upload Result First",
+        };
+
+        return next(error);
+      }
+      const result = await Order.findOneAndUpdate(
         { _id: ObjectId(id) },
         { $set: { status: newStatus } },
         { returnDocument: "after" } // Optional: Specify 'after' to return the updated document
@@ -94,16 +103,16 @@ const labOrderController = {
     }
   },
 
-//.........testApi............//
+  //.........testApi............//
   async testing(req, res, next) {
     try {
       const { orderId, testName, MR_NO, date, patientName, status, results } =
-      req.body;
-    const labId = req.user._id;
+        req.body;
+      const labId = req.user._id;
 
-    let test;
+      let test;
 
-    let testCode = Math.floor(Math.random() * 1000000); // Generate a random number between 0 and 99999999
+      let testCode = Math.floor(Math.random() * 1000000); // Generate a random number between 0 and 99999999
 
       const testToRegister = new Order({
         labId,
@@ -114,16 +123,37 @@ const labOrderController = {
         date,
         patientName,
         status,
-        results
+        results,
       });
 
       test = await testToRegister.save();
-      res.json("order added successfully!")
+      res.json("order added successfully!");
     } catch (error) {
       return next(error);
     }
   },
- 
+
+  async uploadResult(req, res, next) {
+    try {
+      const resultUrl = req.body.resultUrl;
+      const orderId = req.query.orderId;
+      const order = await Order.findById(orderId);
+      if (!order) {
+        const error = {
+          status: 404,
+          message: "Order not found",
+        };
+
+        return next(error);
+      }
+      order.results = resultUrl;
+      await order.save();
+
+      res.json("Result uploaded successfully!");
+    } catch (error) {
+      return next(error);
+    }
+  },
 };
 
 module.exports = labOrderController;
