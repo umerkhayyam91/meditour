@@ -3,8 +3,8 @@ const app = express();
 const mongoose = require("mongoose");
 const Laboratory = require("../../models/Laboratory/laboratory.js");
 
-const labAuthController = {
-  async locationSearch(req, res, next) {
+const userLabController = {
+  async getNearbyLabs(req, res, next) {
     try {
       const latitude = req.query.lat;
       const longitude = req.query.long;
@@ -28,4 +28,4 @@ const labAuthController = {
   },
 };
 
-module.exports = labAuthController;
+module.exports = userLabController;

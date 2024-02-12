@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const Laboratory = require("./models/Laboratory/laboratory")
+const Laboratory = require("./models/Laboratory/laboratory");
 const whitelist = ["http://localhost:3000", "https://meditour.global"];
 const cors = require("cors");
 
@@ -60,5 +60,5 @@ app.use(dummyUserRouter);
 dbConnect();
 app.use(ErrorHandler);
 app.listen(PORT, () => {
-  console.log("server running");
+  console.log("server running", PORT);
 });

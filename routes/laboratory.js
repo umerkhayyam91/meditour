@@ -4,7 +4,6 @@ const labOrderController = require("../controller/Laboratory/labOrderController"
 const labDashController = require("../controller/Laboratory/labDashController");
 const labTestController = require("../controller/Laboratory/labTestController");
 const VerificationController = require("../controller/verificationController");
-const userController = require("../controller/Laboratory/userController");
 const auth = require("../middlewares/auth");
 const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
@@ -45,9 +44,6 @@ router.post("/lab/sendCodeToEmail", VerificationController.sendCodeToEmail);
 router.post("/lab/confirmEmail", VerificationController.confirmEmail);
 router.post("/lab/ResetLink", VerificationController.ResetLink);
 router.post("/lab/resetPassword", VerificationController.resetPassword);
-
-//.............USER FLOW...................//
-router.get("/user/locationSearch", userController.locationSearch);
 
 // router.post("/logout", auth, authController.logout);
 
