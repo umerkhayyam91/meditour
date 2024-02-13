@@ -56,6 +56,7 @@ const userLabController = {
 
       // Get the _id values of labs within the radius
       const labIdsWithinRadius = labsWithinRadius.map((lab) => lab._id);
+      console.log(labIdsWithinRadius);
 
       // Find ratings for labs within the radius and meeting the rating criteria
       const labs = await Laboratory.aggregate([
@@ -73,21 +74,24 @@ const userLabController = {
           },
         },
         {
+          $unwind: "$ratings",
+        },
+        {
           $match: {
             "ratings.rating": {
-              $gte: minRating,
-              $lte: maxRating,
+              $gte: parseFloat(minRating),
+              $lte: parseFloat(maxRating),
             },
           },
         },
       ]);
 
       // Check if any labs were found
-      if (labs.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "No labs found with the specified criteria." });
-      }
+      // if (labs.length === 0) {
+      //   return res
+      //     .status(404)
+      //     .json({ message: "No labs found with the specified criteria." });
+      // }
       const labsWithoutRatings = labs.map(({ ratings, ...rest }) => rest);
 
       // Return the modified response without the 'ratings' array
