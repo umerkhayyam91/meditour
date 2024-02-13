@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Pharmacy = require("../../models/Pharmacy/pharmacy");
+const PharmacyCart = require("../../models/User/cart");
 const Tests = require("../../models/Laboratory/tests");
 
 const userLabController = {
@@ -134,30 +135,47 @@ const userLabController = {
     }
   },
 
-  //   async getAllTests(req, res, next) {
-  //     try {
-  //       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
-  //       const testPerPage = 10;
-  //       const labId = req.query.labId;
-  //       const totalTests = await Tests.countDocuments({ labId }); // Get the total number of posts for the user
-  //       const totalPages = Math.ceil(totalTests / testPerPage); // Calculate the total number of pages
+  async addToCart(req, res, next) {
+    try {
+      const userId = req.user._id; // Replace with your authentication logic to get the user ID
+      const medicineIdToAdd = req.body.medicineId;
+      const quantityToAdd = req.body.quantity || 1; // Default quantity is 1 if not specified
 
-  //       const skip = (page - 1) * testPerPage; // Calculate the number of posts to skip based on the current page
-  //       const tests = await Tests.find({ labId }).skip(skip).limit(testPerPage);
-  //       let previousPage = page > 1 ? page - 1 : null;
-  //       let nextPage = page < totalPages ? page + 1 : null;
-  //       // const testDto = new TestDTO(tests);
+      // Use findOneAndUpdate to add the medicine to the cart
+      const updatedCart = await PharmacyCart.findOneAndUpdate(
+        { userId },
+        {
+          $addToSet: {
+            cartItems: { medicineId: medicineIdToAdd, quantity: quantityToAdd },
+          },
+        },
+        { upsert: true, new: true }
+      );
 
-  //       return res.status(200).json({
-  //         tests: tests,
-  //         auth: true,
-  //         previousPage: previousPage,
-  //         nextPage: nextPage,
-  //       });
-  //     } catch (error) {
-  //       return next(error);
-  //     }
-  //   },
+      // Return the updated cart as a response
+      return res.status(200).json({ cart: updatedCart });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  },
+  async getCart(req, res, next) {
+    try {
+      const userId = req.user._id; // Replace with your authentication logic to get the user ID
+      const cart = await PharmacyCart.findOne({ userId });
+      if (!cart) {
+        const error = new Error("Cart not found!");
+        error.status = 404;
+        return next(error);
+      }
+
+      // Return the updated cart as a response
+      return res.status(200).json({ cart, auth: true });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  },
 };
 
 module.exports = userLabController;

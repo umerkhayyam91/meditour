@@ -30,5 +30,7 @@ router.get("/user/getAllTests", userLabController.getAllTests);
 router.get("/user/getNearbyPharmacies", userPharmacyController.getNearbyPharmacies);
 router.get("/user/getPharmacy", userPharmacyController.getPharmacy);
 router.get("/user/filterPharmacies", userPharmacyController.filterPharmacies);
+router.post("/user/addToCart", auth, userPharmacyController.addToCart);
+router.get("/user/getCart", auth, userPharmacyController.getCart);
 
 module.exports = router;
