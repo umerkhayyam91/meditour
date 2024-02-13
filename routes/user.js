@@ -25,6 +25,8 @@ router.get("/user/getLab", userLabController.getLab);
 router.get("/user/filterLabs", userLabController.filterLabs);
 router.get("/user/getTest", labTestController.getTest);
 router.get("/user/getAllTests", userLabController.getAllTests);
+router.put("/user/addRemoveFav", auth, userLabController.addRemoveFav);
+router.get("/user/getAllFav", auth, userLabController.getAllFav);
 
 //.............Pharmacy...................//
 router.get("/user/getNearbyPharmacies", userPharmacyController.getNearbyPharmacies);

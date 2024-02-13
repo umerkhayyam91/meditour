@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Laboratory = require("../../models/Laboratory/laboratory");
+const User = require("../../models/User/user");
 const Tests = require("../../models/Laboratory/tests");
 
 const userLabController = {
@@ -13,7 +14,7 @@ const userLabController = {
       const radius = req.query.radius || 1000;
       const page = req.query.page || 1; // Default to page 1
       const limit = req.query.limit || 10; // Default to 10 labs per page
-  
+
       let labsQuery = {
         loc: {
           $near: {
@@ -25,21 +26,19 @@ const userLabController = {
           },
         },
       };
-  
+
       // Apply search query if provided
       if (query) {
         const regex = new RegExp(query, "i");
         labsQuery.labFirstName = regex;
       }
-  
+
       // Calculate the skip value based on the page and limit
       const skip = (page - 1) * limit;
-  
+
       // Fetch labs with pagination
-      let labs = await Laboratory.find(labsQuery)
-        .skip(skip)
-        .limit(limit);
-  
+      let labs = await Laboratory.find(labsQuery).skip(skip).limit(limit);
+
       return res.status(200).json({ labs, auth: true });
     } catch (error) {
       return next(error);
@@ -54,7 +53,7 @@ const userLabController = {
       const radius = req.query.radius || 1000000;
       const page = req.query.page || 1; // Default to page 1
       const limit = req.query.limit || 10; // Default to 10 labs per page
-  
+
       const labsWithinRadius = await Laboratory.find({
         loc: {
           $near: {
@@ -66,9 +65,9 @@ const userLabController = {
           },
         },
       });
-  
+
       const labIdsWithinRadius = labsWithinRadius.map((lab) => lab._id);
-  
+
       const aggregatePipeline = [
         {
           $match: {
@@ -94,27 +93,23 @@ const userLabController = {
           },
         },
       ];
-  
+
       // Calculate the skip value based on the page and limit
       const skip = (page - 1) * limit;
-  
+
       // Apply pagination to the aggregation pipeline
-      aggregatePipeline.push(
-        { $skip: skip },
-        { $limit: limit }
-      );
-  
+      aggregatePipeline.push({ $skip: skip }, { $limit: limit });
+
       const labs = await Laboratory.aggregate(aggregatePipeline);
       const labsWithoutRatings = labs.map(({ ratings, ...rest }) => rest);
-  
+
       return res.status(200).json({ labs: labsWithoutRatings });
-  
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });
     }
   },
-  
+
   async getLab(req, res, next) {
     try {
       const labId = req.query.labId;
@@ -154,6 +149,67 @@ const userLabController = {
         previousPage: previousPage,
         nextPage: nextPage,
       });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async addRemoveFav(req, res, next) {
+    try {
+      const labId = req.query.labId;
+      const userId = req.user._id;
+
+      const laboratory = await Laboratory.findById(labId);
+      if (!laboratory) {
+        const error = new Error("Laboratory not found!");
+        error.status = 404;
+        return next(error);
+      }
+
+      const user = await User.findById(userId);
+      if (!user) {
+        const error = new Error("User not found!");
+        error.status = 404;
+        return next(error);
+      }
+
+      const alreadyExistsIndex = user.favouriteLabs.indexOf(labId);
+
+      if (alreadyExistsIndex !== -1) {
+        // If labId is found in the favourites array, remove it using the pull operator
+        user.favouriteLabs.pull(labId);
+      } else {
+        // If labId is not found, add it to the favourites array
+        user.favouriteLabs.push(labId);
+      }
+
+      // Save the updated user document
+      await user.save();
+
+      return res.status(200).json({ user });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async getAllFav(req, res, next) {
+    try {
+      const userId = req.user._id;
+
+      const user = await User.findOne({ _id: userId }).populate(
+        "favouriteLabs"
+      );
+      // console.log(user);
+      if (!user) {
+        const error = new Error("User not found!");
+        error.status = 404;
+        return next(error);
+      }
+      const favourites = user.favouriteLabs;
+      // Save the updated user document
+      await user.save();
+
+      return res.status(200).json({ favouriteLabs: favourites });
     } catch (error) {
       return next(error);
     }
