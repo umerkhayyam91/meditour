@@ -11,22 +11,35 @@ const userLabController = {
       const longitude = req.query.long;
       const query = req.query.search;
       const radius = req.query.radius || 1000;
-      let labs = await Laboratory.find({
+      const page = req.query.page || 1; // Default to page 1
+      const limit = req.query.limit || 10; // Default to 10 labs per page
+  
+      let labsQuery = {
         loc: {
           $near: {
             $geometry: {
               type: "Point",
-              coordinates: [longitude, latitude], // Replace with the desired coordinates
+              coordinates: [longitude, latitude],
             },
-            $maxDistance: radius, // 1 km radius
+            $maxDistance: radius,
           },
         },
-      });
+      };
+  
+      // Apply search query if provided
       if (query) {
         const regex = new RegExp(query, "i");
-         labs = labs.filter((lab) => regex.test(lab.labFirstName));
+        labsQuery.labFirstName = regex;
       }
-
+  
+      // Calculate the skip value based on the page and limit
+      const skip = (page - 1) * limit;
+  
+      // Fetch labs with pagination
+      let labs = await Laboratory.find(labsQuery)
+        .skip(skip)
+        .limit(limit);
+  
       return res.status(200).json({ labs, auth: true });
     } catch (error) {
       return next(error);
@@ -36,14 +49,12 @@ const userLabController = {
   async filterLabs(req, res, next) {
     try {
       const minRating = req.query.minRating;
-      // const maxRating = req.query.maxRating;
-
-      // Replace these with the actual coordinates and radius or fetch them from the request
       const longitude = req.query.long;
       const latitude = req.query.lat;
       const radius = req.query.radius || 1000000;
-
-      // Find labs within the specified radius
+      const page = req.query.page || 1; // Default to page 1
+      const limit = req.query.limit || 10; // Default to 10 labs per page
+  
       const labsWithinRadius = await Laboratory.find({
         loc: {
           $near: {
@@ -55,12 +66,10 @@ const userLabController = {
           },
         },
       });
-
-      // Get the _id values of labs within the radius
+  
       const labIdsWithinRadius = labsWithinRadius.map((lab) => lab._id);
-
-      // Find ratings for labs within the radius and meeting the rating criteria
-      const labs = await Laboratory.aggregate([
+  
+      const aggregatePipeline = [
         {
           $match: {
             _id: { $in: labIdsWithinRadius },
@@ -81,24 +90,31 @@ const userLabController = {
           $match: {
             "ratings.rating": {
               $gte: parseFloat(minRating),
-              // $lte: parseFloat(maxRating),
             },
           },
         },
-      ]);
+      ];
+  
+      // Calculate the skip value based on the page and limit
+      const skip = (page - 1) * limit;
+  
+      // Apply pagination to the aggregation pipeline
+      aggregatePipeline.push(
+        { $skip: skip },
+        { $limit: limit }
+      );
+  
+      const labs = await Laboratory.aggregate(aggregatePipeline);
       const labsWithoutRatings = labs.map(({ ratings, ...rest }) => rest);
-
-      // Return the modified response without the 'ratings' array
+  
       return res.status(200).json({ labs: labsWithoutRatings });
-
-      // Return the found labs
+  
     } catch (error) {
-      // Handle errors
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });
     }
   },
-
+  
   async getLab(req, res, next) {
     try {
       const labId = req.query.labId;
@@ -121,12 +137,13 @@ const userLabController = {
       const testPerPage = 10;
       const labId = req.query.labId;
       const categoryName = req.query.categoryName;
-      console.log(categoryName);
       const totalTests = await Tests.countDocuments({ labId, categoryName }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalTests / testPerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * testPerPage; // Calculate the number of posts to skip based on the current page
-      const tests = await Tests.find({ labId, categoryName }).skip(skip).limit(testPerPage);
+      const tests = await Tests.find({ labId, categoryName })
+        .skip(skip)
+        .limit(testPerPage);
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
       // const testDto = new TestDTO(tests);

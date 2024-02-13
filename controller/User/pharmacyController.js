@@ -9,18 +9,36 @@ const userLabController = {
     try {
       const latitude = req.query.lat;
       const longitude = req.query.long;
+      const query = req.query.search;
       const radius = req.query.radius || 1000;
-      const pharmacies = await Pharmacy.find({
+      const page = req.query.page || 1; // Default to page 1
+      const limit = req.query.limit || 10; // Default to 10 labs per page
+
+      let pharmacyQuery = {
         loc: {
           $near: {
             $geometry: {
               type: "Point",
-              coordinates: [longitude, latitude], // Replace with the desired coordinates
+              coordinates: [longitude, latitude],
             },
-            $maxDistance: radius, // 1 km radius
+            $maxDistance: radius,
           },
         },
-      });
+      };
+
+      // Apply search query if provided
+      if (query) {
+        const regex = new RegExp(query, "i");
+        pharmacyQuery.pharmacyFirstName = regex;
+      }
+
+      // Calculate the skip value based on the page and limit
+      const skip = (page - 1) * limit;
+
+      // Fetch pharmacies with pagination
+      let pharmacies = await Pharmacy.find(pharmacyQuery)
+        .skip(skip)
+        .limit(limit);
 
       return res.status(200).json({ pharmacies, auth: true });
     } catch (error) {
@@ -29,73 +47,75 @@ const userLabController = {
   },
   async filterPharmacies(req, res, next) {
     try {
-        const minRating = req.query.minRating;
-  
-        // Replace these with the actual coordinates and radius or fetch them from the request
-        const longitude = req.query.long;
-        const latitude = req.query.lat;
-        const radius = req.query.radius || 1000000;
-  
-        // Find labs within the specified radius
-        const pharmaciesWithinRadius = await Pharmacy.find({
-          loc: {
-            $near: {
-              $geometry: {
-                type: "Point",
-                coordinates: [longitude, latitude],
-              },
-              $maxDistance: radius,
+      const minRating = req.query.minRating;
+
+      // Replace these with the actual coordinates and radius or fetch them from the request
+      const longitude = req.query.long;
+      const latitude = req.query.lat;
+      const radius = req.query.radius || 1000000;
+
+      // Find labs within the specified radius
+      const pharmaciesWithinRadius = await Pharmacy.find({
+        loc: {
+          $near: {
+            $geometry: {
+              type: "Point",
+              coordinates: [longitude, latitude],
+            },
+            $maxDistance: radius,
+          },
+        },
+      });
+
+      // Get the _id values of labs within the radius
+      const pharmacyIdsWithinRadius = pharmaciesWithinRadius.map(
+        (lab) => lab._id
+      );
+
+      // Find ratings for labs within the radius and meeting the rating criteria
+      const labs = await Pharmacy.aggregate([
+        {
+          $match: {
+            _id: { $in: pharmacyIdsWithinRadius },
+          },
+        },
+        {
+          $lookup: {
+            from: "ratings",
+            localField: "_id",
+            foreignField: "vendorId",
+            as: "ratings",
+          },
+        },
+        {
+          $unwind: "$ratings",
+        },
+        {
+          $match: {
+            "ratings.rating": {
+              $gte: parseFloat(minRating),
             },
           },
-        });
-  
-        // Get the _id values of labs within the radius
-        const pharmacyIdsWithinRadius = pharmaciesWithinRadius.map((lab) => lab._id);
-  
-        // Find ratings for labs within the radius and meeting the rating criteria
-        const labs = await Pharmacy.aggregate([
-          {
-            $match: {
-              _id: { $in: pharmacyIdsWithinRadius },
-            },
-          },
-          {
-            $lookup: {
-              from: "ratings",
-              localField: "_id",
-              foreignField: "vendorId",
-              as: "ratings",
-            },
-          },
-          {
-            $unwind: "$ratings",
-          },
-          {
-            $match: {
-              "ratings.rating": {
-                $gte: parseFloat(minRating),
-              },
-            },
-          },
-        ]);
-  
-        // Check if any labs were found
-        // if (labs.length === 0) {
-        //   return res
-        //     .status(404)
-        //     .json({ message: "No labs found with the specified criteria." });
-        // }
-        const pharmaciesWithoutRadius = labs.map(({ ratings, ...rest }) => rest);
-  
-        // Return the modified response without the 'ratings' array
-        return res.status(200).json({ labs: pharmaciesWithoutRadius });
-  
-        // Return the found labs
-      } catch (error) {
-        // Handle errors
-        console.error(error);
-        return res.status(500).json({ message: "Internal server error" });
-      }
+        },
+      ]);
+
+      // Check if any labs were found
+      // if (labs.length === 0) {
+      //   return res
+      //     .status(404)
+      //     .json({ message: "No labs found with the specified criteria." });
+      // }
+      const pharmaciesWithoutRadius = labs.map(({ ratings, ...rest }) => rest);
+
+      // Return the modified response without the 'ratings' array
+      return res.status(200).json({ labs: pharmaciesWithoutRadius });
+
+      // Return the found labs
+    } catch (error) {
+      // Handle errors
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   },
 
   async getPharmacy(req, res, next) {
