@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 
 const testSchema = new mongoose.Schema(
   {
+    categoryName: {
+      type: String,
+    },
     testName: {
       type: String,
       required: true,

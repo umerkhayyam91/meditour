@@ -30,7 +30,6 @@ const userLabController = {
   async filterPharmacies(req, res, next) {
     try {
         const minRating = req.query.minRating;
-        const maxRating = req.query.maxRating;
   
         // Replace these with the actual coordinates and radius or fetch them from the request
         const longitude = req.query.long;
@@ -75,7 +74,6 @@ const userLabController = {
             $match: {
               "ratings.rating": {
                 $gte: parseFloat(minRating),
-                $lte: parseFloat(maxRating),
               },
             },
           },

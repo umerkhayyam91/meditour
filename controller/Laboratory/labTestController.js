@@ -7,6 +7,7 @@ const Order = require("../../models/Laboratory/labOrder.js");
 const labTestController = {
   async addTest(req, res, next) {
     const labTestSchema = Joi.object({
+      categoryName: Joi.string().required(),
       testName: Joi.string().required(),
       testDescription: Joi.string().required(),
       price: Joi.number().required(),
@@ -19,7 +20,7 @@ const labTestController = {
     if (error) {
       return next(error);
     }
-    const { testName, testDescription, price, duration, priceForMeditour } =
+    const {categoryName, testName, testDescription, price, duration, priceForMeditour } =
       req.body;
     const labId = req.user._id;
     try {
@@ -41,6 +42,7 @@ const labTestController = {
     try {
       const testToRegister = new Tests({
         labId,
+        categoryName,
         testCode,
         testName,
         testDescription,
@@ -63,6 +65,7 @@ const labTestController = {
 
   async editTest(req, res, next) {
     const labTestSchema = Joi.object({
+      categoryName: Joi.string(),
       testName: Joi.string(),
       testDescription: Joi.string(),
       price: Joi.number(),
@@ -75,7 +78,7 @@ const labTestController = {
     if (error) {
       return next(error);
     }
-    const { testName, testDescription, price, duration, priceForMeditour } =
+    const {categoryName, testName, testDescription, price, duration, priceForMeditour } =
       req.body;
     const labId = req.user._id;
     console.log(labId);
@@ -104,6 +107,7 @@ const labTestController = {
     }
 
     // Update only the provided fields
+    if (categoryName) existingTest.categoryName = categoryName;
     if (testName) existingTest.testName = testName;
     if (testDescription) existingTest.testDescription = testDescription;
     if (price) existingTest.price = price;

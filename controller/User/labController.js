@@ -30,15 +30,11 @@ const userLabController = {
   async filterLabs(req, res, next) {
     try {
       const minRating = req.query.minRating;
-      const maxRating = req.query.maxRating;
+      // const maxRating = req.query.maxRating;
 
       // Replace these with the actual coordinates and radius or fetch them from the request
       const longitude = req.query.long;
       const latitude = req.query.lat;
-      console.log(minRating);
-      console.log(maxRating);
-      console.log(longitude);
-      console.log(latitude);
       const radius = req.query.radius || 1000000;
 
       // Find labs within the specified radius
@@ -56,7 +52,6 @@ const userLabController = {
 
       // Get the _id values of labs within the radius
       const labIdsWithinRadius = labsWithinRadius.map((lab) => lab._id);
-      console.log(labIdsWithinRadius);
 
       // Find ratings for labs within the radius and meeting the rating criteria
       const labs = await Laboratory.aggregate([
@@ -80,18 +75,11 @@ const userLabController = {
           $match: {
             "ratings.rating": {
               $gte: parseFloat(minRating),
-              $lte: parseFloat(maxRating),
+              // $lte: parseFloat(maxRating),
             },
           },
         },
       ]);
-
-      // Check if any labs were found
-      // if (labs.length === 0) {
-      //   return res
-      //     .status(404)
-      //     .json({ message: "No labs found with the specified criteria." });
-      // }
       const labsWithoutRatings = labs.map(({ ratings, ...rest }) => rest);
 
       // Return the modified response without the 'ratings' array
