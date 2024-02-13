@@ -83,9 +83,6 @@ const userLabController = {
           },
         },
         {
-          $unwind: "$ratings",
-        },
-        {
           $match: {
             "ratings.rating": {
               $gte: parseFloat(minRating),
@@ -101,9 +98,9 @@ const userLabController = {
       aggregatePipeline.push({ $skip: skip }, { $limit: limit });
 
       const labs = await Laboratory.aggregate(aggregatePipeline);
-      const labsWithoutRatings = labs.map(({ ratings, ...rest }) => rest);
+      // const labsWithoutRatings = labs.map(({ ratings, ...rest }) => rest);
 
-      return res.status(200).json({ labs: labsWithoutRatings });
+      return res.status(200).json({ labs });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });

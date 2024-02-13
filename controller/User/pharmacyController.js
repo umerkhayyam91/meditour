@@ -49,13 +49,12 @@ const userLabController = {
   async filterPharmacies(req, res, next) {
     try {
       const minRating = req.query.minRating;
-
-      // Replace these with the actual coordinates and radius or fetch them from the request
       const longitude = req.query.long;
       const latitude = req.query.lat;
       const radius = req.query.radius || 1000000;
+      const page = req.query.page || 1; // Default to page 1
+      const limit = req.query.limit || 10; // Default to 10 labs per page
 
-      // Find labs within the specified radius
       const pharmaciesWithinRadius = await Pharmacy.find({
         loc: {
           $near: {
@@ -68,13 +67,11 @@ const userLabController = {
         },
       });
 
-      // Get the _id values of labs within the radius
       const pharmacyIdsWithinRadius = pharmaciesWithinRadius.map(
         (lab) => lab._id
       );
 
-      // Find ratings for labs within the radius and meeting the rating criteria
-      const labs = await Pharmacy.aggregate([
+      const aggregatePipeline = [
         {
           $match: {
             _id: { $in: pharmacyIdsWithinRadius },
@@ -98,22 +95,21 @@ const userLabController = {
             },
           },
         },
-      ]);
+      ];
 
-      // Check if any labs were found
-      // if (labs.length === 0) {
-      //   return res
-      //     .status(404)
-      //     .json({ message: "No labs found with the specified criteria." });
-      // }
-      const pharmaciesWithoutRadius = labs.map(({ ratings, ...rest }) => rest);
+      // Calculate the skip value based on the page and limit
+      const skip = (page - 1) * limit;
 
-      // Return the modified response without the 'ratings' array
-      return res.status(200).json({ labs: pharmaciesWithoutRadius });
+      // Apply pagination to the aggregation pipeline
+      aggregatePipeline.push({ $skip: skip }, { $limit: limit });
 
-      // Return the found labs
+      const pharmacies = await Pharmacy.aggregate(aggregatePipeline);
+      //   const pharmaciesWithoutRatings = pharmacies.map(
+      //     ({ ratings, ...rest }) => rest
+      //   );
+
+      return res.status(200).json({ pharmacies });
     } catch (error) {
-      // Handle errors
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });
     }
