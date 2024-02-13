@@ -39,6 +39,7 @@ const hotelRouter = require("./routes/hotel");
 const insuranceRouter = require("./routes/insurance");
 const userRouter = require("./routes/user");
 const dummyUserRouter = require("./routes/dummyUser");
+const adminRouter = require("./routes/admin");
 
 app.use(labRouter);
 app.use(pharmRouter);
@@ -56,6 +57,7 @@ app.use(hotelRouter);
 app.use(insuranceRouter);
 app.use(userRouter);
 app.use(dummyUserRouter);
+app.use(adminRouter);
 
 dbConnect();
 app.use(ErrorHandler);
