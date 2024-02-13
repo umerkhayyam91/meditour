@@ -188,6 +188,8 @@ const authController = {
     // 2. response
     res.status(200).json({ user: null, auth: false });
   },
+
+  
 };
 
 module.exports = authController;
