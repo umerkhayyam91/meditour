@@ -114,7 +114,8 @@ const userLabController = {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
       const testPerPage = 10;
       const labId = req.query.labId;
-      const totalTests = await Tests.countDocuments({ labId }); // Get the total number of posts for the user
+      const categoryName = req.query.categoryName;
+      const totalTests = await Tests.countDocuments({ labId, categoryName }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalTests / testPerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * testPerPage; // Calculate the number of posts to skip based on the current page

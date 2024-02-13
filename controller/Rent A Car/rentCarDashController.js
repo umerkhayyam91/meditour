@@ -61,19 +61,17 @@ const rentCarDashController = {
       currentDate.setHours(0, 0, 0, 0);
 
       //.......todayRequestCount......///
-      const todayRequestCount = await vehicleRequest
-        .countDocuments({
-          createdAt: { $gte: currentDate, $lt: new Date() },
-          rentACarId,
-        })
+      const todayRequestCount = await vehicleRequest.countDocuments({
+        createdAt: { $gte: currentDate, $lt: new Date() },
+        rentACarId,
+      });
 
       //  ............total requests last week.........//
 
       const lastWeek = new Date(currentDate);
       lastWeek.setDate(currentDate.getDate() - 7);
       const prevWeek = new Date(currentDate);
-      prevWeek.setDate(currentDate.getDate() - 14)
-
+      prevWeek.setDate(currentDate.getDate() - 14);
 
       const thisWeekRequests = await vehicleRequest.countDocuments({
         createdAt: { $gte: lastWeek, $lt: currentDate },
@@ -82,14 +80,16 @@ const rentCarDashController = {
       const lastWeekRequests = await vehicleRequest.countDocuments({
         createdAt: { $gte: prevWeek, $lte: lastWeek },
         rentACarId,
-
-      })
+      });
 
       let requestPercentageChange;
       if (lastWeekRequests == 0) {
         requestPercentageChange = thisWeekRequests * 100; // If the day before yesterday's orders are zero, the change is undefined
       } else {
-        requestPercentageChange = (((thisWeekRequests - lastWeekRequests) / lastWeekRequests) * 100).toFixed(2);
+        requestPercentageChange = (
+          ((thisWeekRequests - lastWeekRequests) / lastWeekRequests) *
+          100
+        ).toFixed(2);
       }
 
       if (requestPercentageChange > 0) {
@@ -102,20 +102,23 @@ const rentCarDashController = {
       const totalPenRequests = await vehicleRequest.countDocuments({
         createdAt: { $gte: lastWeek, $lt: currentDate },
         status: "pending",
-        rentACarId
+        rentACarId,
       });
-      console.log(totalPenRequests)
+      console.log(totalPenRequests);
       const lastWeekPenRequests = await vehicleRequest.countDocuments({
         createdAt: { $gte: prevWeek, $lte: lastWeek },
         status: "pending",
-        rentACarId
+        rentACarId,
       });
-      console.log(lastWeekPenRequests)
+      console.log(lastWeekPenRequests);
       let requestPenPercentage;
       if (lastWeekPenRequests == 0) {
         requestPenPercentage = totalPenRequests * 100; // If the day before yesterday's orders are zero, the change is undefined
       } else {
-        requestPenPercentage = (((totalPenRequests - lastWeekPenRequests) / lastWeekPenRequests) * 100).toFixed(2);
+        requestPenPercentage = (
+          ((totalPenRequests - lastWeekPenRequests) / lastWeekPenRequests) *
+          100
+        ).toFixed(2);
       }
 
       if (requestPenPercentage > 0) {
@@ -124,11 +127,10 @@ const rentCarDashController = {
         requestPenPercentage = requestPenPercentage + "%";
       }
 
-
       res.json({
         todayRequestCount: todayRequestCount,
         requestPercentageChange: requestPercentageChange,
-        requestPenPercentage: requestPenPercentage
+        requestPenPercentage: requestPenPercentage,
       });
     } catch (error) {
       next(error);
