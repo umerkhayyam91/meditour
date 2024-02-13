@@ -9,8 +9,9 @@ const userLabController = {
     try {
       const latitude = req.query.lat;
       const longitude = req.query.long;
+      const query = req.query.search;
       const radius = req.query.radius || 1000;
-      const labs = await Laboratory.find({
+      let labs = await Laboratory.find({
         loc: {
           $near: {
             $geometry: {
@@ -21,12 +22,17 @@ const userLabController = {
           },
         },
       });
+      if (query) {
+        const regex = new RegExp(query, "i");
+         labs = labs.filter((lab) => regex.test(lab.labFirstName));
+      }
 
       return res.status(200).json({ labs, auth: true });
     } catch (error) {
       return next(error);
     }
   },
+
   async filterLabs(req, res, next) {
     try {
       const minRating = req.query.minRating;
@@ -115,11 +121,12 @@ const userLabController = {
       const testPerPage = 10;
       const labId = req.query.labId;
       const categoryName = req.query.categoryName;
+      console.log(categoryName);
       const totalTests = await Tests.countDocuments({ labId, categoryName }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalTests / testPerPage); // Calculate the total number of pages
 
       const skip = (page - 1) * testPerPage; // Calculate the number of posts to skip based on the current page
-      const tests = await Tests.find({ labId }).skip(skip).limit(testPerPage);
+      const tests = await Tests.find({ labId, categoryName }).skip(skip).limit(testPerPage);
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
       // const testDto = new TestDTO(tests);
