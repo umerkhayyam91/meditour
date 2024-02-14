@@ -37,9 +37,9 @@ const labSchema = new mongoose.Schema(
     },
     loc: {
       type: [Number], // Array of two numbers: [longitude, latitude]
-      index: { type: '2dsphere', sparse: true }, // Use an object for index definition
+      index: { type: "2dsphere", sparse: true }, // Use an object for index definition
       required: true,
-  },
+    },
     emergencyNo: {
       type: String,
       required: true,
@@ -100,6 +100,9 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    averageRating: {
+      type: Number,
+    },
     isVerified: {
       type: Boolean,
       default: false,
@@ -110,6 +113,6 @@ const labSchema = new mongoose.Schema(
   }
 );
 
-labSchema.index({ loc: '2dsphere' });
+labSchema.index({ loc: "2dsphere" });
 
 module.exports = mongoose.model("Laboratory", labSchema, "laboratories");

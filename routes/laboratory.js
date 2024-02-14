@@ -27,7 +27,7 @@ router.post("/lab/refresh", auth, labAuthController.refresh);
 //............Orders....................
 router.get("/lab/getOrders", auth, labOrderController.getOrders);
 router.put("/lab/changeStatus", auth, labOrderController.changeStatus);
-router.post("/lab/testing", auth, labOrderController.testing);
+// router.post("/lab/testing", auth, labOrderController.testing);
 
 //............Dashboard.................
 router.get("/lab/dashDetails", auth, labDashController.dashDetails);

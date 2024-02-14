@@ -27,6 +27,7 @@ class LabDTO {
     this.labLicenseImage = lab.labLicenseImage;
     this.taxFileImage = lab.taxFileImage;
     this.cnicImage = lab.cnicImage;
+    this.averageRating = lab.averageRating;
   }
 }
 

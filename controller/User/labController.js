@@ -12,7 +12,7 @@ const userLabController = {
       const latitude = req.query.lat;
       const longitude = req.query.long;
       const query = req.query.search;
-      const radius = req.query.radius || 1000;
+      const radius = req.query.radius || 10000;
       const page = req.query.page || 1; // Default to page 1
       const limit = 10; // Default to 10 labs per page
   
@@ -40,24 +40,11 @@ const userLabController = {
       // Fetch labs with pagination
       let labs = await Laboratory.find(labsQuery).skip(skip).limit(limit);
   
-      // Fetch ratings for each lab using $lookup
-      labs = await Laboratory.aggregate([
-        { $match: { _id: { $in: labs.map(lab => lab._id) } } },
-        {
-          $lookup: {
-            from: "ratings", // Replace with the actual name of your ratings collection
-            localField: "_id",
-            foreignField: "vendorId",
-            as: "ratings",
-          },
-        },
-      ]);
-  
       return res.status(200).json({ labs, auth: true });
     } catch (error) {
       return next(error);
     }
-  },
+  },  
 
   async filterLabs(req, res, next) {
     try {
@@ -67,7 +54,7 @@ const userLabController = {
       const radius = req.query.radius || 1000000;
       const page = req.query.page || 1; // Default to page 1
       const limit = req.query.limit || 10; // Default to 10 labs per page
-
+  
       const labsWithinRadius = await Laboratory.find({
         loc: {
           $near: {
@@ -79,47 +66,22 @@ const userLabController = {
           },
         },
       });
-
+  
       const labIdsWithinRadius = labsWithinRadius.map((lab) => lab._id);
-
-      const aggregatePipeline = [
-        {
-          $match: {
-            _id: { $in: labIdsWithinRadius },
-          },
-        },
-        {
-          $lookup: {
-            from: "ratings",
-            localField: "_id",
-            foreignField: "vendorId",
-            as: "ratings",
-          },
-        },
-        {
-          $match: {
-            "ratings.rating": {
-              $gte: parseFloat(minRating),
-            },
-          },
-        },
-      ];
-
-      // Calculate the skip value based on the page and limit
-      const skip = (page - 1) * limit;
-
-      // Apply pagination to the aggregation pipeline
-      aggregatePipeline.push({ $skip: skip }, { $limit: limit });
-
-      const labs = await Laboratory.aggregate(aggregatePipeline);
-      // const labsWithoutRatings = labs.map(({ ratings, ...rest }) => rest);
-
+  
+      const labs = await Laboratory.find({
+        _id: { $in: labIdsWithinRadius },
+        "averageRating": { $gte: parseFloat(minRating) },
+      })
+        .skip((page - 1) * limit)
+        .limit(limit);
+  
       return res.status(200).json({ labs });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });
     }
-  },
+  },  
 
   async getLab(req, res, next) {
     try {
