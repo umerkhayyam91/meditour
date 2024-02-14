@@ -6,7 +6,7 @@ class UserDTO {
     this.email = user.email;
     this.phone = user.phone;
     this.password = user.password;
-    this.favouriteLabs = lab.favouriteLabs;
+    this.favouriteLabs = user.favouriteLabs;
   }
 }
 
