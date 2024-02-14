@@ -15,7 +15,7 @@ const userLabController = {
       const radius = req.query.radius || 10000;
       const page = req.query.page || 1; // Default to page 1
       const limit = 10; // Default to 10 labs per page
-  
+
       let labsQuery = {
         loc: {
           $near: {
@@ -27,24 +27,24 @@ const userLabController = {
           },
         },
       };
-  
+
       // Apply search query if provided
       if (query) {
         const regex = new RegExp(query, "i");
         labsQuery.labFirstName = regex;
       }
-  
+
       // Calculate the skip value based on the page and limit
       const skip = (page - 1) * limit;
-  
+
       // Fetch labs with pagination
       let labs = await Laboratory.find(labsQuery).skip(skip).limit(limit);
-  
+
       return res.status(200).json({ labs, auth: true });
     } catch (error) {
       return next(error);
     }
-  },  
+  },
 
   async filterLabs(req, res, next) {
     try {
@@ -54,7 +54,7 @@ const userLabController = {
       const radius = req.query.radius || 1000000;
       const page = req.query.page || 1; // Default to page 1
       const limit = req.query.limit || 10; // Default to 10 labs per page
-  
+
       const labsWithinRadius = await Laboratory.find({
         loc: {
           $near: {
@@ -66,22 +66,22 @@ const userLabController = {
           },
         },
       });
-  
+
       const labIdsWithinRadius = labsWithinRadius.map((lab) => lab._id);
-  
+
       const labs = await Laboratory.find({
         _id: { $in: labIdsWithinRadius },
-        "averageRating": { $gte: parseFloat(minRating) },
+        averageRating: { $gte: parseFloat(minRating) },
       })
         .skip((page - 1) * limit)
         .limit(limit);
-  
+
       return res.status(200).json({ labs });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });
     }
-  },  
+  },
 
   async getLab(req, res, next) {
     try {

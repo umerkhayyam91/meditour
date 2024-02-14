@@ -47,8 +47,8 @@ const labAuthController = {
       accountNumber: Joi.string().required(),
       country: Joi.string().required(),
       description: Joi.string().required(),
-      duration: Joi.string().required(),
-      availability: Joi.string().boolean(),
+      availabilityDuration: Joi.string().required(),
+      availability: Joi.boolean().required(),
     });
 
     const { error } = labRegisterSchema.validate(req.body);
@@ -84,7 +84,7 @@ const labAuthController = {
       accountHolderName,
       accountNumber,
       description,
-      duration,
+      availabilityDuration,
       availability,
     } = req.body;
 
@@ -119,7 +119,7 @@ const labAuthController = {
         accountHolderName,
         accountNumber,
         description,
-        duration,
+        availabilityDuration,
         availability,
       });
 
@@ -325,7 +325,7 @@ const labAuthController = {
       cnicImage: Joi.string(),
       taxFileImage: Joi.string(),
       description: Joi.string(),
-      duration: Joi.string(),
+      availabilityDuration: Joi.string(),
       availability: Joi.boolean(),
     });
 
@@ -360,7 +360,7 @@ const labAuthController = {
       cnicImage,
       taxFileImage,
       description,
-      duration,
+      availabilityDuration,
       availability,
     } = req.body;
     const labId = req.user._id;
@@ -413,7 +413,7 @@ const labAuthController = {
     if (cnicImage) lab.cnicImage = cnicImage;
     if (taxFileImage) lab.taxFileImage = taxFileImage;
     if (description) lab.description = description;
-    if (duration) lab.duration = duration;
+    if (availabilityDuration) lab.availabilityDuration = availabilityDuration;
     if (availability) lab.availability = availability;
 
     // Save the updated test

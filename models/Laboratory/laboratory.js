@@ -103,7 +103,7 @@ const labSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    duration: {
+    availabilityDuration: {
       type: String,
     },
     availability: {
