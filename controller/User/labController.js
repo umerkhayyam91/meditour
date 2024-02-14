@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const Laboratory = require("../../models/Laboratory/laboratory");
 const User = require("../../models/User/user");
 const Tests = require("../../models/Laboratory/tests");
+const geolib = require("geolib");
 const Order = require("../../models/Laboratory/labOrder");
 
 const userLabController = {
@@ -86,6 +87,9 @@ const userLabController = {
   async getLab(req, res, next) {
     try {
       const labId = req.query.labId;
+      const userLatitude = req.query.lat;
+      const userLongitude = req.query.long;
+
       const lab = await Laboratory.findById(labId);
 
       if (!lab) {
@@ -93,7 +97,20 @@ const userLabController = {
         error.status = 404;
         return next(error);
       }
-      return res.status(200).json({ lab });
+      // Calculate the distance between user and lab using Haversine formula
+      const labCoordinates = {
+        latitude: lab.loc[1],
+        longitude: lab.loc[0],
+      };
+
+      const distance = geolib.getDistance(
+        { latitude: userLatitude, longitude: userLongitude },
+        labCoordinates
+      );
+
+      // Distance will be in meters, you can convert it to other units if needed
+
+      return res.status(200).json({ lab, distance });
     } catch (error) {
       return next(error);
     }
