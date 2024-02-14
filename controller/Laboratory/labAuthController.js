@@ -46,6 +46,9 @@ const labAuthController = {
       accountHolderName: Joi.string().required(),
       accountNumber: Joi.string().required(),
       country: Joi.string().required(),
+      description: Joi.string().required(),
+      availabilityDuration: Joi.string().required(),
+      availability: Joi.boolean().required(),
     });
 
     const { error } = labRegisterSchema.validate(req.body);
@@ -80,6 +83,9 @@ const labAuthController = {
       bankName,
       accountHolderName,
       accountNumber,
+      description,
+      availabilityDuration,
+      availability,
     } = req.body;
 
     // 5. store user data in db
@@ -112,6 +118,9 @@ const labAuthController = {
         bankName,
         accountHolderName,
         accountNumber,
+        description,
+        availabilityDuration,
+        availability,
       });
 
       lab = await labToRegister.save();
@@ -315,6 +324,9 @@ const labAuthController = {
       labLicenseImage: Joi.string(),
       cnicImage: Joi.string(),
       taxFileImage: Joi.string(),
+      description: Joi.string(),
+      availabilityDuration: Joi.string(),
+      availability: Joi.boolean(),
     });
 
     const { error } = labSchema.validate(req.body);
@@ -347,6 +359,9 @@ const labAuthController = {
       labLicenseImage,
       cnicImage,
       taxFileImage,
+      description,
+      availabilityDuration,
+      availability,
     } = req.body;
     const labId = req.user._id;
     console.log(labId);
@@ -397,6 +412,9 @@ const labAuthController = {
     if (labLicenseImage) lab.labLicenseImage = labLicenseImage;
     if (cnicImage) lab.cnicImage = cnicImage;
     if (taxFileImage) lab.taxFileImage = taxFileImage;
+    if (description) lab.description = description;
+    if (availabilityDuration) lab.availabilityDuration = availabilityDuration;
+    if (availability) lab.availability = availability;
 
     // Save the updated test
     await lab.save();

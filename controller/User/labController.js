@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const Laboratory = require("../../models/Laboratory/laboratory");
 const User = require("../../models/User/user");
 const Tests = require("../../models/Laboratory/tests");
+const geolib = require("geolib");
 const Order = require("../../models/Laboratory/labOrder");
 
 const userLabController = {
@@ -15,7 +16,7 @@ const userLabController = {
       const radius = req.query.radius || 10000;
       const page = req.query.page || 1; // Default to page 1
       const limit = 10; // Default to 10 labs per page
-  
+
       let labsQuery = {
         loc: {
           $near: {
@@ -27,24 +28,24 @@ const userLabController = {
           },
         },
       };
-  
+
       // Apply search query if provided
       if (query) {
         const regex = new RegExp(query, "i");
         labsQuery.labFirstName = regex;
       }
-  
+
       // Calculate the skip value based on the page and limit
       const skip = (page - 1) * limit;
-  
+
       // Fetch labs with pagination
       let labs = await Laboratory.find(labsQuery).skip(skip).limit(limit);
-  
+
       return res.status(200).json({ labs, auth: true });
     } catch (error) {
       return next(error);
     }
-  },  
+  },
 
   async filterLabs(req, res, next) {
     try {
@@ -54,7 +55,7 @@ const userLabController = {
       const radius = req.query.radius || 1000000;
       const page = req.query.page || 1; // Default to page 1
       const limit = req.query.limit || 10; // Default to 10 labs per page
-  
+
       const labsWithinRadius = await Laboratory.find({
         loc: {
           $near: {
@@ -66,26 +67,29 @@ const userLabController = {
           },
         },
       });
-  
+
       const labIdsWithinRadius = labsWithinRadius.map((lab) => lab._id);
-  
+
       const labs = await Laboratory.find({
         _id: { $in: labIdsWithinRadius },
-        "averageRating": { $gte: parseFloat(minRating) },
+        averageRating: { $gte: parseFloat(minRating) },
       })
         .skip((page - 1) * limit)
         .limit(limit);
-  
+
       return res.status(200).json({ labs });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });
     }
-  },  
+  },
 
   async getLab(req, res, next) {
     try {
       const labId = req.query.labId;
+      const userLatitude = req.query.lat;
+      const userLongitude = req.query.long;
+
       const lab = await Laboratory.findById(labId);
 
       if (!lab) {
@@ -93,7 +97,20 @@ const userLabController = {
         error.status = 404;
         return next(error);
       }
-      return res.status(200).json({ lab });
+      // Calculate the distance between user and lab using Haversine formula
+      const labCoordinates = {
+        latitude: lab.loc[1],
+        longitude: lab.loc[0],
+      };
+
+      const distance = geolib.getDistance(
+        { latitude: userLatitude, longitude: userLongitude },
+        labCoordinates
+      );
+
+      // Distance will be in meters, you can convert it to other units if needed
+
+      return res.status(200).json({ lab, distance });
     } catch (error) {
       return next(error);
     }

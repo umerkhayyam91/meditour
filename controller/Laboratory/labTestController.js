@@ -20,8 +20,14 @@ const labTestController = {
     if (error) {
       return next(error);
     }
-    const {categoryName, testName, testDescription, price, duration, priceForMeditour } =
-      req.body;
+    const {
+      categoryName,
+      testName,
+      testDescription,
+      price,
+      duration,
+      priceForMeditour,
+    } = req.body;
     const labId = req.user._id;
     try {
       const testInUse = await Tests.exists({ testName, labId });
@@ -78,8 +84,14 @@ const labTestController = {
     if (error) {
       return next(error);
     }
-    const {categoryName, testName, testDescription, price, duration, priceForMeditour } =
-      req.body;
+    const {
+      categoryName,
+      testName,
+      testDescription,
+      price,
+      duration,
+      priceForMeditour,
+    } = req.body;
     const labId = req.user._id;
     console.log(labId);
     const testId = req.query.testId;
@@ -154,7 +166,7 @@ const labTestController = {
   async getAllTests(req, res, next) {
     try {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
-      const testPerPage = 10;
+      const testPerPage = 5;
       const labId = req.user._id;
       const totalTests = await Tests.countDocuments({ labId }); // Get the total number of posts for the user
       const totalPages = Math.ceil(totalTests / testPerPage); // Calculate the total number of pages
@@ -168,6 +180,7 @@ const labTestController = {
       return res.status(200).json({
         tests: tests,
         auth: true,
+        totalTests,
         previousPage: previousPage,
         nextPage: nextPage,
       });

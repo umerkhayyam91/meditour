@@ -100,6 +100,15 @@ const labSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+    },
+    availabilityDuration: {
+      type: String,
+    },
+    availability: {
+      type: Boolean,
+    },
     averageRating: {
       type: Number,
     },
