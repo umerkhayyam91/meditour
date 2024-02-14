@@ -8,6 +8,7 @@ class PharmDTO {
     this.pharmacyLastName = pharm.pharmacyLastName;
     this.pharmacyLicenseNumber = pharm.pharmacyLicenseNumber;
     this.OwnerName = pharm.OwnerName;
+    this.loc=pharm.loc;
     this.cnicOrPassportNo = pharm.cnicOrPassportNo;
     this.pharmacyAddress = pharm.pharmacyAddress;
     this.emergencyNo = pharm.emergencyNo;
@@ -26,6 +27,9 @@ class PharmDTO {
     this.pharmacyLicenseImage = pharm.pharmacyLicenseImage;
     this.cnicImage = pharm.cnicImage;
     this.taxFileImage = pharm.taxFileImage;
+    this.description = pharm.description;
+    this.availabilityDuration = pharm.availabilityDuration;
+    this.availability = pharm.availability;
     this.averageRating = pharm.averageRating;
   }
 }

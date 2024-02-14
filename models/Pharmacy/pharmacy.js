@@ -35,6 +35,11 @@ const pharmacySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    loc: {
+      type: [Number], // Array of two numbers: [longitude, latitude]
+      index: { type: "2dsphere", sparse: true }, // Use an object for index definition
+      required: true,
+    },
     emergencyNo: {
       type: String,
       required: true,
@@ -62,6 +67,18 @@ const pharmacySchema = new mongoose.Schema(
     incomeTaxNo: {
       type: String,
       required: true,
+    },
+    description: {
+      type: String,
+    },
+    availabilityDuration: {
+      type: String,
+    },
+    availability: {
+      type: Boolean,
+    },
+    averageRating: {
+      type: Number,
     },
     salesTaxNo: {
       type: String,

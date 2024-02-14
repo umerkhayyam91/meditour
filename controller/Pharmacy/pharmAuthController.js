@@ -22,6 +22,7 @@ const pharmAuthController = {
       pharmacyLastName: Joi.string().required(),
       pharmacyLicenseNumber: Joi.string().required(),
       ownerName: Joi.string().required(),
+      loc: Joi.array().required(),
       cnicOrPassportNo: Joi.string().required(),
       pharmacyAddress: Joi.string().required(),
       emergencyNo: Joi.string().required(),
@@ -36,6 +37,9 @@ const pharmAuthController = {
       bankName: Joi.string().required(),
       accountHolderName: Joi.string().required(),
       accountNumber: Joi.string().required(),
+      description: Joi.string().required(),
+      availabilityDuration: Joi.string().required(),
+      availability: Joi.boolean().required(),
     });
 
     const { error } = pharmRegisterSchema.validate(req.body);
@@ -48,6 +52,7 @@ const pharmAuthController = {
       pharmacyLogo,
       pharmacyLicenseImage,
       cnicImage,
+      loc,
       taxFileImage,
       pharmacyFirstName,
       pharmacyLastName,
@@ -67,6 +72,9 @@ const pharmAuthController = {
       bankName,
       accountHolderName,
       accountNumber,
+      description,
+      availabilityDuration,
+      availability,
     } = req.body;
 
     let accessToken;
@@ -80,6 +88,7 @@ const pharmAuthController = {
         cnicImage,
         taxFileImage,
         pharmacyFirstName,
+        loc,
         pharmacyLastName,
         pharmacyLicenseNumber,
         ownerName,
@@ -97,6 +106,9 @@ const pharmAuthController = {
         bankName,
         accountHolderName,
         accountNumber,
+        description,
+        availabilityDuration,
+        availability
       });
 
       pharm = await pharmToRegister.save();
@@ -269,6 +281,7 @@ const pharmAuthController = {
       pharmacyLicenseNumber: Joi.string(),
       ownerName: Joi.string(),
       cnicOrPassportNo: Joi.string(),
+      loc: Joi.array().required(),
       pharmacyAddress: Joi.string(),
       emergencyNo: Joi.string(),
       state: Joi.string(),
@@ -288,6 +301,9 @@ const pharmAuthController = {
       pharmacyLicenseImage: Joi.string(),
       cnicImage: Joi.string(),
       taxFileImage: Joi.string(),
+      description: Joi.string(),
+      availabilityDuration: Joi.string(),
+      availability: Joi.boolean(),
     });
 
     const { error } = pharmSchema.validate(req.body);
@@ -300,6 +316,7 @@ const pharmAuthController = {
       pharmacyLastName,
       pharmacyLicenseNumber,
       ownerName,
+      loc,
       cnicOrPassportNo,
       pharmacyAddress,
       emergencyNo,
@@ -319,6 +336,9 @@ const pharmAuthController = {
       pharmacyLicenseImage,
       cnicImage,
       taxFileImage,
+      description,
+      availabilityDuration,
+      availability
     } = req.body;
     const pharmId = req.user._id;
 
@@ -348,6 +368,7 @@ const pharmAuthController = {
     // Update only the provided fields
     if (pharmacyFirstName) pharm.pharmacyFirstName = pharmacyFirstName;
     if (pharmacyLastName) pharm.pharmacyLastName = pharmacyLastName;
+    if (loc) pharm.loc = loc;
     if (pharmacyLicenseNumber) pharm.pharmacyLicenseNumber = pharmacyLicenseNumber;
     if (ownerName) pharm.ownerName = ownerName;
     if (cnicOrPassportNo) pharm.cnicOrPassportNo = cnicOrPassportNo;
@@ -367,6 +388,10 @@ const pharmAuthController = {
     if (pharmacyLicenseImage) pharm.pharmacyLicenseImage = pharmacyLicenseImage;
     if (cnicImage) pharm.cnicImage = cnicImage;
     if (taxFileImage) pharm.taxFileImage = taxFileImage;
+    if (description) pharm.description = description;
+    if (availabilityDuration) pharm.availabilityDuration = availabilityDuration;
+    if (availability) pharm. availability =   availability;
+
 
     // Save the updated test
     await pharm.save();
