@@ -10,6 +10,7 @@ const ratingSchema = new mongoose.Schema({
     {
       userId: {
         type: mongoose.SchemaTypes.ObjectId,
+        ref: "Users",
         required: true,
       },
       rating: {
