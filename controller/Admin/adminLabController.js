@@ -33,17 +33,17 @@ const adminLabController = {
     return res.status(201).json({ testCategory: testCategory, auth: true });
   },
 
-    async deleteTest(req, res, next) {
+    async deleteTestCategory(req, res, next) {
       const testId = req.query.testId;
-      const existingTest = await Tests.findById(testId);
+      const existingTest = await TestCategory.findById(testId);
 
       if (!existingTest) {
-        const error = new Error("Test not found!");
+        const error = new Error("Test Category not found!");
         error.status = 404;
         return next(error);
       }
       await Tests.deleteOne({ _id: testId });
-      return res.status(200).json({ message: "Test deleted successfully" });
+      return res.status(200).json({ message: "Test Category deleted successfully" });
     },
 
   async getAllTestCategory(req, res, next) {
