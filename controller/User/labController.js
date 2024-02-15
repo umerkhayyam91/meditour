@@ -1,11 +1,13 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const Joi = require("joi");
+const geolib = require("geolib");
 const Laboratory = require("../../models/Laboratory/laboratory");
 const User = require("../../models/User/user");
 const Tests = require("../../models/Laboratory/tests");
-const geolib = require("geolib");
 const Order = require("../../models/Laboratory/labOrder");
+const Rating = require("../../models/rating");
 
 const userLabController = {
   async getNearbyLabs(req, res, next) {
@@ -209,35 +211,111 @@ const userLabController = {
     try {
       const orderSchema = Joi.object({
         labId: Joi.string().required(),
-        // userId: Joi.string().required(),
         testIds: Joi.array().required(),
         orderId: Joi.string().required(),
-        testCode: Joi.string().required(),
-        testName: Joi.string().required(),
         preference: Joi.string().valid("labVisit", "homeSample").required(),
         currentLocation: Joi.string().required(),
         prescription: Joi.string(),
         patientName: Joi.string().required(),
         MR_NO: Joi.string().required(),
-        status: Joi.string().valid("pending", "inProcess", "completed"),
-        results: Joi.string(),
       });
       // Validate the request body
       const { error } = orderSchema.validate(req.body);
       if (error) {
-        return res.status(400).json({ error: error.details[0].message });
+        return next(error);
+      }
+      const userId = req.user._id;
+      const {
+        labId,
+        testIds,
+        orderId,
+        preference,
+        currentLocation,
+        prescription,
+        patientName,
+        MR_NO,
+      } = req.body;
+
+      let order;
+      try {
+        const orderToRegister = new Order({
+          labId,
+          userId,
+          testIds,
+          orderId,
+          preference,
+          currentLocation,
+          prescription,
+          patientName,
+          MR_NO,
+        });
+
+        order = await orderToRegister.save();
+       
+      } catch (error) {
+        return next(error);
       }
 
-      // Create a new LabOrder document
-      const newOrder = new LabOrder(req.body);
+      return res.status(201).json(order);
+    } catch (error) {
+      return next(error);
+    }
+  },
 
-      // Save the order to the database
-      const savedOrder = await newOrder.save();
+  async addRatingReview(req, res, next) {
+    try {
+      const { rating, review } = req.body;
+      const vendorId = req.query.vendorId;
+      const userId = req.user._id;
 
-      return res.status(201).json(savedOrder);
+      // Check if the user has already given a review for this vendor
+      const existingUserReview = await Rating.findOne({
+        vendorId,
+        "ratings.userId": userId,
+      });
+
+      if (existingUserReview) {
+        return res
+          .status(400)
+          .json({ message: "User has already given a review for this vendor" });
+      }
+
+      // Check if the vendorId exists in the ratings collection
+      let existingRating = await Rating.findOne({ vendorId });
+
+      // If the vendorId doesn't exist, create a new entry
+      if (!existingRating) {
+        existingRating = new Rating({
+          vendorId,
+          ratings: [],
+        });
+      }
+
+      // Add the new rating to the existingRating or the newly created rating
+      existingRating.ratings.push({
+        userId,
+        rating,
+        review,
+      });
+
+      // Save the updated rating to the database
+      await existingRating.save();
+
+      res.status(201).json({ message: "Review added successfully" });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  },
+
+  async getAllRatingReviews(req, res, next) {
+    try {
+      const vendorId = req.query.vendorId;
+      let existingRating = await Rating.findOne({ vendorId });
+
+      res.status(201).json({ existingRating, auth: true });
+    } catch (error) {
+      return next(error);
     }
   },
 };
