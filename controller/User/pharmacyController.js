@@ -5,8 +5,9 @@ const Pharmacy = require("../../models/Pharmacy/pharmacy");
 const PharmacyCart = require("../../models/User/cart");
 const geolib = require("geolib");
 const Medicine = require("../../models/Pharmacy/medicine");
+const User = require("../../models/User/user");
 
-const userLabController = {
+const userPharmacyController = {
   async getNearbyPharmacies(req, res, next) {
     try {
       const latitude = req.query.lat;
@@ -187,6 +188,65 @@ const userLabController = {
       
     } catch (error) {}
   },
+  async addRemoveFavPharmacy(req, res, next) {
+    try {
+      const pharmacyId = req.query.pharmacyId;
+      const userId = req.user._id;
+
+      const pharmacy = await Pharmacy.findById(pharmacyId);
+      if (!pharmacy) {
+        const error = new Error("Pharmacy not found!");
+        error.status = 404;
+        return next(error);
+      }
+
+      const user = await User.findById(userId);
+      if (!user) {
+        const error = new Error("User not found!");
+        error.status = 404;
+        return next(error);
+      }
+
+      const alreadyExistsIndex = user.favouritePharmacies.indexOf(pharmacyId);
+
+      if (alreadyExistsIndex !== -1) {
+        // If PharmacyID is found in the favourites array, remove it using the pull operator
+        user.favouritePharmacies.pull(pharmacyId);
+      } else {
+        // If labId is not found, add it to the favourites array
+        user.favouritePharmacies.push(pharmacyId);
+      }
+
+      // Save the updated user document
+      await user.save();
+
+      return res.status(200).json({ user });
+    } catch (error) {
+      return next(error);
+    }
+  },
+  async getAllFavPharmacies(req, res, next) {
+    try {
+      const userId = req.user._id;
+
+      const user = await User.findOne({ _id: userId }).populate(
+        "favouritePharmacies"
+      );
+      // console.log(user);
+      if (!user) {
+        const error = new Error("User not found!");
+        error.status = 404;
+        return next(error);
+      }
+      const favourites = user.favouritePharmacies;
+      // Save the updated user document
+      await user.save();
+
+      return res.status(200).json({ favouritePharmacies: favourites });
+    } catch (error) {
+      return next(error);
+    }
+  },
 };
 
-module.exports = userLabController;
+module.exports = userPharmacyController;

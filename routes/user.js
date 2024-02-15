@@ -39,5 +39,7 @@ router.post("/user/addToCart", auth, userPharmacyController.addToCart);
 router.get("/user/getCart", auth, userPharmacyController.getCart);
 router.get("/user/getAllMeds", auth, userPharmacyController.getAllMeds);
 router.post("/user/addPharmacyOrder", auth, userPharmacyController.addPharmacyOrder);
+router.put("/user/addRemoveFavPharmacy", auth, userPharmacyController.addRemoveFavPharmacy);
+router.get("/user/getAllFavPharmacies", auth, userPharmacyController.getAllFavPharmacies);
 
 module.exports = router;
