@@ -20,6 +20,14 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    testCode: {
+      type: String,
+      required: true,
+    },
+    testName: {
+      type: String,
+      required: true,
+    },
     preference: {
       type: String,
       enum: ["labVisit", "homeSample"],

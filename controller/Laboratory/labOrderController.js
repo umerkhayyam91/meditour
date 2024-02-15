@@ -32,23 +32,23 @@ const labOrderController = {
   async getOrders(req, res) {
     try {
       const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
-      const labPerPage = 5;
+      const ordersPerPage = 5;
       const labId = req.user._id;
-      const totalPharms = await Order.countDocuments({ labId }); // Get the total number of posts for the user
-      const totalPages = Math.ceil(totalPharms / labPerPage); // Calculate the total number of pages
+      const totalOrders = await Order.countDocuments({ labId }); // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalOrders / ordersPerPage); // Calculate the total number of pages
 
-      const skip = (page - 1) * labPerPage; // Calculate the number of posts to skip based on the current page
+      const skip = (page - 1) * ordersPerPage; // Calculate the number of posts to skip based on the current page
 
       const allOrders = await Order.find({ labId })
         .skip(skip)
-        .limit(labPerPage);
+        .limit(ordersPerPage);
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
       // const OrderDto = new orderDto(allOrders);
       return res.status(200).json({
         orders: allOrders,
         auth: true,
-        totalPharms,
+        totalOrders,
         previousPage: previousPage,
         nextPage: nextPage,
       });
@@ -104,7 +104,7 @@ const labOrderController = {
     }
   },
 
-  async uploadResult(req, res, next) {
+  async saveResult(req, res, next) {
     try {
       const resultUrl = req.body.resultUrl;
       const orderId = req.query.orderId;
@@ -120,11 +120,43 @@ const labOrderController = {
       order.results = resultUrl;
       await order.save();
 
-      res.json("Result uploaded successfully!");
+      res.json({ message: "Result uploaded successfully!", auth: true });
     } catch (error) {
       return next(error);
     }
   },
+
+  async getCompletedOrders(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      const ordersPerPage = 5;
+      const labId = req.user._id;
+      const totalOrders = await Order.countDocuments({ labId, status: "completed" }); // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalOrders / ordersPerPage); // Calculate the total number of pages
+
+      const skip = (page - 1) * ordersPerPage; // Calculate the number of posts to skip based on the current page
+
+      const allOrders = await Order.find({ labId, status: "completed" })
+        .skip(skip)
+        .limit(ordersPerPage);
+      let previousPage = page > 1 ? page - 1 : null;
+      let nextPage = page < totalPages ? page + 1 : null;
+      // const OrderDto = new orderDto(allOrders);
+      return res.status(200).json({
+        orders: allOrders,
+        auth: true,
+        totalOrders,
+        previousPage: previousPage,
+        nextPage: nextPage,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "Failure",
+        error: error.message,
+      });
+    }
+  },
+
 };
 
 module.exports = labOrderController;

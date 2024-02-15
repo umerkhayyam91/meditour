@@ -13,7 +13,6 @@ const upload = multer({ dest: "temp/" });
 //............auth...........
 router.post("/lab/register", labAuthController.register);
 router.post("/lab/login", labAuthController.login);
-router.post("/lab/uploadResult", labOrderController.uploadResult);
 router.post(
   "/lab/uploadFile",
   upload.single("file"),
@@ -27,7 +26,12 @@ router.post("/lab/refresh", auth, labAuthController.refresh);
 //............Orders....................
 router.get("/lab/getOrders", auth, labOrderController.getOrders);
 router.put("/lab/changeStatus", auth, labOrderController.changeStatus);
-// router.post("/lab/testing", auth, labOrderController.testing);
+router.put("/lab/saveResult", auth, labOrderController.saveResult);
+router.get(
+  "/lab/getCompletedOrders",
+  auth,
+  labOrderController.getCompletedOrders
+);
 
 //............Dashboard.................
 router.get("/lab/dashDetails", auth, labDashController.dashDetails);
