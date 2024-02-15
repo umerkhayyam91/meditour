@@ -6,6 +6,9 @@ const router = express.Router();
 
 //............Lab...............
 router.post("/admin/addTestCategory", adminLabController.addTestCategory);
+router.delete("/admin/deleteTest", adminLabController.deleteTest);
+
+
 router.get(
   "/admin/getAllTestCategories",
   adminLabController.getAllTestCategory

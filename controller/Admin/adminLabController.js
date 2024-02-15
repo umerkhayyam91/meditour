@@ -3,6 +3,7 @@ const Joi = require("joi");
 const TestDTO = require("../../dto/test.js");
 const JWTService = require("../../services/JWTService.js");
 const Order = require("../../models/Laboratory/labOrder.js");
+const Tests = require("../../models/Laboratory/tests.js");
 
 const adminLabController = {
   async addTestCategory(req, res, next) {
@@ -32,18 +33,18 @@ const adminLabController = {
     return res.status(201).json({ testCategory: testCategory, auth: true });
   },
 
-  //   async deleteTest(req, res, next) {
-  //     const testId = req.query.testId;
-  //     const existingTest = await Tests.findById(testId);
+    async deleteTest(req, res, next) {
+      const testId = req.query.testId;
+      const existingTest = await Tests.findById(testId);
 
-  //     if (!existingTest) {
-  //       const error = new Error("Test not found!");
-  //       error.status = 404;
-  //       return next(error);
-  //     }
-  //     await Tests.deleteOne({ _id: testId });
-  //     return res.status(200).json({ message: "Test deleted successfully" });
-  //   },
+      if (!existingTest) {
+        const error = new Error("Test not found!");
+        error.status = 404;
+        return next(error);
+      }
+      await Tests.deleteOne({ _id: testId });
+      return res.status(200).json({ message: "Test deleted successfully" });
+    },
 
   async getAllTestCategory(req, res, next) {
     try {
