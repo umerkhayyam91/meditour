@@ -27,6 +27,9 @@ router.get("/user/getTest", labTestController.getTest);
 router.get("/user/getAllTests", userLabController.getAllTests);
 router.put("/user/addRemoveFav", auth, userLabController.addRemoveFav);
 router.get("/user/getAllFav", auth, userLabController.getAllFav);
+router.post("/user/addReview", auth, userLabController.addRatingReview);
+router.get("/user/getAllRatingReviews", auth, userLabController.getAllRatingReviews);
+router.post("/user/addOrder", auth, userLabController.addOrder);
 
 //.............Pharmacy...................//
 router.get("/user/getNearbyPharmacies", userPharmacyController.getNearbyPharmacies);
