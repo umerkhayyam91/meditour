@@ -14,6 +14,11 @@ const userSchema = new Schema({
     ref: 'Laboratory',
     default: []
   }],
+  favouritePharmacies: [{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Pharmacy',
+    default: []
+  }],
 });
 
 module.exports = mongoose.model("Users", userSchema, "Users");
