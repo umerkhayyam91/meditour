@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const Pharmacy = require("../../models/Pharmacy/pharmacy");
 const PharmacyCart = require("../../models/User/cart");
+const geolib= require("geolib");
 const Tests = require("../../models/Laboratory/tests");
 
 const userLabController = {
@@ -87,6 +88,8 @@ const userLabController = {
   async getPharmacy(req, res, next) {
     try {
       const pharmacyId = req.query.pharmacyId;
+      const userLatitude= req.query.lat;
+      const userLongitude=req.query.long;
       const pharmacy = await Pharmacy.findById(pharmacyId);
 
       if (!pharmacy) {
@@ -94,7 +97,18 @@ const userLabController = {
         error.status = 404;
         return next(error);
       }
-      return res.status(200).json({ pharmacy });
+      const pharmacyCoordinates={
+  latitude: pharmacy.loc[1],
+  longitude:pharmacy.loc[0],
+
+      };
+      const distance = geolib.getDistance(
+        {latitude:userLatitude, longitude:userLongitude},
+        pharmacyCoordinates
+
+      );
+
+      return res.status(200).json({ pharmacy, distance });
     } catch (error) {
       return next(error);
     }
