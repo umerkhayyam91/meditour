@@ -3,8 +3,8 @@ const app = express();
 const mongoose = require("mongoose");
 const Pharmacy = require("../../models/Pharmacy/pharmacy");
 const PharmacyCart = require("../../models/User/cart");
-const geolib= require("geolib");
-const Tests = require("../../models/Laboratory/tests");
+const geolib = require("geolib");
+const Medicine = require("../../models/Pharmacy/medicine");
 
 const userLabController = {
   async getNearbyPharmacies(req, res, next) {
@@ -88,8 +88,8 @@ const userLabController = {
   async getPharmacy(req, res, next) {
     try {
       const pharmacyId = req.query.pharmacyId;
-      const userLatitude= req.query.lat;
-      const userLongitude=req.query.long;
+      const userLatitude = req.query.lat;
+      const userLongitude = req.query.long;
       const pharmacy = await Pharmacy.findById(pharmacyId);
 
       if (!pharmacy) {
@@ -97,15 +97,13 @@ const userLabController = {
         error.status = 404;
         return next(error);
       }
-      const pharmacyCoordinates={
-  latitude: pharmacy.loc[1],
-  longitude:pharmacy.loc[0],
-
+      const pharmacyCoordinates = {
+        latitude: pharmacy.loc[1],
+        longitude: pharmacy.loc[0],
       };
       const distance = geolib.getDistance(
-        {latitude:userLatitude, longitude:userLongitude},
+        { latitude: userLatitude, longitude: userLongitude },
         pharmacyCoordinates
-
       );
 
       return res.status(200).json({ pharmacy, distance });
@@ -154,6 +152,40 @@ const userLabController = {
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });
     }
+  },
+
+  async getAllMeds(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter
+      const medPerPage = 5;
+      const pharmId = req.query.pharmId;
+      const totalMeds = await Medicine.countDocuments({ pharmId }); // Get the total number of posts for the user
+      const totalPages = Math.ceil(totalMeds / medPerPage); // Calculate the total number of pages
+
+      const skip = (page - 1) * medPerPage; // Calculate the number of posts to skip based on the current page
+
+      const medicines = await Medicine.find({ pharmId })
+        .skip(skip)
+        .limit(medPerPage);
+      let previousPage = page > 1 ? page - 1 : null;
+      let nextPage = page < totalPages ? page + 1 : null;
+      // const medDto = new medDTO(medicines);
+      return res.status(200).json({
+        medicines: medicines,
+        auth: true,
+        totalMeds,
+        previousPage: previousPage,
+        nextPage: nextPage,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async addPharmacyOrder(req, res, next) {
+    try {
+      
+    } catch (error) {}
   },
 };
 

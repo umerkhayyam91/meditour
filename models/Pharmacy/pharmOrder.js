@@ -5,13 +5,37 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  pharmId: {
+    type: mongoose.Schema.Types.ObjectId,
+        ref: "Pharmacy",
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
+  },
+  medIds: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
+    },
+  ],
   medCode: {
     type: String,
     required: true,
   },
-  pharmId: {
-    type: mongoose.Schema.Types.ObjectId,
-        ref: "Pharmacy",
+  testName: {
+    type: String,
+    required: true,
+  },
+  preference: {
+    type: String,
+    enum: ["labVisit", "homeSample"],
+  },
+  currentLocation: {
+    type: String,
+  },
+  prescription: {
+    type: String,
   },
   customerName: {
     type: String,
@@ -23,7 +47,8 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    required: true,
+    enum: ["pending", "inProcess", "completed"],
+    default: "pending",
   },
   totalAmount:{
     type: Number,

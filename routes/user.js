@@ -29,7 +29,7 @@ router.put("/user/addRemoveFav", auth, userLabController.addRemoveFav);
 router.get("/user/getAllFav", auth, userLabController.getAllFav);
 router.post("/user/addReview", auth, userLabController.addRatingReview);
 router.get("/user/getAllRatingReviews", auth, userLabController.getAllRatingReviews);
-router.post("/user/addOrder", auth, userLabController.addOrder);
+router.post("/user/addLabOrder", auth, userLabController.addLabOrder);
 
 //.............Pharmacy...................//
 router.get("/user/getNearbyPharmacies", userPharmacyController.getNearbyPharmacies);
@@ -37,5 +37,7 @@ router.get("/user/getPharmacy", userPharmacyController.getPharmacy);
 router.get("/user/filterPharmacies", userPharmacyController.filterPharmacies);
 router.post("/user/addToCart", auth, userPharmacyController.addToCart);
 router.get("/user/getCart", auth, userPharmacyController.getCart);
+router.get("/user/getAllMeds", auth, userPharmacyController.getAllMeds);
+router.post("/user/addPharmacyOrder", auth, userPharmacyController.addPharmacyOrder);
 
 module.exports = router;

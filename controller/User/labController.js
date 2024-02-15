@@ -207,17 +207,20 @@ const userLabController = {
     }
   },
 
-  async addOrder(req, res, next) {
+  async addLabOrder(req, res, next) {
     try {
       const orderSchema = Joi.object({
         labId: Joi.string().required(),
         testIds: Joi.array().required(),
         orderId: Joi.string().required(),
+        testCode: Joi.string().required(),
+        testName: Joi.string().required(),
         preference: Joi.string().valid("labVisit", "homeSample").required(),
         currentLocation: Joi.string().required(),
         prescription: Joi.string(),
         patientName: Joi.string().required(),
         MR_NO: Joi.string().required(),
+        totalAmount: Joi.string().required(),
       });
       // Validate the request body
       const { error } = orderSchema.validate(req.body);
@@ -229,11 +232,14 @@ const userLabController = {
         labId,
         testIds,
         orderId,
+        testCode,
+        testName,
         preference,
         currentLocation,
         prescription,
         patientName,
         MR_NO,
+        totalAmount,
       } = req.body;
 
       let order;
@@ -243,15 +249,17 @@ const userLabController = {
           userId,
           testIds,
           orderId,
+          testCode,
+          testName,
           preference,
           currentLocation,
           prescription,
           patientName,
           MR_NO,
+          totalAmount,
         });
 
         order = await orderToRegister.save();
-       
       } catch (error) {
         return next(error);
       }

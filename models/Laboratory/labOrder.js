@@ -12,8 +12,14 @@ const orderSchema = new mongoose.Schema(
     },
     testIds: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Users",
+        testId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Test",
+        },
+        quantity: {
+          type: Number,
+          default: 1, // Default quantity if not specified
+        },
       },
     ],
     orderId: {
@@ -45,6 +51,9 @@ const orderSchema = new mongoose.Schema(
     MR_NO: {
       type: String,
       required: true,
+    },
+    totalAmount: {
+      type: Number,
     },
     status: {
       type: String,
