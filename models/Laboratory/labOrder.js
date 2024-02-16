@@ -10,7 +10,7 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
     },
-    testIds: [
+    tests: [
       {
         testId: {
           type: mongoose.Schema.Types.ObjectId,
@@ -23,14 +23,6 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     orderId: {
-      type: String,
-      required: true,
-    },
-    testCode: {
-      type: String,
-      required: true,
-    },
-    testName: {
       type: String,
       required: true,
     },

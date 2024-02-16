@@ -9,6 +9,22 @@ const Tests = require("../../models/Laboratory/tests");
 const Order = require("../../models/Laboratory/labOrder");
 const Rating = require("../../models/rating");
 
+async function getNextOrderNo() {
+  // Find the latest lab order in the database and get its orderId
+  const latestLabOrder = await Order.findOne({}, "orderId").sort({
+    orderId: -1,
+  });
+
+  // If there are no lab orders yet, start with "PHARM0001"
+  const nextOrderIdNumber = latestLabOrder
+    ? parseInt(latestLabOrder.orderId.substring(5)) + 1
+    : 1;
+
+  const nextOrderId = `PHARM${nextOrderIdNumber.toString().padStart(4, "0")}`;
+
+  return nextOrderId;
+}
+
 const userLabController = {
   async getNearbyLabs(req, res, next) {
     try {
@@ -211,10 +227,7 @@ const userLabController = {
     try {
       const orderSchema = Joi.object({
         labId: Joi.string().required(),
-        testIds: Joi.array().required(),
-        orderId: Joi.string().required(),
-        testCode: Joi.string().required(),
-        testName: Joi.string().required(),
+        tests: Joi.array().required(),
         preference: Joi.string().valid("labVisit", "homeSample").required(),
         currentLocation: Joi.string().required(),
         prescription: Joi.string(),
@@ -230,10 +243,7 @@ const userLabController = {
       const userId = req.user._id;
       const {
         labId,
-        testIds,
-        orderId,
-        testCode,
-        testName,
+        tests,
         preference,
         currentLocation,
         prescription,
@@ -241,16 +251,14 @@ const userLabController = {
         MR_NO,
         totalAmount,
       } = req.body;
-
+      const orderId = await getNextOrderNo();
       let order;
       try {
         const orderToRegister = new Order({
           labId,
           userId,
-          testIds,
+          tests,
           orderId,
-          testCode,
-          testName,
           preference,
           currentLocation,
           prescription,

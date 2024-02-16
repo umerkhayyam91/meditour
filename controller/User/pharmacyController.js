@@ -1,11 +1,28 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const Joi = require("joi");
 const Pharmacy = require("../../models/Pharmacy/pharmacy");
+const PharmacyOrder = require("../../models/Pharmacy/pharmOrder");
 const PharmacyCart = require("../../models/User/cart");
 const geolib = require("geolib");
 const Medicine = require("../../models/Pharmacy/medicine");
 const User = require("../../models/User/user");
+
+async function getNextOrderNo() {
+  // Find the latest lab order in the database and get its orderId
+  const latestLabOrder = await PharmacyOrder.findOne({}, 'orderId').sort({ orderId: -1 });
+
+  // If there are no lab orders yet, start with "LAB0001"
+  const nextOrderIdNumber = latestLabOrder
+    ? Number(latestLabOrder.orderId.substring(3)) + 1
+    : 1;
+
+  const nextOrderId = `LAB${nextOrderIdNumber.toString().padStart(4, '0')}`;
+
+  return nextOrderId;
+}
+
 
 const userPharmacyController = {
   async getNearbyPharmacies(req, res, next) {
@@ -185,9 +202,59 @@ const userPharmacyController = {
 
   async addPharmacyOrder(req, res, next) {
     try {
-      
-    } catch (error) {}
+      const orderSchema = Joi.object({
+        pharmId: Joi.string().required(),
+        medicines: Joi.array().required(),
+        preference: Joi.string().valid("labVisit", "homeSample").required(),
+        currentLocation: Joi.string().required(),
+        prescription: Joi.string(),
+        customerName: Joi.string().required(),
+        MR_NO: Joi.string().required(),
+        totalAmount: Joi.number().required(),
+      });
+      // Validate the request body
+      const { error } = orderSchema.validate(req.body);
+      if (error) {
+        return next(error);
+      }
+      const userId = req.user._id;
+      const {
+        pharmId,
+        medicines,
+        preference,
+        currentLocation,
+        prescription,
+        customerName,
+        MR_NO,
+        totalAmount,
+      } = req.body;
+      const orderId = await getNextOrderNo();
+      let order;
+      try {
+        const orderToRegister = new PharmacyOrder({
+          orderId,
+          userId,
+          pharmId,
+          medicines,
+          preference,
+          currentLocation,
+          prescription,
+          customerName,
+          MR_NO,
+          totalAmount,
+        });
+
+        order = await orderToRegister.save();
+      } catch (error) {
+        return next(error);
+      }
+
+      return res.status(201).json(order);
+    } catch (error) {
+      return next(error);
+    }
   },
+
   async addRemoveFavPharmacy(req, res, next) {
     try {
       const pharmacyId = req.query.pharmacyId;

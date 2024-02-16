@@ -3,10 +3,8 @@ class orderDto {
     this._id = order._id;
     this.labId = order.labId;
     this.userId = order.userId;
-    this.testIds = order.testIds;
+    this.tests = order.tests;
     this.orderId = order.orderId;
-    this.testCode = order.testCode;
-    this.testName = order.testName;
     this.preference = order.preference;
     this.currentLocation = order.currentLocation;
     this.prescription = order.prescription;
