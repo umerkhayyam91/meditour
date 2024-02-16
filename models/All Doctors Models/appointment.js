@@ -8,6 +8,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
       required: true,
     },
     date: {
@@ -28,6 +29,7 @@ const appointmentSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["pending", "completed"],
+      default: "pending"
     },
     ePrescription: {
       type: mongoose.Schema.Types.ObjectId,

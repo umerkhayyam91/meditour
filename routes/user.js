@@ -48,5 +48,6 @@ router.get("/user/getNearbyDocs", userDoctorController.getNearbyDocs);
 router.get("/user/filterDocs", userDoctorController.filterDocs);
 router.get("/user/getDoc", userDoctorController.getDoc);
 router.get("/user/getAvailability", userDoctorController.getAvailability);
+router.get("/user/addAppointment", auth, userDoctorController.addAppointment);
 
 module.exports = router;

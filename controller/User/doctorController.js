@@ -1,4 +1,5 @@
 const Doctor = require("../../models/Doctor/doctors");
+const Appointment = require("../../models/All Doctors Models/appointment");
 const {
     DoctorAvailability
   } = require("../../models/All Doctors Models/availability");
@@ -119,6 +120,36 @@ const userLabController = {
       }
 
       res.status(200).json({ availability: doctorAvailability });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async addAppointment(req, res, next) {
+    try {
+      const { date, startTime, endTime, appointmentType } = req.body;
+      const doctorId = req.query.doctorId;
+      const patientId = req.user._id;
+
+      // Create a new appointment
+      const newAppointment = new Appointment({
+        doctorId,
+        patientId,
+        date,
+        startTime,
+        endTime,
+        appointmentType
+      });
+
+      // Save the new appointment to the database
+      const savedAppointment = await newAppointment.save();
+
+      res
+        .status(201)
+        .json({
+          appointment: savedAppointment,
+          message: "Appointment added successfully",
+        });
     } catch (error) {
       next(error);
     }
