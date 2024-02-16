@@ -6,6 +6,7 @@ const auth = require("../middlewares/auth");
 const multer = require("multer");
 const userLabController = require("../controller/User/labController");
 const userPharmacyController = require("../controller/User/pharmacyController");
+const userDoctorController = require("../controller/User/doctorController");
 const router = express.Router();
 
 //............auth...............
@@ -41,5 +42,9 @@ router.get("/user/getAllMeds", auth, userPharmacyController.getAllMeds);
 router.post("/user/addPharmacyOrder", auth, userPharmacyController.addPharmacyOrder);
 router.put("/user/addRemoveFavPharmacy", auth, userPharmacyController.addRemoveFavPharmacy);
 router.get("/user/getAllFavPharmacies", auth, userPharmacyController.getAllFavPharmacies);
+
+//..............Doctors...................//
+router.get("/user/getNearbyDocs", auth, userDoctorController.getNearbyDocs);
+router.get("/user/filterDocs", userDoctorController.filterDocs);
 
 module.exports = router;

@@ -6,16 +6,21 @@ const doctorSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Hospital",
-        default: []
+        default: [],
       },
     ],
     departmentIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Dapartment",
-        default: []
+        default: [],
       },
     ],
+    loc: {
+      type: [Number], // Array of two numbers: [longitude, latitude]
+      index: { type: "2dsphere", sparse: true }, // Use an object for index definition
+      required: true,
+    },
     email: {
       type: String,
     },
@@ -125,13 +130,19 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    averageRating: {
+      type: String,
+      required: true,
+    },
     isVerified: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   {
     timestamps: true,
   }
 );
+doctorSchema.index({ loc: "2dsphere" });
+
 module.exports = mongoose.model("Doctor", doctorSchema, "doctors");
