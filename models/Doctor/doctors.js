@@ -131,7 +131,7 @@ const doctorSchema = new mongoose.Schema(
       required: true,
     },
     averageRating: {
-      type: String,
+      type: Number,
     },
     isVerified: {
       type: Boolean,
