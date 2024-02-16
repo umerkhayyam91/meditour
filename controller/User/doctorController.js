@@ -75,7 +75,7 @@ const userLabController = {
         },
       });
 
-      const doctorIdsWithinRadius = doctorsWithinRadius.map((lab) => lab._id);
+      const doctorIdsWithinRadius = doctorsWithinRadius.map((doctor) => doctor._id);
 
       const doctors = await Doctor.find({
         _id: { $in: doctorIdsWithinRadius },
@@ -90,6 +90,7 @@ const userLabController = {
       return res.status(500).json({ message: "Internal server error" });
     }
   },
+
 };
 
 module.exports = userLabController;
