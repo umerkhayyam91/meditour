@@ -1,14 +1,7 @@
-const express = require("express");
-const app = express();
-const mongoose = require("mongoose");
-const Joi = require("joi");
-const geolib = require("geolib");
 const Doctor = require("../../models/Doctor/doctors");
-const User = require("../../models/User/user");
-const Tests = require("../../models/Laboratory/tests");
-const Order = require("../../models/Laboratory/labOrder");
-const Rating = require("../../models/rating");
-
+const {
+    DoctorAvailability
+  } = require("../../models/All Doctors Models/availability");
 const userLabController = {
   async getNearbyDocs(req, res, next) {
     try {
@@ -75,7 +68,11 @@ const userLabController = {
         },
       });
 
-      const doctorIdsWithinRadius = doctorsWithinRadius.map((doctor) => doctor._id);
+      const doctorIdsWithinRadius = doctorsWithinRadius.map(
+        (doctor) => doctor._id
+      );
+      console.log(doctorIdsWithinRadius);
+      console.log(minRating);
 
       const doctors = await Doctor.find({
         _id: { $in: doctorIdsWithinRadius },
@@ -91,6 +88,41 @@ const userLabController = {
     }
   },
 
+  async getDoc(req, res, next) {
+    try {
+      const docId = req.query.docId;
+
+      const doctor = await Doctor.findById(docId);
+
+      if (!doctor) {
+        const error = new Error("Doctor not found!");
+        error.status = 404;
+        return next(error);
+      }
+
+      return res.status(200).json({ doctor });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async getAvailability(req, res, next) {
+    try {
+      const doctorId = req.query.doctorId;
+      // Check if doctor availability exists
+      const doctorAvailability = await DoctorAvailability.find({doctorId})
+
+      if (!doctorAvailability) {
+        return res
+          .status(404)
+          .json({ message: "Doctor availability not found" });
+      }
+
+      res.status(200).json({ availability: doctorAvailability });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 module.exports = userLabController;
