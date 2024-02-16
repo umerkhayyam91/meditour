@@ -44,7 +44,7 @@ router.put("/user/addRemoveFavPharmacy", auth, userPharmacyController.addRemoveF
 router.get("/user/getAllFavPharmacies", auth, userPharmacyController.getAllFavPharmacies);
 
 //..............Doctors...................//
-router.get("/user/getNearbyDocs", auth, userDoctorController.getNearbyDocs);
+router.get("/user/getNearbyDocs", userDoctorController.getNearbyDocs);
 router.get("/user/filterDocs", userDoctorController.filterDocs);
 
 module.exports = router;
