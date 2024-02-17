@@ -49,5 +49,7 @@ router.get("/user/filterDocs", userDoctorController.filterDocs);
 router.get("/user/getDoc", userDoctorController.getDoc);
 router.get("/user/getAvailability", userDoctorController.getAvailability);
 router.get("/user/addAppointment", auth, userDoctorController.addAppointment);
+router.get("/user/getAppointment", userDoctorController.getAppointment);
+router.get("/user/getUpcomingAppointment", auth, userDoctorController.getUpcomingAppointment);
 
 module.exports = router;
