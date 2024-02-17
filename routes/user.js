@@ -7,6 +7,7 @@ const multer = require("multer");
 const userLabController = require("../controller/User/labController");
 const userPharmacyController = require("../controller/User/pharmacyController");
 const userDoctorController = require("../controller/User/doctorController");
+const psychologistController = require("../controller/User/psychologistController");
 const router = express.Router();
 
 //............auth...............
@@ -50,4 +51,13 @@ router.get("/user/getDoc", userDoctorController.getDoc);
 router.get("/user/getAvailability", userDoctorController.getAvailability);
 router.get("/user/addAppointment", auth, userDoctorController.addAppointment);
 
+//...........Psychologists.............//
+
+router.get("/user/getNearbyPsychologists", psychologistController.getNearbyPsychologists);
+router.get("/user/filterPsychologist", psychologistController.filterPsychologist);
+router.get("/user/getPsychologist" , psychologistController.getPsychologist);
+router.get("/user/getPsychoAvailability", psychologistController.getPsychoAvailability );
+router.get("/user/addPsyAppointment",psychologistController.addPsyAppointment);
+router.post("/user/addPsyRatingReview",psychologistController.addPsyRatingReview);
+router.get("/user/getAllRatingReviews",psychologistController.getAllRatingReviews);
 module.exports = router;

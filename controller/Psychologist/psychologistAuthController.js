@@ -16,17 +16,18 @@ const psychologistAuthController = {
       name: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
       qualification: Joi.string().required(),
-      speciality: Joi.string().required(),
-      services: Joi.string().required(),
+      loc: Joi.array().required(),
       clinicName: Joi.string().required(),
       clinicAddress: Joi.string().required(),
       clinicExperiences: Joi.string().required(),
       pmdcNumber: Joi.string().required(),
+      speciality: Joi.string().required(),
       emergencyNo: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
       twitter: Joi.string(),
+      services:Joi.string().required(),
       facebook: Joi.string(),
       instagram: Joi.string(),
       incomeTaxNo: Joi.string().required(),
@@ -48,6 +49,7 @@ const psychologistAuthController = {
     }
 
     const {
+      loc,
       name,
       cnicOrPassportNo,
       qualification,
@@ -82,6 +84,7 @@ const psychologistAuthController = {
     let doc;
     try {
       const docToRegister = new Psychologist({
+        loc,
         name,
         cnicOrPassportNo,
         qualification,
@@ -263,6 +266,7 @@ const psychologistAuthController = {
 
   async updateProfile(req, res, next) {
     const docSchema = Joi.object({
+      loc: Joi.array(),
       name: Joi.string(),
       cnicOrPassportNo: Joi.string(),
       qualification: Joi.string(),
@@ -299,6 +303,7 @@ const psychologistAuthController = {
       return next(error);
     }
     const {
+      loc,
       name,
       cnicOrPassportNo,
       qualification,
@@ -353,6 +358,7 @@ const psychologistAuthController = {
     }
 
     // Update only the provided fields
+    if(loc)doc.loc=loc;
     if (name) doc.name = name;
     if (cnicOrPassportNo) doc.cnicOrPassportNo = cnicOrPassportNo;
     if (qualification) doc.qualification = qualification;
