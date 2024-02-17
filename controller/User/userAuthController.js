@@ -26,6 +26,7 @@ const authController = {
       name: Joi.string().required(),
       email: Joi.string().required(),
       gender: Joi.string().required(),
+      userImage: Joi.string().required(),
       phone: Joi.string().required(),
       password: Joi.string().pattern(passwordPattern).required(),
     });
@@ -36,7 +37,7 @@ const authController = {
       return next(error);
     }
 
-    const { name, email, gender, phone, password } = req.body;
+    const { name, email, gender, userImage, phone, password } = req.body;
     const emailExists = await User.findOne({ email });
 
     if (emailExists) {
@@ -62,6 +63,7 @@ const authController = {
         name,
         email,
         gender,
+        userImage,
         mrNo,
         phone,
         password: hashedPassword,
@@ -188,7 +190,6 @@ const authController = {
     // 2. response
     res.status(200).json({ user: null, auth: false });
   },
-  
 };
 
 module.exports = authController;

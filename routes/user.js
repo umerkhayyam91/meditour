@@ -29,7 +29,7 @@ router.get("/user/getAllTests", userLabController.getAllTests);
 router.put("/user/addRemoveFav", auth, userLabController.addRemoveFav);
 router.get("/user/getAllFav", auth, userLabController.getAllFav);
 router.post("/user/addReview", auth, userLabController.addRatingReview);
-router.get("/user/getAllRatingReviews", auth, userLabController.getAllRatingReviews);
+router.get("/user/getAllRatingReviews", userLabController.getAllRatingReviews);
 router.post("/user/addLabOrder", auth, userLabController.addLabOrder);
 
 //.............Pharmacy...................//
