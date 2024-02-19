@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const psychologistSchema = new mongoose.Schema(
   {
+    loc: {
+      type: [Number], // Array of two numbers: [longitude, latitude]
+      index: { type: "2dsphere", sparse: true }, // Use an object for index definition
+      required: true,
+    },
     email: {
       type: String,
     },
@@ -55,6 +60,7 @@ const psychologistSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+  
     country: {
       type: String,
       required: true,
@@ -114,7 +120,10 @@ const psychologistSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false
-    }
+    },
+    averageRating: {
+      type: Number,
+    },
   },
   {
     timestamps: true,
