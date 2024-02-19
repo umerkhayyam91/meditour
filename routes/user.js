@@ -8,6 +8,7 @@ const userLabController = require("../controller/User/labController");
 const userPharmacyController = require("../controller/User/pharmacyController");
 const userDoctorController = require("../controller/User/doctorController");
 const psychologistController = require("../controller/User/psychologistController");
+const otherDoctorController = require("../controller/User/otherDoctorController");
 const router = express.Router();
 
 //............auth...............
@@ -59,5 +60,11 @@ router.get("/user/getPsychologist" , psychologistController.getPsychologist);
 router.get("/user/getPsychoAvailability", psychologistController.getPsychoAvailability );
 router.post("/user/addPsyAppointment", auth, psychologistController.addPsyAppointment);
 router.post("/user/addRatingReview", auth, userLabController.addRatingReview);
-router.get("/user/getAllRatingReviews", auth, userLabController.getAllRatingReviews);;
+router.get("/user/getAllRatingReviews", auth, userLabController.getAllRatingReviews);
+//.. all other doctors
+
+router.get("/user/getNearByOtherDocs", otherDoctorController.getNearByOtherDocs);
+router.get("/user/filterOtherDocs", otherDoctorController.filterOtherDocs);
+router.get("/user/getOtherSingleDoc", otherDoctorController.getOtherSingleDoc);
+
 module.exports = router;

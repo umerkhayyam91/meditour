@@ -11,6 +11,11 @@ const physioSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
+    loc: {
+      type: [Number], // Array of two numbers: [longitude, latitude]
+      index: { type: "2dsphere", sparse: true }, // Use an object for index definition
+      required: true,
+    },
     name: {
       type: String,
     },
@@ -21,6 +26,9 @@ const physioSchema = new mongoose.Schema(
     qualification: {
       type: String,
       required: true,
+    },
+    averageRating: {
+      type: Number,
     },
     speciality: {
       type: String,

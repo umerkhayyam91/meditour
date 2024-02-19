@@ -16,6 +16,7 @@ const physioAuthController = {
       qualification: Joi.string().required(),
       speciality: Joi.string().required(),
       services: Joi.string().required(),
+      loc: Joi.array().required(),
       clinicExperiences: Joi.string().required(),
       clinicName: Joi.string().required(),
       pmdcNumber: Joi.string().required(),
@@ -47,6 +48,7 @@ const physioAuthController = {
 
     const {
       name,
+      loc,
       cnicOrPassNo,
       qualification,
       speciality,
@@ -81,6 +83,7 @@ const physioAuthController = {
     try {
       const physioToRegister = new Physiotherapist({
         name,
+        loc,
         cnicOrPassNo,
         qualification,
         speciality,
@@ -275,6 +278,7 @@ const physioAuthController = {
       clinicName : Joi.string(),
       clinicAddress : Joi.string(),
       clinicExperiences : Joi.string(),
+      loc: Joi.array().required(),
       pmdcNumber : Joi.string(),
       emergencyNo: Joi.string(),
       state: Joi.string(),
@@ -304,6 +308,7 @@ const physioAuthController = {
     }
     const {
       name,
+      loc,
       cnicOrPassNo,
       qualification,
       speciality,
@@ -358,6 +363,7 @@ const physioAuthController = {
 
     // Update only the provided fields
     if (name) physio.name = name;
+    if(loc) physio.loc = loc;
     if (cnicOrPassNo) physio.cnicOrPassNo = cnicOrPassNo;
     if (qualification) physio.qualification = qualification;
     if (speciality) physio.speciality = speciality;

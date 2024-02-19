@@ -15,6 +15,7 @@ const docAuthController = {
     const docRegisterSchema = Joi.object({
       name: Joi.string().required(),
       cnicOrPassportNo: Joi.string().required(),
+      loc: Joi.array().required(),
       qualification: Joi.string().required(),
       speciality: Joi.string().required(),
       services: Joi.string().required(),
@@ -48,6 +49,7 @@ const docAuthController = {
     }
 
     const {
+      loc,
       name,
       cnicOrPassportNo,
       qualification,
@@ -82,6 +84,7 @@ const docAuthController = {
     let doc;
     try {
       const docToRegister = new Nutritionist({
+        loc,
         name,
       cnicOrPassportNo,
       qualification,
@@ -264,6 +267,7 @@ const docAuthController = {
   async updateProfile(req, res, next) {
     const docSchema = Joi.object({
       name: Joi.string(),
+      loc: Joi.array().required(),
       cnicOrPassportNo: Joi.string(),
       qualification: Joi.string(),
       speciality: Joi.string(),
@@ -299,6 +303,7 @@ const docAuthController = {
       return next(error);
     }
     const {
+      loc,
       name,
       cnicOrPassportNo,
       qualification,
@@ -354,6 +359,7 @@ const docAuthController = {
 
     // Update only the provided fields
     if (name) doc.name = name;
+    if(loc) doc.loc = loc;
     if (cnicOrPassportNo) doc.cnicOrPassportNo = cnicOrPassportNo;
     if (qualification) doc.qualification = qualification;
     if (speciality) doc.speciality = speciality;
