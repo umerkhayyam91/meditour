@@ -7,6 +7,7 @@ const multer = require("multer");
 const userLabController = require("../controller/User/labController");
 const userPharmacyController = require("../controller/User/pharmacyController");
 const userDoctorController = require("../controller/User/doctorController");
+const userHospitalController = require("../controller/User/hospitalController");
 const router = express.Router();
 
 //............auth...............
@@ -48,8 +49,15 @@ router.get("/user/getNearbyDocs", userDoctorController.getNearbyDocs);
 router.get("/user/filterDocs", userDoctorController.filterDocs);
 router.get("/user/getDoc", userDoctorController.getDoc);
 router.get("/user/getAvailability", userDoctorController.getAvailability);
-router.get("/user/addAppointment", auth, userDoctorController.addAppointment);
+router.post("/user/addAppointment", auth, userDoctorController.addAppointment);
 router.get("/user/getAppointment", userDoctorController.getAppointment);
 router.get("/user/getUpcomingAppointment", auth, userDoctorController.getUpcomingAppointment);
+
+//..................hospitals...................//
+router.get("/user/getNearbyHospitals", userHospitalController.getNearbyHospitals);
+router.get("/user/filterHospitals", userHospitalController.filterHospitals);
+router.get("/user/getHospital", userHospitalController.getHospital);
+router.get("/user/getHospitalDocs", userHospitalController.getHospitalDocs);
+router.get("/user/getAllDepartments", userHospitalController.getAllDepartments);
 
 module.exports = router;
