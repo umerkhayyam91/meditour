@@ -38,7 +38,8 @@ const authController = {
       return next(error);
     }
 
-    const { name, email, gender, dateOfBirth, userImage, phone, password } = req.body;
+    const { name, email, gender, dateOfBirth, userImage, phone, password } =
+      req.body;
     const emailExists = await User.findOne({ email });
 
     if (emailExists) {

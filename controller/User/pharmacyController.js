@@ -151,8 +151,7 @@ const userPharmacyController = {
       // Return the updated cart as a response
       return res.status(200).json({ cart: updatedCart });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
+      return next(error);
     }
   },
   async getCart(req, res, next) {
@@ -168,8 +167,7 @@ const userPharmacyController = {
       // Return the updated cart as a response
       return res.status(200).json({ cart, auth: true });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
+      return next(error);
     }
   },
 
