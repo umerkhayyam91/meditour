@@ -57,7 +57,7 @@ router.get("/user/getNearbyPsychologists", psychologistController.getNearbyPsych
 router.get("/user/filterPsychologist", psychologistController.filterPsychologist);
 router.get("/user/getPsychologist" , psychologistController.getPsychologist);
 router.get("/user/getPsychoAvailability", psychologistController.getPsychoAvailability );
-router.get("/user/addPsyAppointment",psychologistController.addPsyAppointment);
-router.post("/user/addPsyRatingReview",psychologistController.addPsyRatingReview);
-router.get("/user/getAllRatingReviews",psychologistController.getAllRatingReviews);
+router.post("/user/addPsyAppointment", auth, psychologistController.addPsyAppointment);
+router.post("/user/addRatingReview", auth, userLabController.addRatingReview);
+router.get("/user/getAllRatingReviews", auth, userLabController.getAllRatingReviews);;
 module.exports = router;

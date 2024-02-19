@@ -118,12 +118,12 @@ const psychologistController = {
       async addPsyAppointment(req, res, next) {
         try {
           const { date, startTime, endTime, appointmentType } = req.body;
-          const psychologistId = req.query.psychologistId;
+          const doctorId = req.query.doctorId;
           const patientId = req.user._id;
     
           // Create a new appointment
           const newAppointment = new Appointment({
-            psychologistId,
+            doctorId,
             patientId,
             date,
             startTime,
@@ -145,61 +145,62 @@ const psychologistController = {
         }
       },
       
-  async addPsyRatingReview(req, res, next) {
-    try {
-      const { rating, review } = req.body;
-      const vendorId = req.query.vendorId;
-      const userId = req.user._id;
-
-      // Check if the user has already given a review for this vendor
-      const existingUserReview = await Rating.findOne({
-        vendorId,
-        "ratings.userId": userId,
-      });
-
-      if (existingUserReview) {
-        return res
-          .status(400)
-          .json({ message: "User has already given a review for this vendor" });
-      }
-
-      // Check if the vendorId exists in the ratings collection
-      let existingRating = await Rating.findOne({ vendorId });
-
-      // If the vendorId doesn't exist, create a new entry
-      if (!existingRating) {
-        existingRating = new Rating({
-          vendorId,
-          ratings: [],
-        });
-      }
-
-      // Add the new rating to the existingRating or the newly created rating
-      existingRating.ratings.push({
-        userId,
-        rating,
-        review,
-      });
-
-      // Save the updated rating to the database
-      await existingRating.save();
-
-      res.status(201).json({ message: "Review added successfully" });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Internal Server Error" });
-    }
-  },
-
-  async getAllRatingReviews(req, res, next) {
-    try {
-      const vendorId = req.query.vendorId;
-      let existingRating = await Rating.findOne({ vendorId });
-
-      res.status(201).json({ existingRating, auth: true });
-    } catch (error) {
-      return next(error);
-    }
-  },
-};
+ 
+      // async addRatingReview(req, res, next) {
+      //   try {
+      //     const { rating, review } = req.body;
+      //     const vendorId = req.query.vendorId;
+      //     const userId = req.user._id;
+    
+      //     // Check if the user has already given a review for this vendor
+      //     const existingUserReview = await Rating.findOne({
+      //       vendorId,
+      //       "ratings.userId": userId,
+      //     });
+    
+      //     if (existingUserReview) {
+      //       return res
+      //         .status(400)
+      //         .json({ message: "User has already given a review for this vendor" });
+      //     }
+    
+      //     // Check if the vendorId exists in the ratings collection
+      //     let existingRating = await Rating.findOne({ vendorId });
+    
+      //     // If the vendorId doesn't exist, create a new entry
+      //     if (!existingRating) {
+      //       existingRating = new Rating({
+      //         vendorId,
+      //         ratings: [],
+      //       });
+      //     }
+    
+      //     // Add the new rating to the existingRating or the newly created rating
+      //     existingRating.ratings.push({
+      //       userId,
+      //       rating,
+      //       review,
+      //     });
+    
+      //     // Save the updated rating to the database
+      //     await existingRating.save();
+    
+      //     res.status(201).json({ message: "Review added successfully" });
+      //   } catch (error) {
+      //     console.error(error);
+      //     res.status(500).json({ message: "Internal Server Error" });
+      //   }
+      // },
+    
+      // async getAllRatingReviews(req, res, next) {
+      //   try {
+      //     const vendorId = req.query.vendorId;
+      //     let existingRating = await Rating.findOne({ vendorId });
+    
+      //     res.status(201).json({ existingRating, auth: true });
+      //   } catch (error) {
+      //     return next(error);
+      //   }
+      // },
+    };
 module.exports = psychologistController;
