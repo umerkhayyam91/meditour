@@ -8,6 +8,7 @@ class doctorDTO {
     this.cnicOrPassportNo = doc.cnicOrPassportNo;
     this.qualification = doc.qualification;
     this.speciality = doc.speciality;
+    this.loc = doc.loc;
     this.services = doc.services;
     this.clinicName = doc.clinicName;
     this.clinicAddress = doc.clinicAddress;

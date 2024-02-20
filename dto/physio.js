@@ -5,6 +5,7 @@ class physioDTO {
     this.phoneNumber = physio.phoneNumber;
     this.password = physio.password;
     this.name = physio.name;
+    this.loc = physio.loc;
     this.cnicOrPassNo = physio.cnicOrPassNo;
     this.qualification = physio.qualification;
     this.speciality = physio.speciality;

@@ -1,9 +1,11 @@
 
 const Appointment = require("../../models/All Doctors Models/appointment");
 const { DoctorAvailability } = require("../../models/All Doctors Models/availability");
+const Doctors = require("../../models/Doctor/doctors");
 const Nutritionist= require("../../models/Nutritionist/nutritionist");
 const Paramedic = require("../../models/Paramedic/paramedic");
 const Physiotherapist = require("../../models/Physiotherapist/physiotherapist");
+const Psychologist = require("../../models/Psychologist/psychologist");
 const Rating = require("../../models/rating");
 
 const otherDoctorController={
@@ -37,12 +39,18 @@ async getNearByOtherDocs(req,res,next){
 
     let doctorModel; // Variable declaration without assignment
 
-    if (doctorType === "nutritionist") {
-      doctorModel = Nutritionist; // Assign Nutritionist model
-    } else if (doctorType === "paramedicStaff") {
-      doctorModel = Paramedic; // Assign Paramedic model
+    if (doctorType === "doctors") {
+      doctorModel = Doctors; // Assign Nutritionist model
+    } else if (doctorType === "psychologist") {
+      doctorModel = Psychologist; // Assign Paramedic model
     } else if (doctorType === "physiotherapist") {
-      doctorModel = Physiotherapist; // Assign Physiotherapist model
+      doctorModel = Physiotherapist; 
+    }
+    else if (doctorType === "nutritionist") {
+      doctorModel = Nutritionist; 
+    }
+    else if (doctorType === "paramedic") {
+      doctorModel = Paramedic; 
     } else {
       // Handle invalid doctorType
       return res.status(400).json({ error: "Invalid doctorType provided" });
@@ -70,16 +78,24 @@ async filterOtherDocs(req, res, next) {
     const doctorType = req.query.doctorType;
     let doctorModel; // Variable declaration without assignment
 
-    if (doctorType === "nutritionist") {
-      doctorModel = Nutritionist; // Assign Nutritionist model
-    } else if (doctorType === "paramedic") {
-      doctorModel = Paramedic; // Assign Paramedic model
+    if (doctorType === "doctors") {
+      doctorModel = Doctors; // Assign Nutritionist model
+    } else if (doctorType === "psychologist") {
+      doctorModel = Psychologist; // Assign Paramedic model
     } else if (doctorType === "physiotherapist") {
       doctorModel = Physiotherapist; // Assign Physiotherapist model
+    }
+    else if (doctorType === "nutritionist") {
+      doctorModel = Nutritionist; // Assign Physiotherapist model
+    }
+    else if (doctorType === "paramedic") {
+      doctorModel = Paramedic; // Assign Physiotherapist model
     } else {
       // Handle invalid doctorType
       return res.status(400).json({ error: "Invalid doctorType provided" });
-    }c
+    }
+
+    
 
     const doctorsWithinRadius = await doctorModel.find({
       loc: {
@@ -118,16 +134,23 @@ async getOtherSingleDoc(req, res, next) {
     const doctorType = req.query.doctorType;
     let doctorModel; // Variable declaration without assignment
 
-    if (doctorType === "nutritionist") {
-      doctorModel = Nutritionist; // Assign Nutritionist model
-    } else if (doctorType === "paramedic") {
-      doctorModel = Paramedic; // Assign Paramedic model
+    if (doctorType === "doctors") {
+      doctorModel = Doctors; // Assign Nutritionist model
+    } else if (doctorType === "psychologist") {
+      doctorModel = Psychologist; // Assign Paramedic model
     } else if (doctorType === "physiotherapist") {
       doctorModel = Physiotherapist; // Assign Physiotherapist model
+    }
+    else if (doctorType === "nutritionist") {
+      doctorModel = Nutritionist; // Assign Physiotherapist model
+    }
+    else if (doctorType === "paramedic") {
+      doctorModel = Paramedic; // Assign Physiotherapist model
     } else {
       // Handle invalid doctorType
       return res.status(400).json({ error: "Invalid doctorType provided" });
     }
+
 
     const otherDoctor = await doctorModel.findById(doctorId );
 
@@ -150,10 +173,17 @@ async getOtherSingleDoc(req, res, next) {
       let doctorModel; // Variable declaration without assignment
       let message;
   
-      if (doctorType === "nutritionist") {
-        doctorModel = Nutritionist; // Assign Nutritionist model
+      if (doctorType === "doctors") {
+        doctorModel = Doctors; // Assign Nutritionist model
+        message = "doctors";
+      } 
+      else if (doctorType === "psychologist") {
+        doctorModel = Psychologist; // Assign Paramedic model
+        message = "Psychologist";
+      }else if (doctorType === "nutritionist") {
+        doctorModel = Nutritionist; // Assign Paramedic model
         message = "Nutritionist";
-      } else if (doctorType === "paramedic") {
+      }else if (doctorType === "paramedic") {
         doctorModel = Paramedic; // Assign Paramedic model
         message = "Paramedic";
       } else if (doctorType === "physiotherapist") {
@@ -181,18 +211,25 @@ async getOtherSingleDoc(req, res, next) {
       const { date, startTime, endTime, appointmentType } = req.body;
       const doctorId = req.query.doctorId;
       const patientId = req.user._id;
-      const doctorType = req.query.doctorType;
       let doctorModel; // Variable declaration without assignment
-    if (doctorType === "nutritionist") {
-        doctorModel = Nutritionist; // Assign Nutritionist model
-      } else if (doctorType === "paramedic") {
-        doctorModel = Paramedic; // Assign Paramedic model
-      } else if (doctorType === "physiotherapist") {
-        doctorModel = Physiotherapist; // Assign Physiotherapist model
-      } else {
-        // Handle invalid doctorType
-        return res.status(400).json({ error: "Invalid doctorType provided" });
-      }
+
+    if (doctorType === "doctors") {
+      doctorModel = Doctors; // Assign Nutritionist model
+    } else if (doctorType === "psychologist") {
+      doctorModel = Psychologist; // Assign Paramedic model
+    } else if (doctorType === "physiotherapist") {
+      doctorModel = Physiotherapist; // Assign Physiotherapist model
+    }
+    else if (doctorType === "nutritionist") {
+      doctorModel = Nutritionist; // Assign Physiotherapist model
+    }
+    else if (doctorType === "paramedic") {
+      doctorModel = Paramedic; // Assign Physiotherapist model
+    } else {
+      // Handle invalid doctorType
+      return res.status(400).json({ error: "Invalid doctorType provided" });
+    }
+    
 
 
       // Create a new appointment
@@ -226,16 +263,23 @@ async getOtherSingleDoc(req, res, next) {
           const userId = req.user._id;
           const doctorType = req.query.doctorType;
           let doctorModel; // Variable declaration without assignment
-        if (doctorType === "nutritionist") {
-            doctorModel = Nutritionist; // Assign Nutritionist model
-          } else if (doctorType === "paramedic") {
-            doctorModel = Paramedic; // Assign Paramedic model
-          } else if (doctorType === "physiotherapist") {
-            doctorModel = Physiotherapist; // Assign Physiotherapist model
-          } else {
-            // Handle invalid doctorType
-            return res.status(400).json({ error: "Invalid doctorType provided" });
-          }
+
+    if (doctorType === "doctors") {
+      doctorModel = Doctors; // Assign Nutritionist model
+    } else if (doctorType === "psychologist") {
+      doctorModel = Psychologist; // Assign Paramedic model
+    } else if (doctorType === "physiotherapist") {
+      doctorModel = Physiotherapist; // Assign Physiotherapist model
+    }
+    else if (doctorType === "nutritionist") {
+      doctorModel = Nutritionist; // Assign Physiotherapist model
+    }
+    else if (doctorType === "paramedic") {
+      doctorModel = Paramedic; 
+    } else {
+      // Handle invalid doctorType
+      return res.status(400).json({ error: "Invalid doctorType provided" });
+    }
         
           // Check if the user has already given a review for this vendor
           const existingUserReview = await Rating.findOne({
@@ -282,12 +326,19 @@ async getOtherSingleDoc(req, res, next) {
           const vendorId = req.query.vendorId;
           const doctorType = req.query.doctorType;
           let doctorModel; // Variable declaration without assignment
-        if (doctorType === "nutritionist") {
-            doctorModel = Nutritionist; // Assign Nutritionist model
-          } else if (doctorType === "paramedic") {
-            doctorModel = Paramedic; // Assign Paramedic model
+
+          if (doctorType === "doctors") {
+            doctorModel = Doctors; // Assign Nutritionist model
+          } else if (doctorType === "psychologist") {
+            doctorModel = Psychologist; // Assign Paramedic model
           } else if (doctorType === "physiotherapist") {
             doctorModel = Physiotherapist; // Assign Physiotherapist model
+          }
+          else if (doctorType === "nutritionist") {
+            doctorModel = Nutritionist; // Assign Physiotherapist model
+          }
+          else if (doctorType === "paramedic") {
+            doctorModel = Paramedic; // Assign Physiotherapist model
           } else {
             // Handle invalid doctorType
             return res.status(400).json({ error: "Invalid doctorType provided" });

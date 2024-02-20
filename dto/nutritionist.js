@@ -27,6 +27,7 @@ class doctorDTO {
     this.salesTaxNo = doc.salesTaxNo;
     this.averageRating = doc.averageRating;
     this.bankName = doc.bankName;
+    this.loc = doc.loc;
     this.accountHolderName = doc.accountHolderName;
     this.accountNumber = doc.accountNumber;
     this.doctorImage = doc.doctorImage;

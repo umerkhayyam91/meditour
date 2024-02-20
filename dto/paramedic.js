@@ -14,6 +14,7 @@ class doctorDTO {
       this.clinicExperiences = doc.clinicExperiences;
       this.pmdcNumber = doc.pmdcNumber;
       this.emergencyNo = doc.emergencyNo;
+      this.loc = doc.loc;
       this.state = doc.state;
       this.country = doc.country;
       this.website = doc.website;
