@@ -27,7 +27,7 @@ const authController = {
       email: Joi.string().required(),
       gender: Joi.string().required(),
       dateOfBirth: Joi.string().required(),
-      userImage: Joi.string().required(),
+      userImage: Joi.string(),
       phone: Joi.string().required(),
       password: Joi.string().pattern(passwordPattern).required(),
     });

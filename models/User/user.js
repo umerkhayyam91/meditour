@@ -9,7 +9,7 @@ const userSchema = new Schema({
   mrNo: { type: String, required: true },
   phone: { type: String, required: true },
   dateOfBirth: { type: String, required: true },
-  userImage: { type: String, required: true },
+  userImage: { type: String},
   password: { type: String, required: true },
   favouriteLabs: [{
     type: mongoose.SchemaTypes.ObjectId,
