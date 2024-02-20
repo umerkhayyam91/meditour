@@ -3,12 +3,17 @@ const app = express();
 const Availability = require("../../models/All Doctors Models/availability");
 const AppointmentRequest = require("../../models/All Doctors Models/request");
 const Appointment = require("../../models/All Doctors Models/appointment");
+const History = require("../../models/All Doctors Models/history");
+const Prescription = require("../../models/All Doctors Models/ePrescription");
 
 const docRequestController = {
   async getRequests(req, res, next) {
     try {
       const doctorId = req.user._id;
-      const allRequests = await AppointmentRequest.find({ doctorId , status: "pending"});
+      const allRequests = await AppointmentRequest.find({
+        doctorId,
+        status: "pending",
+      });
       return res.status(200).json({
         AppointmentRequests: allRequests,
         auth: true,
@@ -31,7 +36,7 @@ const docRequestController = {
         error.status = 404;
         return next(error);
       }
-      if(booking.status=="accept"){
+      if (booking.status == "accept") {
         return res.status(200).json({
           auth: false,
           message: "Booking already accepted",
@@ -80,7 +85,65 @@ const docRequestController = {
     }
   },
 
+  async addHistory(req, res, next) {
+    try {
+      const appointmentId = req.query.appointmentId;
+      const patientId = req.query.patientId;
+      const doctorId = req.user._id;
+      const { symptoms, description } = req.body;
+      const newHistory = new History({
+        doctorId,
+        patientId,
+        symptoms,
+        description,
+      });
 
+      const savedHistory = await newHistory.save();
+
+      await Appointment.findByIdAndUpdate(
+        appointmentId,
+        { $set: { history: savedHistory._id } },
+        { new: true }
+      );
+
+      res.status(201).json({
+        message: "History added to the appointment successfully",
+        history: savedHistory,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async addPrescription(req, res, next) {
+    try {
+      const appointmentId = req.query.appointmentId;
+      const patientId = req.query.patientId;
+      const doctorId = req.user._id;
+      const { medicines, test } = req.body;
+      const prescription = new Prescription({
+        doctorId,
+        patientId,
+        medicines,
+        test,
+      });
+
+      const savedPrescription = await prescription.save();
+
+      await Appointment.findByIdAndUpdate(
+        appointmentId,
+        { $set: { ePrescription: savedPrescription._id } },
+        { new: true }
+      );
+
+      res.status(201).json({
+        message: "History added to the appointment successfully",
+        prescription: savedPrescription,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
 };
 
 module.exports = docRequestController;

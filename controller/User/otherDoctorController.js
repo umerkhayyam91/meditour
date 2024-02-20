@@ -311,8 +311,6 @@ const otherDoctorController = {
     }
   },
 
-
-
   async addOtherDocRatingReview(req, res, next) {
     try {
       const { rating, review } = req.body;
@@ -375,7 +373,6 @@ const otherDoctorController = {
       res.status(500).json({ message: "Internal Server Error" });
     }
   },
-  
 
   async getAllOtherDocRatingReviews(req, res, next) {
     try {
