@@ -4,6 +4,10 @@ const bnbInfoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Hotel",
   },
+  category: {
+    type: String,
+    enum: ["hotel", "guestHouse", "hostel", "bedAndBreakfast", "condoHotel", "farmHouse"]
+  },
   propertyName: {
     type: String,
     required: true,

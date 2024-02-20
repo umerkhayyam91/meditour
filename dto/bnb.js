@@ -1,6 +1,7 @@
 class bnbDTO {
   constructor(bnb) {
     this._id = bnb._id;
+    this.category = bnb.category;
     this.propertyName = bnb.propertyName;
     this.starRating = bnb.starRating;
     this.customName = bnb.customName;
@@ -10,16 +11,6 @@ class bnbDTO {
     this.propertyAddress = bnb.propertyAddress;
     this.zipCode = bnb.zipCode;
     this.country = bnb.country;
-    // this.roomType = bnb.roomType;
-    // this.roomName = bnb.roomName;
-    // this.smokingPolicy = bnb.smokingPolicy;
-    // this.noOfAllRooms = bnb.noOfAllRooms;
-    // this.bedKinds = bnb.bedKinds;
-    // this.bedNo = bnb.bedNo;
-    // this.guestNo = bnb.guestNo;
-    // this.roomSize = bnb.roomSize;
-    // this.pricePerNight = bnb.pricePerNight;
-    // this.priceForMeditour = bnb.priceForMeditour;
     this.parkingAvailability = bnb.parkingAvailability;
     this.parkingPrice = bnb.parkingPrice;
     this.language = bnb.language;

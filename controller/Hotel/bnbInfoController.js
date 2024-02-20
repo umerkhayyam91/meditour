@@ -7,6 +7,7 @@ const bnbDTO = require("../../dto/bnb");
 const BnbInfoController = {
   async addBnb(req, res, next) {
     const bnbInfoSchema = Joi.object({
+      category: Joi.string().required(),
       propertyName: Joi.string().required(),
       starRating: Joi.string().required(),
       customName: Joi.string().required(),
@@ -40,6 +41,7 @@ const BnbInfoController = {
       return next(error);
     }
     const {
+      category,
       propertyName,
       starRating,
       customName,
@@ -73,6 +75,7 @@ const BnbInfoController = {
     try {
       const bnbInfoToRegister = new bnbInfo({
         hotelId,
+        category,
         propertyName,
         starRating,
         customName,
@@ -115,30 +118,31 @@ const BnbInfoController = {
 
   async updateBnb(req, res, next) {
     const bnbInfoSchema = Joi.object({
-      propertyName: Joi.string().required(),
-      starRating: Joi.string().required(),
-      customName: Joi.string().required(),
-      contactNumber: Joi.string().required(),
-      alternativeContactNo: Joi.string().required(),
-      province: Joi.string().required(),
-      propertyAddress: Joi.string().required(),
-      zipCode: Joi.string().required(),
-      country: Joi.string().required(),
-      roomIds: Joi.array().required(),
-      parkingAvailability: Joi.boolean().required(),
-      parkingPrice: Joi.string().required(),
-      language: Joi.string().required(),
+      category: Joi.string(),
+      propertyName: Joi.string(),
+      starRating: Joi.string(),
+      customName: Joi.string(),
+      contactNumber: Joi.string(),
+      alternativeContactNo: Joi.string(),
+      province: Joi.string(),
+      propertyAddress: Joi.string(),
+      zipCode: Joi.string(),
+      country: Joi.string(),
+      roomIds: Joi.array(),
+      parkingAvailability: Joi.boolean(),
+      parkingPrice: Joi.string(),
+      language: Joi.string(),
       facilities: Joi.array(),
       extraBedAvailability: Joi.string(),
       noOfExtraBeds: Joi.string(),
       guestsInExtraBeds: Joi.string(),
       amenities: Joi.string(),
-      propertyphotos: Joi.string().required(),
-      advanceCancelfreeofCharge: Joi.string().required(),
-      checkInFrom: Joi.string().required(),
-      checkInTo: Joi.string().required(),
-      checkOutFrom: Joi.string().required(),
-      checkOutTo: Joi.string().required(),
+      propertyphotos: Joi.string(),
+      advanceCancelfreeofCharge: Joi.string(),
+      checkInFrom: Joi.string(),
+      checkInTo: Joi.string(),
+      checkOutFrom: Joi.string(),
+      checkOutTo: Joi.string(),
       accomodateChildren: Joi.string(),
       pets: Joi.string(),
       chargesOfPets: Joi.string().required(),
@@ -148,6 +152,7 @@ const BnbInfoController = {
       return next(error);
     }
     const {
+      category,
       propertyName,
       starRating,
       customName,
@@ -189,6 +194,7 @@ const BnbInfoController = {
 
     // update fields
 
+    if (category) prevBnb.category = category;
     if (propertyName) prevBnb.propertyName = propertyName;
     if (starRating) prevBnb.starRating = starRating;
     if (customName) prevBnb.customName = customName;
