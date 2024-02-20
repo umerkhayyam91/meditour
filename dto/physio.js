@@ -23,6 +23,7 @@ class physioDTO {
     this.incomeTaxNo = physio.incomeTaxNo;
     this.salesTaxNo = physio.salesTaxNo;
     this.bankName = physio.bankName;
+    this.averageRating = doc.averageRating;
     this.accountHolderName = physio.accountHolderName;
     this.accountNumber = physio.accountNumber;
     this.physioImage = physio.physioImage;

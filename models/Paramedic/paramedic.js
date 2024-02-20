@@ -15,9 +15,17 @@ const paramedicSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    loc: {
+      type: [Number], // Array of two numbers: [longitude, latitude]
+      index: { type: "2dsphere", sparse: true }, // Use an object for index definition
+      required: true,
+    },
     cnicOrPassportNo: {
       type: String,
       required: true,
+    },
+    averageRating: {
+      type: Number,
     },
     qualification: {
       type: String,

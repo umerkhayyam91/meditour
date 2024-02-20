@@ -25,6 +25,7 @@ class doctorDTO {
     this.instagram = doc.instagram;
     this.incomeTaxNo = doc.incomeTaxNo;
     this.salesTaxNo = doc.salesTaxNo;
+    this.averageRating = doc.averageRating;
     this.bankName = doc.bankName;
     this.accountHolderName = doc.accountHolderName;
     this.accountNumber = doc.accountNumber;

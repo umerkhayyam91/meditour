@@ -18,6 +18,7 @@ const docAuthController = {
       qualification: Joi.string().required(),
       speciality: Joi.string().required(),
       services: Joi.string().required(),
+      loc: Joi.array().required(),
       clinicName: Joi.string().required(),
       clinicAddress: Joi.string().required(),
       clinicExperiences: Joi.string().required(),
@@ -49,6 +50,7 @@ const docAuthController = {
 
     const {
       name,
+      loc,
       cnicOrPassportNo,
       qualification,
       speciality,
@@ -82,6 +84,7 @@ const docAuthController = {
     let doc;
     try {
       const docToRegister = new Paramedic({
+        loc,
         name,
         cnicOrPassportNo,
         qualification,
@@ -265,6 +268,7 @@ const docAuthController = {
     const docSchema = Joi.object({
       name: Joi.string(),
       cnicOrPassportNo: Joi.string(),
+      loc: Joi.array().required(),
       qualification: Joi.string(),
       speciality: Joi.string(),
       services : Joi.string(),
@@ -299,6 +303,7 @@ const docAuthController = {
       return next(error);
     }
     const {
+      loc,
       name,
       cnicOrPassportNo,
       qualification,
@@ -355,6 +360,7 @@ const docAuthController = {
     // Update only the provided fields
     if (name) doc.name = name;
     if (cnicOrPassportNo) doc.cnicOrPassportNo = cnicOrPassportNo;
+    if(loc) doc.loc = loc;
     if (qualification) doc.qualification = qualification;
     if (speciality) doc.speciality = speciality;
     if (services) doc.services = services;
