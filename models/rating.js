@@ -20,6 +20,12 @@ const ratingSchema = new mongoose.Schema({
       review: {
         type: String,
       },
+      userImage: {
+        type: String,
+      },
+      userName: {
+        type: String,
+      },
     },
   ],
 });

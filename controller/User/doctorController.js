@@ -1,8 +1,8 @@
 const Doctor = require("../../models/Doctor/doctors");
 const Appointment = require("../../models/All Doctors Models/appointment");
 const {
-    DoctorAvailability
-  } = require("../../models/All Doctors Models/availability");
+  DoctorAvailability,
+} = require("../../models/All Doctors Models/availability");
 const userLabController = {
   async getNearbyDocs(req, res, next) {
     try {
@@ -111,7 +111,7 @@ const userLabController = {
     try {
       const doctorId = req.query.doctorId;
       // Check if doctor availability exists
-      const doctorAvailability = await DoctorAvailability.find({doctorId})
+      const doctorAvailability = await DoctorAvailability.find({ doctorId });
 
       if (!doctorAvailability) {
         return res
@@ -138,18 +138,49 @@ const userLabController = {
         date,
         startTime,
         endTime,
-        appointmentType
+        appointmentType,
       });
 
       // Save the new appointment to the database
       const savedAppointment = await newAppointment.save();
 
-      res
-        .status(201)
-        .json({
-          appointment: savedAppointment,
-          message: "Appointment added successfully",
-        });
+      res.status(201).json({
+        appointment: savedAppointment,
+        message: "Appointment added successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getAppointment(req, res, next) {
+    try {
+      const appointmentId = req.query.appointmentId;
+      // Check if doctor availability exists
+      const appointment = await Appointment.findById(appointmentId);
+
+      if (!appointment) {
+        return res.status(404).json({ message: "Appointment not found" });
+      }
+
+      res.status(200).json({ appointment });
+    } catch (error) {
+      next(error);
+    }
+  },
+  async getUpcomingAppointment(req, res, next) {
+    try {
+      const userId = req.user._id;
+      // Check if doctor availability exists
+      const latestAppointment = await Appointment.find({ patientId: userId })
+        .sort({ createdAt: -1 })
+        .limit(1);
+
+      if (!latestAppointment) {
+        return res.status(404).json({ message: "No appointment found" });
+      }
+
+      res.status(200).json({ latestAppointment });
     } catch (error) {
       next(error);
     }

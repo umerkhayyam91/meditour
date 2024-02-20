@@ -31,7 +31,7 @@ router.get("/user/getAllTests", userLabController.getAllTests);
 router.put("/user/addRemoveFav", auth, userLabController.addRemoveFav);
 router.get("/user/getAllFav", auth, userLabController.getAllFav);
 router.post("/user/addReview", auth, userLabController.addRatingReview);
-router.get("/user/getAllRatingReviews", auth, userLabController.getAllRatingReviews);
+router.get("/user/getAllRatingReviews", userLabController.getAllRatingReviews);
 router.post("/user/addLabOrder", auth, userLabController.addLabOrder);
 
 //.............Pharmacy...................//
@@ -51,6 +51,8 @@ router.get("/user/filterDocs", userDoctorController.filterDocs);
 router.get("/user/getDoc", userDoctorController.getDoc);
 router.get("/user/getAvailability", userDoctorController.getAvailability);
 router.get("/user/addAppointment", auth, userDoctorController.addAppointment);
+router.get("/user/getAppointment", userDoctorController.getAppointment);
+router.get("/user/getUpcomingAppointment", auth, userDoctorController.getUpcomingAppointment);
 
 //...........Psychologists.............//
 

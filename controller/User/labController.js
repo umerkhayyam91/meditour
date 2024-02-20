@@ -283,6 +283,8 @@ const userLabController = {
       const { rating, review } = req.body;
       const vendorId = req.query.vendorId;
       const userId = req.user._id;
+      const user = await User.findById(userId);
+      console.log(user);
 
       // Check if the user has already given a review for this vendor
       const existingUserReview = await Rating.findOne({
@@ -312,6 +314,8 @@ const userLabController = {
         userId,
         rating,
         review,
+        userImage: user.userImage,
+        userName: user.name,
       });
 
       // Save the updated rating to the database
