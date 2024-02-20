@@ -66,5 +66,9 @@ router.get("/user/getAllRatingReviews", auth, userLabController.getAllRatingRevi
 router.get("/user/getNearByOtherDocs", otherDoctorController.getNearByOtherDocs);
 router.get("/user/filterOtherDocs", otherDoctorController.filterOtherDocs);
 router.get("/user/getOtherSingleDoc", otherDoctorController.getOtherSingleDoc);
+router.get("/user/getOtherDocsAvailability", otherDoctorController.getOtherDocsAvailability);
+router.post("/user/addOtherDocAppointment",auth, otherDoctorController.addOtherDocAppointment);
+router.post("/user/addOtherDocRatingReview",auth, otherDoctorController.addOtherDocRatingReview);
+router.get("/user/getAllOtherDocRatingReviews", auth, otherDoctorController.getAllOtherDocRatingReviews);
 
 module.exports = router;

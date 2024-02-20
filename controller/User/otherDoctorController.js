@@ -1,7 +1,10 @@
 
+const Appointment = require("../../models/All Doctors Models/appointment");
+const { DoctorAvailability } = require("../../models/All Doctors Models/availability");
 const Nutritionist= require("../../models/Nutritionist/nutritionist");
 const Paramedic = require("../../models/Paramedic/paramedic");
 const Physiotherapist = require("../../models/Physiotherapist/physiotherapist");
+const Rating = require("../../models/rating");
 
 const otherDoctorController={
 async getNearByOtherDocs(req,res,next){
@@ -139,5 +142,165 @@ async getOtherSingleDoc(req, res, next) {
     return next(error);
   }
 },
+
+  async getOtherDocsAvailability(req, res, next) {
+    try {
+      const doctorId = req.query.doctorId;
+      const doctorType = req.query.doctorType;
+      let doctorModel; // Variable declaration without assignment
+      let message;
+  
+      if (doctorType === "nutritionist") {
+        doctorModel = Nutritionist; // Assign Nutritionist model
+        message = "Nutritionist";
+      } else if (doctorType === "paramedic") {
+        doctorModel = Paramedic; // Assign Paramedic model
+        message = "Paramedic";
+      } else if (doctorType === "physiotherapist") {
+        doctorModel = Physiotherapist; // Assign Physiotherapist model
+        message = "Physiotherapist";
+      } else {
+        // Handle invalid doctorType
+        return res.status(400).json({ error: "Invalid doctorType provided" });
+      }
+  
+      // Check if doctor availability exists
+      const otherDocAvailability = await DoctorAvailability.find({ doctorId })
+  
+      if (!otherDocAvailability || otherDocAvailability.length === 0) {
+        return res.status(404).json({ message: `${message} availability not found` });
+      }
+  
+      res.status(200).json({ availability: otherDocAvailability });
+    } catch (error) {
+      next(error);
+    }
+  },
+  async addOtherDocAppointment(req, res, next) {
+    try {
+      const { date, startTime, endTime, appointmentType } = req.body;
+      const doctorId = req.query.doctorId;
+      const patientId = req.user._id;
+      const doctorType = req.query.doctorType;
+      let doctorModel; // Variable declaration without assignment
+    if (doctorType === "nutritionist") {
+        doctorModel = Nutritionist; // Assign Nutritionist model
+      } else if (doctorType === "paramedic") {
+        doctorModel = Paramedic; // Assign Paramedic model
+      } else if (doctorType === "physiotherapist") {
+        doctorModel = Physiotherapist; // Assign Physiotherapist model
+      } else {
+        // Handle invalid doctorType
+        return res.status(400).json({ error: "Invalid doctorType provided" });
+      }
+
+
+      // Create a new appointment
+      const newAppointment = new Appointment({
+        doctorId,
+        patientId,
+        date,
+        startTime,
+        endTime,
+        appointmentType
+      });
+
+      // Save the new appointment to the database
+      const savedAppointment = await newAppointment.save();
+
+      res
+        .status(201)
+        .json({
+          appointment: savedAppointment,
+          message: "Appointment added successfully",
+        });
+    } catch (error) {
+      next(error);
+    }
+  },
+  
+      async addOtherDocRatingReview(req, res, next) {
+        try {
+          const { rating, review } = req.body;
+          const vendorId = req.query.vendorId;
+          const userId = req.user._id;
+          const doctorType = req.query.doctorType;
+          let doctorModel; // Variable declaration without assignment
+        if (doctorType === "nutritionist") {
+            doctorModel = Nutritionist; // Assign Nutritionist model
+          } else if (doctorType === "paramedic") {
+            doctorModel = Paramedic; // Assign Paramedic model
+          } else if (doctorType === "physiotherapist") {
+            doctorModel = Physiotherapist; // Assign Physiotherapist model
+          } else {
+            // Handle invalid doctorType
+            return res.status(400).json({ error: "Invalid doctorType provided" });
+          }
+        
+          // Check if the user has already given a review for this vendor
+          const existingUserReview = await Rating.findOne({
+            vendorId,
+            "ratings.userId": userId,
+          });
+    
+          if (existingUserReview) {
+            return res
+              .status(400)
+              .json({ message: "User has already given a review for this vendor" });
+          }
+    
+          // Check if the vendorId exists in the ratings collection
+          let existingRating = await Rating.findOne({ vendorId });
+    
+          // If the vendorId doesn't exist, create a new entry
+          if (!existingRating) {
+            existingRating = new Rating({
+              vendorId,
+              ratings: [],
+            });
+          }
+    
+          // Add the new rating to the existingRating or the newly created rating
+          existingRating.ratings.push({
+            userId,
+            rating,
+            review,
+          });
+    
+          // Save the updated rating to the database
+          await existingRating.save();
+    
+          res.status(201).json({ message: "Review added successfully" });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: "Internal Server Error" });
+        }
+      },
+    
+      async getAllOtherDocRatingReviews(req, res, next) {
+        try {
+          const vendorId = req.query.vendorId;
+          const doctorType = req.query.doctorType;
+          let doctorModel; // Variable declaration without assignment
+        if (doctorType === "nutritionist") {
+            doctorModel = Nutritionist; // Assign Nutritionist model
+          } else if (doctorType === "paramedic") {
+            doctorModel = Paramedic; // Assign Paramedic model
+          } else if (doctorType === "physiotherapist") {
+            doctorModel = Physiotherapist; // Assign Physiotherapist model
+          } else {
+            // Handle invalid doctorType
+            return res.status(400).json({ error: "Invalid doctorType provided" });
+          }
+        
+          let existingRating = await Rating.findOne({ vendorId });
+    
+          res.status(201).json({ existingRating, auth: true });
+        } catch (error) {
+          return next(error);
+        }
+      },
+    
 }
+  
 module.exports= otherDoctorController;
