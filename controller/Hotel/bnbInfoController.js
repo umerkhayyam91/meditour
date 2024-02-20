@@ -16,32 +16,24 @@ const BnbInfoController = {
       propertyAddress: Joi.string().required(),
       zipCode: Joi.string().required(),
       country: Joi.string().required(),
-      roomType: Joi.string().required(),
-      roomName: Joi.string().required(),
-      smokingPolicy: Joi.string().required(),
-      noOfAllRooms: Joi.string().required(),
-      bedKinds: Joi.string().required(),
-      bedNo: Joi.string().required(),
-      guestNo: Joi.string().required(),
-      roomSize: Joi.string().required(),
-      pricePerNight: Joi.string().required(),
-      priceForMeditour: Joi.string().required(),
-      parkingAvailability: Joi.string().required(),
+      roomIds: Joi.array(),
+      parkingAvailability: Joi.boolean().required(),
       parkingPrice: Joi.string().required(),
       language: Joi.string().required(),
-      facillities: Joi.string(),
-      extraBed: Joi.string(),
-      addExtraBed: Joi.string(),
-      guestsInExtraBeds: Joi.string(),
-      amenities: Joi.string(),
-      propertyphoto: Joi.string().required(),
+      facilities: Joi.array(),
+      extraBedAvailability: Joi.boolean(),
+      noOfExtraBeds: Joi.string(),
+      guestsInExtraBeds: Joi.array(),
+      amenities: Joi.array(),
+      propertyphotos: Joi.array().required(),
       advanceCancelfreeofCharge: Joi.string().required(),
-      checkInForm: Joi.string().required(),
-      checkOutForm: Joi.string().required(),
-      accomodateChildren: Joi.string(),
-      pets: Joi.string(),
+      checkInFrom: Joi.string().required(),
+      checkInTo: Joi.string().required(),
+      checkOutFrom: Joi.string().required(),
+      checkOutTo: Joi.string().required(),
+      accomodateChildren: Joi.boolean(),
+      pets: Joi.boolean(),
       chargesOfPets: Joi.string().required(),
-      addAnotherProperty: Joi.string(),
     });
     const { error } = bnbInfoSchema.validate(req.body);
     if (error) {
@@ -57,32 +49,24 @@ const BnbInfoController = {
       propertyAddress,
       zipCode,
       country,
-      roomType,
-      roomName,
-      smokingPolicy,
-      noOfAllRooms,
-      bedKinds,
-      bedNo,
-      guestNo,
-      roomSize,
-      pricePerNight,
-      priceForMeditour,
+      roomIds,
       parkingAvailability,
       parkingPrice,
       language,
-      facillities,
-      extraBed,
-      addExtraBed,
+      facilities,
+      extraBedAvailability,
+      noOfExtraBeds,
       guestsInExtraBeds,
       amenities,
-      propertyphoto,
+      propertyphotos,
       advanceCancelfreeofCharge,
-      checkInForm,
-      checkOutForm,
+      checkInFrom,
+      checkInTo,
+      checkOutFrom,
+      checkOutTo,
       accomodateChildren,
       pets,
       chargesOfPets,
-      addAnotherProperty,
     } = req.body;
     let bnb;
     const hotelId = req.user._id;
@@ -92,38 +76,30 @@ const BnbInfoController = {
         propertyName,
         starRating,
         customName,
-        contactNumber,  
+        contactNumber,
         alternativeContactNo,
         province,
         propertyAddress,
         zipCode,
         country,
-        roomType,
-        roomName,
-        smokingPolicy,
-        noOfAllRooms,
-        bedKinds,
-        bedNo,
-        guestNo,
-        roomSize,
-        pricePerNight,
-        priceForMeditour,
+        roomIds,
         parkingAvailability,
         parkingPrice,
         language,
-        facillities,
-        extraBed,
-        addExtraBed,
+        facilities,
+        extraBedAvailability,
+        noOfExtraBeds,
         guestsInExtraBeds,
         amenities,
-        propertyphoto,
+        propertyphotos,
         advanceCancelfreeofCharge,
-        checkInForm,
-        checkOutForm,
+        checkInFrom,
+        checkInTo,
+        checkOutFrom,
+        checkOutTo,
         accomodateChildren,
         pets,
         chargesOfPets,
-        addAnotherProperty,
       });
 
       bnb = await bnbInfoToRegister.save();
@@ -137,8 +113,6 @@ const BnbInfoController = {
     return res.status(201).json({ Bnb: bnbDto, auth: true });
   },
 
-  //edit
-
   async updateBnb(req, res, next) {
     const bnbInfoSchema = Joi.object({
       propertyName: Joi.string().required(),
@@ -150,32 +124,24 @@ const BnbInfoController = {
       propertyAddress: Joi.string().required(),
       zipCode: Joi.string().required(),
       country: Joi.string().required(),
-      roomType: Joi.string().required(),
-      roomName: Joi.string().required(),
-      smokingPolicy: Joi.string().required(),
-      noOfAllRooms: Joi.string().required(),
-      bedKinds: Joi.string().required(),
-      bedNo: Joi.string().required(),
-      guestNo: Joi.string().required(),
-      roomSize: Joi.string().required(),
-      pricePerNight: Joi.string().required(),
-      priceForMeditour: Joi.string().required(),
-      parkingAvailability: Joi.string().required(),
+      roomIds: Joi.array().required(),
+      parkingAvailability: Joi.boolean().required(),
       parkingPrice: Joi.string().required(),
       language: Joi.string().required(),
-      facillities: Joi.string(),
-      extraBed: Joi.string(),
-      addExtraBed: Joi.string(),
+      facilities: Joi.array(),
+      extraBedAvailability: Joi.string(),
+      noOfExtraBeds: Joi.string(),
       guestsInExtraBeds: Joi.string(),
       amenities: Joi.string(),
-      propertyphoto: Joi.string().required(),
+      propertyphotos: Joi.string().required(),
       advanceCancelfreeofCharge: Joi.string().required(),
-      checkInForm: Joi.string().required(),
-      checkOutForm: Joi.string().required(),
+      checkInFrom: Joi.string().required(),
+      checkInTo: Joi.string().required(),
+      checkOutFrom: Joi.string().required(),
+      checkOutTo: Joi.string().required(),
       accomodateChildren: Joi.string(),
       pets: Joi.string(),
       chargesOfPets: Joi.string().required(),
-      addAnotherProperty: Joi.string(),
     });
     const { error } = bnbInfoSchema.validate(req.body);
     if (error) {
@@ -185,38 +151,30 @@ const BnbInfoController = {
       propertyName,
       starRating,
       customName,
-      contactNumber, 
+      contactNumber,
       alternativeContactNo,
       province,
       propertyAddress,
       zipCode,
       country,
-      roomType,
-      roomName,
-      smokingPolicy,
-      noOfAllRooms,
-      bedKinds,
-      bedNo,
-      guestNo,
-      roomSize,
-      pricePerNight,
-      priceForMeditour,
+      roomIds,
       parkingAvailability,
       parkingPrice,
       language,
-      facillities,
-      extraBed,
-      addExtraBed,
+      facilities,
+      extraBedAvailability,
+      noOfExtraBeds,
       guestsInExtraBeds,
       amenities,
-      propertyphoto,
+      propertyphotos,
       advanceCancelfreeofCharge,
-      checkInForm,
-      checkOutForm,
+      checkInFrom,
+      checkInTo,
+      checkOutFrom,
+      checkOutTo,
       accomodateChildren,
       pets,
       chargesOfPets,
-      addAnotherProperty,
     } = req.body;
     const hotelBnbId = req.user._id;
 
@@ -235,57 +193,49 @@ const BnbInfoController = {
     if (starRating) prevBnb.starRating = starRating;
     if (customName) prevBnb.customName = customName;
     if (contactNumber) prevBnb.contactNumber = contactNumber;
-    if (alternativeContactNo) prevBnb.alternativeContactNo = alternativeContactNo;   
+    if (alternativeContactNo)
+      prevBnb.alternativeContactNo = alternativeContactNo;
     if (province) prevBnb.province = province;
     if (propertyAddress) prevBnb.propertyAddress = propertyAddress;
     if (zipCode) prevBnb.zipCode = zipCode;
     if (country) prevBnb.country = country;
-    if (roomType) prevBnb.roomType = roomType;   
-    if (roomName) prevBnb.roomName = roomName;
-    if (smokingPolicy) prevBnb.smokingPolicy = smokingPolicy;
-    if (noOfAllRooms) prevBnb.noOfAllRooms = noOfAllRooms;
-    if (bedKinds) prevBnb.bedKinds = bedKinds;
-    if (alternativeContactNo) prevBnb.alternativeContactNo = alternativeContactNo;   
-    if (bedNo) prevBnb.bedNo = bedNo;
-    if (guestNo) prevBnb.guestNo = guestNo;
-    if (roomSize) roomSize.zipCode = roomSize;
-    if (pricePerNight) prevBnb.pricePerNight = pricePerNight;
-    if (priceForMeditour) prevBnb.priceForMeditour = priceForMeditour;   
+    if (roomIds) prevBnb.roomIds = roomIds;
     if (parkingAvailability) prevBnb.parkingAvailability = parkingAvailability;
     if (parkingPrice) prevBnb.parkingPrice = parkingPrice;
     if (language) prevBnb.language = language;
-    if (facillities) prevBnb.facillities = facillities;
-    if (extraBed) prevBnb.extraBed = extraBed;   
-    if (addExtraBed) prevBnb.addExtraBed = addExtraBed;
+    if (facilities) prevBnb.facilities = facilities;
+    if (extraBedAvailability)
+      prevBnb.extraBedAvailability = extraBedAvailability;
+    if (noOfExtraBeds) prevBnb.noOfExtraBeds = noOfExtraBeds;
     if (guestsInExtraBeds) prevBnb.guestsInExtraBeds = guestsInExtraBeds;
-    if (amenities)prevBnb.amenities = amenities;
-    if (propertyphoto) prevBnb.propertyphoto = propertyphoto;
-    if (advanceCancelfreeofCharge) prevBnb.advanceCancelfreeofCharge = advanceCancelfreeofCharge;   
-    if (checkInForm) prevBnb.checkInForm = checkInForm;
-    if (checkOutForm) prevBnb.checkOutForm = checkOutForm;
+    if (amenities) prevBnb.amenities = amenities;
+    if (propertyphotos) prevBnb.propertyphotos = propertyphotos;
+    if (advanceCancelfreeofCharge)
+      prevBnb.advanceCancelfreeofCharge = advanceCancelfreeofCharge;
+    if (checkInFrom) prevBnb.checkInFrom = checkInFrom;
+    if (checkInTo) prevBnb.checkInTo = checkInTo;
+    if (checkOutFrom) prevBnb.checkOutFrom = checkOutFrom;
+    if (checkOutTo) prevBnb.checkOutTo = checkOutTo;
     if (accomodateChildren) prevBnb.accomodateChildren = accomodateChildren;
     if (pets) prevBnb.pets = pets;
-    if (chargesOfPets) prevBnb.chargesOfPets = chargesOfPets;   
-    if (addAnotherProperty) prevBnb.addAnotherProperty = addAnotherProperty;
+    if (chargesOfPets) prevBnb.chargesOfPets = chargesOfPets;
     await prevBnb.save();
 
-    return res
-      .status(200)
-      .json({
-        message: "B&Bs Updated Successfully",
-        bnb: prevBnb,
-      });
+    return res.status(200).json({
+      message: "B&Bs Updated Successfully",
+      bnb: prevBnb,
+    });
   },
   async deleteBnb(req, res, next) {
     const bnbId = req.query.bnbId;
     const prevBnb = await bnbInfo.findById(bnbId);
 
     if (!prevBnb) {
-        const error = new Error("B&Bs not found");
-        error.status = 404;
-        return next(error);
-      }
-    await bnbInfo.deleteOne({  _id:bnbId });
+      const error = new Error("B&B not found");
+      error.status = 404;
+      return next(error);
+    }
+    await bnbInfo.deleteOne({ _id: bnbId });
     return res.status(200).json({ message: "B&B deleted successfully" });
   },
 
@@ -295,7 +245,7 @@ const BnbInfoController = {
       const bnb = await bnbInfo.findById(bnbId);
 
       if (!bnb) {
-        const error = new Error("B&Bs not found!");
+        const error = new Error("B&B not found!");
         error.status = 404;
         return next(error);
       }
@@ -317,9 +267,7 @@ const BnbInfoController = {
 
       const skip = (page - 1) * bnbsPerPage; // Calculate the number of posts to skip based on the current page
 
-      const bnb = await bnbInfo.find({ hotelId })
-        .skip(skip)
-        .limit(bnbsPerPage);
+      const bnb = await bnbInfo.find({ hotelId }).skip(skip).limit(bnbsPerPage);
       let previousPage = page > 1 ? page - 1 : null;
       let nextPage = page < totalPages ? page + 1 : null;
       return res.status(200).json({
@@ -331,7 +279,7 @@ const BnbInfoController = {
     } catch (error) {
       return next(error);
     }
-  }
+  },
 };
 
 module.exports = BnbInfoController;
