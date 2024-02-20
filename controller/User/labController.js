@@ -230,7 +230,7 @@ const userLabController = {
         tests: Joi.array().required(),
         preference: Joi.string().valid("labVisit", "homeSample").required(),
         currentLocation: Joi.string().allow(''),
-        prescription: Joi.string(),
+        prescription: Joi.string().allow(''),
         patientName: Joi.string().required(),
         MR_NO: Joi.string().required(),
         totalAmount: Joi.string().required(),
