@@ -44,9 +44,59 @@ const bnbInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  roomIds: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Hotel Room",
+  rooms: [{
+    roomType: {
+      type: String,
+      required: true,
+    },
+    roomName: {
+      type: String,
+      required: true,
+    },
+    smokingPolicy: {
+      type: String,
+      required: true,
+    },
+    noOfRooms: {
+      type: Number,
+      required: true,
+    },
+    bedKinds: {
+      type: String,
+      required: true,
+    },
+    noOfBeds: {
+      type: String,
+      required: true,
+    },
+    registrationNo: {
+      type: String,
+      required: true,
+    },
+    registrationDate: {
+      type: String,
+      required: true,
+    },
+    noOfGuestsStay: {
+      type: String,
+      required: true,
+    },
+    pricePerNight: {
+      type: String,
+      required: true,
+    },
+    priceForMeditour: {
+      type: String,
+      required: true,
+    },
+    roomImages: {
+      type: String,
+      required: true,
+    },
+    roomDescription: {
+      type: String,
+      required: true,
+    },
   }],
   parkingAvailability: {
     type: Boolean,

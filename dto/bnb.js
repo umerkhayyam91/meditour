@@ -11,6 +11,7 @@ class bnbDTO {
     this.propertyAddress = bnb.propertyAddress;
     this.zipCode = bnb.zipCode;
     this.country = bnb.country;
+    this.rooms = bnb.rooms;
     this.parkingAvailability = bnb.parkingAvailability;
     this.parkingPrice = bnb.parkingPrice;
     this.language = bnb.language;

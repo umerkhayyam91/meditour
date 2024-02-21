@@ -17,7 +17,7 @@ const BnbInfoController = {
       propertyAddress: Joi.string().required(),
       zipCode: Joi.string().required(),
       country: Joi.string().required(),
-      roomIds: Joi.array(),
+      rooms: Joi.array(),
       parkingAvailability: Joi.boolean().required(),
       parkingPrice: Joi.string().required(),
       language: Joi.string().required(),
@@ -51,7 +51,7 @@ const BnbInfoController = {
       propertyAddress,
       zipCode,
       country,
-      roomIds,
+      rooms,
       parkingAvailability,
       parkingPrice,
       language,
@@ -85,7 +85,7 @@ const BnbInfoController = {
         propertyAddress,
         zipCode,
         country,
-        roomIds,
+        rooms,
         parkingAvailability,
         parkingPrice,
         language,
@@ -128,7 +128,7 @@ const BnbInfoController = {
       propertyAddress: Joi.string(),
       zipCode: Joi.string(),
       country: Joi.string(),
-      roomIds: Joi.array(),
+      rooms: Joi.array(),
       parkingAvailability: Joi.boolean(),
       parkingPrice: Joi.string(),
       language: Joi.string(),
@@ -162,7 +162,7 @@ const BnbInfoController = {
       propertyAddress,
       zipCode,
       country,
-      roomIds,
+      rooms,
       parkingAvailability,
       parkingPrice,
       language,
@@ -205,7 +205,7 @@ const BnbInfoController = {
     if (propertyAddress) prevBnb.propertyAddress = propertyAddress;
     if (zipCode) prevBnb.zipCode = zipCode;
     if (country) prevBnb.country = country;
-    if (roomIds) prevBnb.roomIds = roomIds;
+    if (rooms) prevBnb.rooms = rooms;
     if (parkingAvailability) prevBnb.parkingAvailability = parkingAvailability;
     if (parkingPrice) prevBnb.parkingPrice = parkingPrice;
     if (language) prevBnb.language = language;
