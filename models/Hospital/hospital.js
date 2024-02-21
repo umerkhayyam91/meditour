@@ -35,6 +35,11 @@ const hospitalSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    loc: {
+      type: [Number], // Array of two numbers: [longitude, latitude]
+      index: { type: "2dsphere", sparse: true }, // Use an object for index definition
+      required: true,
+    },
     state: {
       type: String,
       required: true,
@@ -91,6 +96,9 @@ const hospitalSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    averageRating: {
+      type: Number,
+    },
     isVerified: {
       type: Boolean,
       default: false
@@ -100,5 +108,6 @@ const hospitalSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+hospitalSchema.index({ loc: "2dsphere" });
 
 module.exports = mongoose.model("Hospital", hospitalSchema, "hospitals");

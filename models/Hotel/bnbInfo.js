@@ -4,6 +4,10 @@ const bnbInfoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Hotel",
   },
+  category: {
+    type: String,
+    enum: ["hotel", "guestHouse", "hostel", "bedAndBreakfast", "condoHotel", "farmHouse"]
+  },
   propertyName: {
     type: String,
     required: true,
@@ -40,49 +44,12 @@ const bnbInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
-  roomType: {
-    type: String,
-    required: true,
-  },
-  roomName: {
-    type: String,
-    required: true,
-  },
-  smokingPolicy: {
-    type: String,
-    required: true,
-  },
-  noOfAllRooms: {
-    type: String,
-    required: true,
-  },
-  bedKinds: {
-    type: String,
-    required: true,
-  },
-  bedNo: {
-    type: String,
-    required: true,
-  },
-  guestNo: {
-    type: String,
-    required: true,
-  },
-  roomSize: {
-    type: String,
-    required: true,
-  },
-  pricePerNight: {
-    type: String,
-    required: true,
-  },
-  priceForMeditour: {
-    type: String,
-    required: true,
-  },
+  roomIds: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Hotel Room",
+  }],
   parkingAvailability: {
-    type: String,
+    type: Boolean,
     required: true,
   },
   parkingPrice: {
@@ -93,7 +60,7 @@ const bnbInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  facillities: {
+  facilities: [{
     type: String,
     enum: [
       "Free Wifi",
@@ -110,68 +77,70 @@ const bnbInfoSchema = new mongoose.Schema({
       "Mosque",
       "Water Park",
     ],
+  }],  
+  extraBedAvailability: {
+    type: Boolean,
+    required: true,
   },
-  extraBed: {
+  noOfExtraBeds: {
     type: String,
-    enum: ["yes", "No"],
   },
-  addExtraBed: {
+  guestsInExtraBeds: [{
     type: String,
-  },
-  guestsInExtraBeds: {
-    type: String,
-    enum: ["Children upyo 2 years old in cribs", "Children", "Adults"],
-  },
-  amenities: {
+    enum: ["Children upto 2 years old in cribs", "Children", "Adults"],
+  }],
+  amenities: [{
     type: String,
     required: true,
     enum: [
-      "Air Conditiong ",
+      "Air Conditioning",
       "Bath Tub",
       "Spa Tub",
-      "Flat Screen Tv",
+      "Flat Screen TV",
       "Electric Kettle",
       "Balcony",
       "Terrace",
       "All Rooms",
       "Some Room",
     ],
-  },
-  propertyphoto: {
+  }],
+  propertyphotos: [{
     type: String,
     required: true,
-  },
+  }],
   advanceCancelfreeofCharge: {
     type: String,
     required: true,
   },
-  checkInForm: {
+  checkInFrom: {
     type: String,
     required: true,
   },
-  checkOutForm: {
+  checkInTo: {
     type: String,
     required: true,
   },
-
+  checkOutFrom: {
+    type: String,
+    required: true,
+  },
+  checkOutTo: {
+    type: String,
+    required: true,
+  },
   accomodateChildren: {
-    type: String,
-    enum: ["Yes", "No"],
+    type: Boolean,
+    required: true,
   },
-
   pets: {
-    type: String,
-    enum: ["Yes", "No"],
+    type: Boolean,
+    required: true,
   },
   chargesOfPets: {
     type: String,
-    required: true,
-  },
-  addAnotherProperty: {
-    type: String,
- 
+    enum: ["free", "charge"],
   },
 });
 
 
-module.exports= mongoose.model("bnbInfo" , bnbInfoSchema, "bnb info")
+module.exports= mongoose.model("Hotels And Bnb" , bnbInfoSchema, "hotels and bnbs")

@@ -9,6 +9,7 @@ const userPharmacyController = require("../controller/User/pharmacyController");
 const userDoctorController = require("../controller/User/doctorController");
 // const psychologistController = require("../controller/User/psychologistController");
 const otherDoctorController = require("../controller/User/otherDoctorController");
+const userHospitalController = require("../controller/User/hospitalController");
 const router = express.Router();
 
 //............auth...............
@@ -53,6 +54,13 @@ router.get("/user/getAvailability", userDoctorController.getAvailability);
 router.post("/user/addAppointment", auth, userDoctorController.addAppointment);
 router.get("/user/getAppointment", userDoctorController.getAppointment);
 router.get("/user/getUpcomingAppointment", auth, userDoctorController.getUpcomingAppointment);
+
+//..................hospitals...................//
+router.get("/user/getNearbyHospitals", userHospitalController.getNearbyHospitals);
+router.get("/user/filterHospitals", userHospitalController.filterHospitals);
+router.get("/user/getHospital", userHospitalController.getHospital);
+router.get("/user/getHospitalDocs", userHospitalController.getHospitalDocs);
+router.get("/user/getAllDepartments", userHospitalController.getAllDepartments);
 
 //...........Psychologists.............//
 

@@ -26,7 +26,8 @@ const authController = {
       name: Joi.string().required(),
       email: Joi.string().required(),
       gender: Joi.string().required(),
-      userImage: Joi.string().required(),
+      dateOfBirth: Joi.string().required(),
+      userImage: Joi.string(),
       phone: Joi.string().required(),
       password: Joi.string().pattern(passwordPattern).required(),
     });
@@ -37,7 +38,8 @@ const authController = {
       return next(error);
     }
 
-    const { name, email, gender, userImage, phone, password } = req.body;
+    const { name, email, gender, dateOfBirth, userImage, phone, password } =
+      req.body;
     const emailExists = await User.findOne({ email });
 
     if (emailExists) {
@@ -63,6 +65,7 @@ const authController = {
         name,
         email,
         gender,
+        dateOfBirth,
         userImage,
         mrNo,
         phone,
