@@ -28,11 +28,15 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  noOfGuestsStay: {
+  registrationNo: {
     type: String,
     required: true,
   },
-  roomSize: {
+  registrationDate: {
+    type: String,
+    required: true,
+  },
+  noOfGuestsStay: {
     type: String,
     required: true,
   },
@@ -41,6 +45,14 @@ const roomSchema = new mongoose.Schema({
     required: true,
   },
   priceForMeditour: {
+    type: String,
+    required: true,
+  },
+  roomImages: {
+    type: String,
+    required: true,
+  },
+  roomDescription: {
     type: String,
     required: true,
   },

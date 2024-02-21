@@ -49,6 +49,7 @@ router.post("/hotel/addRoom",auth, BnbRoomController.addRoom);
 router.put("/hotel/editRoom",auth, BnbRoomController.editRoom);
 router.delete("/hotel/deleteRoom",auth, BnbRoomController.deleteRoom);
 router.get("/hotel/getRoom",auth, BnbRoomController.getRoom);
+router.get("/hotel/getAllRoom",auth, BnbRoomController.getAllRoom);
 
 
 // ..HOME CRUD...//
