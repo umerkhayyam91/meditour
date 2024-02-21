@@ -5,6 +5,8 @@ const AppointmentRequest = require("../../models/All Doctors Models/request");
 const Appointment = require("../../models/All Doctors Models/appointment");
 const History = require("../../models/All Doctors Models/history");
 const Prescription = require("../../models/All Doctors Models/ePrescription");
+const Referral = require("../../models/All Doctors Models/referral");
+const Doctor = require("../../models/Doctor/doctors");
 
 const docRequestController = {
   async getRequests(req, res, next) {
@@ -142,6 +144,41 @@ const docRequestController = {
       });
     } catch (error) {
       return next(error);
+    }
+  },
+
+  async searchDoctor(req, res, next) {
+    try {
+      const query = req.query.name;
+      const regex = new RegExp(query, "i");
+
+      const doctors = await Doctor.find({ name: regex });
+      res.json({ doctors, auth: true });
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async referDoctor(req, res, next) {
+    try {
+      const additionalInfo = req.body.additionalInfo;
+      const referringDoctorId = req.user._id;
+      const referredDoctorId = req.query.referredDoctorId;
+      const patientId = req.query.patientId;
+      // Create a new referral
+      const referral = new Referral({
+        referringDoctorId,
+        referredDoctorId,
+        patientId,
+        additionalInfo,
+      });
+
+      // Save the referral to the database
+      const savedReferral = await referral.save();
+
+      res.status(201).json(savedReferral);
+    } catch (error) {
+      next(error);
     }
   },
 };
