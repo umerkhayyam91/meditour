@@ -31,6 +31,11 @@ const travelAgencySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    loc: {
+      type: [Number], // Array of two numbers: [longitude, latitude]
+      index: { type: "2dsphere", sparse: true }, // Use an object for index definition
+      required: true,
+    },
     state: {
       type: String,
       required: true,
@@ -86,6 +91,9 @@ const travelAgencySchema = new mongoose.Schema(
     taxFileImage: {
       type: String,
       required: true,
+    },
+    averageRating: {
+      type: Number,
     },
   },
   {

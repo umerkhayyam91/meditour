@@ -10,6 +10,7 @@ class rentCarDTO {
       this.ownerName = rentCar.ownerName;
       this.cnicOrPassportNo = rentCar.cnicOrPassportNo;
       this.companyAddress = rentCar.companyAddress;
+      this.loc = rentCar.loc;
       this.state = rentCar.state;
       this.country = rentCar.country;
       this.website = rentCar.website;
@@ -25,6 +26,7 @@ class rentCarDTO {
       this.licenseImage = rentCar.licenseImage;
       this.cnicImage = rentCar.cnicImage;
       this.taxFileImage = rentCar.taxFileImage;
+      this.averageRating = rentCar.averageRating;
     }
   }
   module.exports = rentCarDTO;

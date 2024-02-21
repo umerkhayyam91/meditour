@@ -19,6 +19,7 @@ const rentCarAuthController = {
       cnicOrPassportNo: Joi.string().required(),
       ownerName: Joi.string().required(),
       companyAddress: Joi.string().required(),
+      loc: Joi.string().required(),
       state: Joi.string().required(),
       country: Joi.string(),
       website: Joi.string(),
@@ -48,6 +49,7 @@ const rentCarAuthController = {
       cnicOrPassportNo,
       ownerName,
       companyAddress,
+      loc,
       state,
       country,
       website,
@@ -77,6 +79,7 @@ const rentCarAuthController = {
         cnicOrPassportNo,
         ownerName,
         companyAddress,
+        loc,
         state,
         country,
         website,
@@ -258,6 +261,7 @@ const rentCarAuthController = {
       ownerName: Joi.string(),
       cnicOrPassportNo: Joi.string(),
       companyAddress: Joi.string(),
+      loc: Joi.string(),
       state: Joi.string(),
       phoneNumber: Joi.string(),
       currentPassword: Joi.string(),
@@ -289,6 +293,7 @@ const rentCarAuthController = {
       ownerName,
       cnicOrPassportNo,
       companyAddress,
+      loc,
       state,
       phoneNumber,
       currentPassword,
@@ -338,6 +343,7 @@ const rentCarAuthController = {
     if (ownerName) rentCar.ownerName = ownerName;
     if (cnicOrPassportNo) rentCar.cnicOrPassportNo = cnicOrPassportNo;
     if (companyAddress) rentCar.companyAddress = companyAddress;
+    if (loc) rentCar.loc = loc;
     if (state) rentCar.state = state;
     if (phoneNumber) rentCar.phoneNumber = phoneNumber;
     if (website) rentCar.website = website;
