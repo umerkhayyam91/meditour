@@ -10,11 +10,14 @@ const userDoctorController = require("../controller/User/doctorController");
 // const psychologistController = require("../controller/User/psychologistController");
 const otherDoctorController = require("../controller/User/otherDoctorController");
 const userHospitalController = require("../controller/User/hospitalController");
+const uploadFileController = require("../controller/uploadFileController");
+const upload = multer({ dest: "temp/" });
 const router = express.Router();
 
 //............auth...............
 router.post("/user/register", userAuthController.register);
 router.post("/user/login", userAuthController.login);
+router.post("/user/uploadFile", upload.single("file"), uploadFileController.uploadFile);
 router.post("/user/logout", auth, userAuthController.logout);
 
 //..............verification.........
