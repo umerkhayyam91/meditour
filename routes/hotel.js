@@ -6,6 +6,7 @@ const uploadFileController = require("../controller/uploadFileController");
 const multer = require("multer");
 const appartmentInfoController = require("../controller/Hotel/appartmentInfoController");
 const BnbInfoController = require("../controller/Hotel/bnbInfoController");
+const BnbRoomController = require("../controller/Hotel/hotelRoomController");
 const homeInfoController = require("../controller/Hotel/homeInfoController");
 const router = express.Router();
 const upload = multer({ dest: "temp/" });
@@ -42,6 +43,12 @@ router.put("/hotel/updateBnb",auth, BnbInfoController.updateBnb);
 router.delete("/hotel/deleteBnb",auth, BnbInfoController.deleteBnb);
 router.get("/hotel/getBnb",auth, BnbInfoController.getBnb);
 router.get("/hotel/getAllBnb",auth, BnbInfoController.getAllBnb);
+
+//..........B$B Rooms...................//
+router.post("/hotel/addRoom",auth, BnbRoomController.addRoom);
+router.put("/hotel/editRoom",auth, BnbRoomController.editRoom);
+router.delete("/hotel/deleteRoom",auth, BnbRoomController.deleteRoom);
+router.get("/hotel/getRoom",auth, BnbRoomController.getRoom);
 
 
 // ..HOME CRUD...//

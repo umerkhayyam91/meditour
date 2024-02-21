@@ -209,7 +209,7 @@ const auth = async (req, res, next) => {
       return;
     } else if (req.originalUrl.includes("/hotel")) {
       try {
-        user = await Hotel.findOne({_id: _id });
+        user = await Hotel.findOne({ _id: _id });
       } catch (error) {
         return next(error);
       }
@@ -219,8 +219,7 @@ const auth = async (req, res, next) => {
 
       next();
       return;
-
-    }else if (req.originalUrl.includes("/insurance")) {
+    } else if (req.originalUrl.includes("/insurance")) {
       try {
         user = await Insurance.findOne({ _id: _id });
       } catch (error) {

@@ -8,7 +8,8 @@ const userSchema = new Schema({
   gender: { type: String, required: true },
   mrNo: { type: String, required: true },
   phone: { type: String, required: true },
-  userImage: { type: String, required: true },
+  dateOfBirth: { type: String, required: true },
+  userImage: { type: String},
   password: { type: String, required: true },
   favouriteLabs: [{
     type: mongoose.SchemaTypes.ObjectId,
