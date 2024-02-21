@@ -47,7 +47,6 @@ const appartmentInfoSchema = new mongoose.Schema({
   },
   nameOfCompany: {
     type: String,
-    required: true,
   },
   channelManager: {
     type: String,
@@ -56,7 +55,6 @@ const appartmentInfoSchema = new mongoose.Schema({
   },
   nameOfManager: {
     type: String,
-    required: true,
   },
   numberOfAppartments: {
     type: String,

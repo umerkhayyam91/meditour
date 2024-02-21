@@ -40,6 +40,8 @@ router.get("/doc/patientHistory", auth, docAppointController.patientHistory);
 router.get("/doc/getRequests", auth, generalRequestController.getRequests);
 router.post("/doc/acceptRequest", auth, generalRequestController.acceptRequest);
 router.delete("/doc/rejectRequest", auth, generalRequestController.rejectRequest);
+router.post("/doc/addHistory", auth, generalRequestController.addHistory);
+router.post("/doc/addPrescription", auth, generalRequestController.addPrescription);
 
 //..............verification.........
 router.post("/doc/sendCodeToEmail", VerificationController.sendCodeToEmail);

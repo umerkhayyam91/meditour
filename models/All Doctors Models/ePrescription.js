@@ -10,7 +10,27 @@ const ePrescriptionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    ePrescription: {
+    medicines: [
+      {
+        medicineName: {
+          type: String,
+          required: true,
+        },
+        medicineBrand: {
+          type: String,
+          required: true,
+        },
+        medicineStrength: {
+          type: String,
+          required: true,
+        },
+        dosage: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    test: {
       type: String,
       required: true,
     },

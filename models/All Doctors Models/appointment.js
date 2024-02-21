@@ -31,11 +31,17 @@ const appointmentSchema = new mongoose.Schema(
       enum: ["pending", "completed"],
       default: "pending"
     },
+    history: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "History"
+    },
     ePrescription: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "ePrescription"
     },
     notes: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "Notes"
     },
   },
   {
