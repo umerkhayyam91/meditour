@@ -22,6 +22,8 @@ class bnbDTO {
     this.amenities = bnb.amenities;
     this.propertyphotos = bnb.propertyphotos;
     this.advanceCancelfreeofCharge = bnb.advanceCancelfreeofCharge;
+    this.guestPayFull = bnb.guestPayFull;
+    this.accidentalBookingPolicy = bnb.accidentalBookingPolicy;
     this.checkInFrom = bnb.checkInFrom;
     this.checkInTo = bnb.checkInTo;
     this.checkOutFrom = bnb.checkOutFrom;

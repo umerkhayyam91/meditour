@@ -28,6 +28,8 @@ const BnbInfoController = {
       amenities: Joi.array(),
       propertyphotos: Joi.array().required(),
       advanceCancelfreeofCharge: Joi.string().required(),
+      guestPayFull: Joi.string().required(),
+      accidentalBookingPolicy: Joi.string().required(),
       checkInFrom: Joi.string().required(),
       checkInTo: Joi.string().required(),
       checkOutFrom: Joi.string().required(),
@@ -62,6 +64,8 @@ const BnbInfoController = {
       amenities,
       propertyphotos,
       advanceCancelfreeofCharge,
+      guestPayFull,
+      accidentalBookingPolicy,
       checkInFrom,
       checkInTo,
       checkOutFrom,
@@ -96,6 +100,8 @@ const BnbInfoController = {
         amenities,
         propertyphotos,
         advanceCancelfreeofCharge,
+        guestPayFull,
+        accidentalBookingPolicy,
         checkInFrom,
         checkInTo,
         checkOutFrom,
@@ -139,6 +145,8 @@ const BnbInfoController = {
       amenities: Joi.string(),
       propertyphotos: Joi.string(),
       advanceCancelfreeofCharge: Joi.string(),
+      guestPayFull: Joi.string().required(),
+      accidentalBookingPolicy: Joi.string().required(),
       checkInFrom: Joi.string(),
       checkInTo: Joi.string(),
       checkOutFrom: Joi.string(),
@@ -173,6 +181,8 @@ const BnbInfoController = {
       amenities,
       propertyphotos,
       advanceCancelfreeofCharge,
+      guestPayFull,
+      accidentalBookingPolicy,
       checkInFrom,
       checkInTo,
       checkOutFrom,
@@ -218,6 +228,10 @@ const BnbInfoController = {
     if (propertyphotos) prevBnb.propertyphotos = propertyphotos;
     if (advanceCancelfreeofCharge)
       prevBnb.advanceCancelfreeofCharge = advanceCancelfreeofCharge;
+    if (guestPayFull)
+      prevBnb.guestPayFull = guestPayFull;
+    if (accidentalBookingPolicy)
+      prevBnb.accidentalBookingPolicy = accidentalBookingPolicy;
     if (checkInFrom) prevBnb.checkInFrom = checkInFrom;
     if (checkInTo) prevBnb.checkInTo = checkInTo;
     if (checkOutFrom) prevBnb.checkOutFrom = checkOutFrom;
