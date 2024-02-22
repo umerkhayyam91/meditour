@@ -14,11 +14,19 @@ const medicineSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    medicineName: {
+      type: String,
+      required: true,
+    },
     medicineBrand: {
       type: String,
       required: true,
     },
     medicineType: {
+      type: String,
+      required: true,
+    },
+    medicineImage: {
       type: String,
       required: true,
     },

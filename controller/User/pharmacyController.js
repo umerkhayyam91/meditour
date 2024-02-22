@@ -11,18 +11,19 @@ const User = require("../../models/User/user");
 
 async function getNextOrderNo() {
   // Find the latest lab order in the database and get its orderId
-  const pharmacyLatestOrder = await PharmacyOrder.findOne({}, 'orderId').sort({ orderId: -1 });
+  const pharmacyLatestOrder = await PharmacyOrder.findOne({}, "orderId").sort({
+    orderId: -1,
+  });
 
   // If there are no lab orders yet, start with "LAB0001"
   const nextOrderIdNumber = pharmacyLatestOrder
     ? Number(pharmacyLatestOrder.orderId.substring(3)) + 1
     : 1;
 
-  const nextOrderId = `LAB${nextOrderIdNumber.toString().padStart(4, '0')}`;
+  const nextOrderId = `LAB${nextOrderIdNumber.toString().padStart(4, "0")}`;
 
   return nextOrderId;
 }
-
 
 const userPharmacyController = {
   async getNearbyPharmacies(req, res, next) {
@@ -109,7 +110,7 @@ const userPharmacyController = {
       const userLatitude = req.query.lat;
       const userLongitude = req.query.long;
       const pharmacy = await Pharmacy.findById(pharmacyId);
-      
+
       if (!pharmacy) {
         const error = new Error("Pharmacy not found!");
         error.status = 404;
@@ -122,8 +123,8 @@ const userPharmacyController = {
       const distance = geolib.getDistance(
         { latitude: userLatitude, longitude: userLongitude },
         pharmacyCoordinates
-        );
-        console.log("object");
+      );
+      console.log("object");
 
       return res.status(200).json({ pharmacy, distance });
     } catch (error) {
@@ -316,4 +317,3 @@ const userPharmacyController = {
 };
 
 module.exports = userPharmacyController;
- 

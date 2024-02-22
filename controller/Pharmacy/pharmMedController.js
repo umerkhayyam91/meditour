@@ -7,8 +7,10 @@ const pharmMedController = {
   async addMed(req, res, next) {
     const pharmMedSchema = Joi.object({
       generic: Joi.string().required(),
+      medicineName: Joi.string().required(),
       medicineBrand: Joi.string().required(),
       medicineType: Joi.string().required(),
+      medicineImage: Joi.string().required(),
       strength: Joi.string().required(),
       packSize: Joi.string().required(),
       priceMeditour: Joi.number().required(),
@@ -23,8 +25,10 @@ const pharmMedController = {
     const pharmId = req.user._id;
     const {
       generic,
+      medicineName,
       medicineBrand,
       medicineType,
+      medicineImage,
       strength,
       packSize,
       priceMeditour,
@@ -50,8 +54,10 @@ const pharmMedController = {
         pharmId,
         medCode,
         generic,
+        medicineName,
         medicineBrand,
         medicineType,
+        medicineImage,
         strength,
         packSize,
         priceMeditour,
@@ -73,8 +79,10 @@ const pharmMedController = {
   async editMed(req, res, next) {
     const pharmMedSchema = Joi.object({
       generic: Joi.string(),
+      medicineName: Joi.string(),
       medicineBrand: Joi.string(),
       medicineType: Joi.string(),
+      medicineImage: Joi.string(),
       strength: Joi.string(),
       packSize: Joi.string(),
       priceMeditour: Joi.number(),
@@ -88,8 +96,10 @@ const pharmMedController = {
     }
     const {
       generic,
+      medicineName,
       medicineBrand,
       medicineType,
+      medicineImage,
       strength,
       packSize,
       priceMeditour,
@@ -120,8 +130,10 @@ const pharmMedController = {
 
     // Update only the provided fields
     if (generic) existingMed.generic = generic;
+    if (medicineName) existingMed.medicineName = medicineName;
     if (medicineBrand) existingMed.medicineBrand = medicineBrand;
     if (medicineType) existingMed.medicineType = medicineType;
+    if (medicineImage) existingMed.medicineImage = medicineImage;
     if (strength) existingMed.strength = strength;
     if (packSize) existingMed.packSize = packSize;
     if (priceMeditour) existingMed.priceMeditour = priceMeditour;
