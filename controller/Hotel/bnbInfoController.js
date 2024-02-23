@@ -28,15 +28,16 @@ const BnbInfoController = {
       amenities: Joi.array(),
       propertyphotos: Joi.array().required(),
       advanceCancelfreeofCharge: Joi.string().required(),
-      guestPayFull: Joi.string().required(),
       accidentalBookingPolicy: Joi.boolean().required(),
       checkInFrom: Joi.string().required(),
       checkInTo: Joi.string().required(),
       checkOutFrom: Joi.string().required(),
       checkOutTo: Joi.string().required(),
+      smokingAllowed: Joi.boolean(),
       accomodateChildren: Joi.boolean(),
       pets: Joi.boolean(),
       chargesOfPets: Joi.string().required(),
+      minimumStay: Joi.string().required(),
     });
     const { error } = bnbInfoSchema.validate(req.body);
     if (error) {

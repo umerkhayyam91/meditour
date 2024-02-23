@@ -143,6 +143,18 @@ const userLabController = {
 
       // Save the new appointment to the database
       const savedAppointment = await newAppointment.save();
+      const notification = new Notification({
+        senderId,
+        receiverId,
+        title: "MediTour",
+        message: `${sender?.name} has sent you an interest`,
+      });
+      await notification.save();
+
+      sendchatNotification(receiverId, {
+        title: "MediTour",
+        message: `${sender?.name} has sent you an interest`,
+      });
 
       res.status(201).json({
         appointment: savedAppointment,

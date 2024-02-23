@@ -12,7 +12,7 @@ const homeInfoController = {
       similarPropertyCategory: Joi.string().required(),
       propertyName: Joi.string().required(),
       starRating: Joi.string().required(),
-      customName: Joi.string().required(),
+      name: Joi.string().required(),
       contactNumber: Joi.string().required(),
       streetAddress: Joi.string().required(),
       addressLine2: Joi.string().required(),
@@ -23,47 +23,41 @@ const homeInfoController = {
       channelManager: Joi.string(),
       nameOfCompany: Joi.string(),
       nameOfManager: Joi.string(),
+      appartmentsNo: Joi.string(),
+      customName: Joi.string(),
       numberOfBedroom: Joi.string(),
       numberOfLivingroom: Joi.string(),
       numberOfBathroom: Joi.string().required(),
-      numberOfAppartments: Joi.string().required(),
-      typeOfAppartments: Joi.string().required(),
-      kindOfBeds: Joi.string().required(),
-      numberOfBed: Joi.string().required(),
-      addAnotherBed: Joi.string().required(),
+      numberOfRooms: Joi.string().required(),
+      beds: Joi.array.required(),
       noOfStayingGuests: Joi.string().required(),
-      ownerImage: Joi.string().required(),
-      cnicImage: Joi.string().required(),
-      taxFileImage: Joi.string(),
-      privateBathroom: Joi.boolean().required(),
       numberOfSofaBed: Joi.string().required(),
       guest: Joi.string().required(),
       appartmentSize: Joi.string().required(),
       basePricePerNight: Joi.string().required(),
       isParkingAvailable: Joi.string().required(),
-      parkingtype: Joi.string(),
+      privateParking: Joi.string(),
       siteParking: Joi.string(),
       reservation: Joi.string(),
       priceOfParking: Joi.string(),
-      breakfast: Joi.string().required(),
-      priceOfBreakfast: Joi.string(),
-      kindOfBreakfast: Joi.string(),
       language: Joi.string().required(),
-      facillities: Joi.string(),
-      extraBed: Joi.string(),
-      selectedNumberOfBed: Joi.string().required(),
-      extraBedAccomodateGuest: Joi.string(),
+      facilities: Joi.array(),
       amenities: Joi.string(),
+      extraBed: Joi.string(),
       propertyphoto: Joi.string().required(),
       advanceCancelfreeofCharge: Joi.string().required(),
-      checkInForm: Joi.string().required(),
-      checkOutForm: Joi.string().required(),
-      smoking: Joi.string(),
-      accomodateChildren: Joi.string(),
-      minimumStay: Joi.string().required(),
+      accidentalBookingPolicy: Joi.boolean().required(),
+      checkInFrom: Joi.string().required(),
+      checkInTo: Joi.string().required(),
+      checkOutFrom: Joi.string().required(),
+      checkOutTo: Joi.string().required(),
+      smoking: Joi.boolean(),
+      accomodateChildren: Joi.boolean(),
       pets: Joi.string(),
       chargesOfPets: Joi.string().required(),
-      addAnotherProperty: Joi.string(),
+      minimumStay: Joi.string().required(),
+      selectedNumberOfBed: Joi.string().required(),
+      extraBedAccomodateGuest: Joi.string(),
     });
     const { error } = homeInfoSchema.validate(req.body);
 
@@ -75,7 +69,7 @@ const homeInfoController = {
       similarPropertyCategory,
       propertyName,
       starRating,
-      customName,
+      name,
       contactNumber,
       streetAddress,
       addressLine2,
@@ -86,109 +80,96 @@ const homeInfoController = {
       channelManager,
       nameOfCompany,
       nameOfManager,
+      appartmentsNo,
+      customName,
       numberOfBedroom,
       numberOfLivingroom,
       numberOfBathroom,
-      numberOfAppartments,
-      typeOfAppartments,
-      kindOfBeds,
-      numberOfBed,
-      addAnotherBed,
-      ownerImage,
-      cnicImage,
-      taxFileImage,
+      numberOfRooms,
+      beds,
       noOfStayingGuests,
-      privateBathroom,
       numberOfSofaBed,
       guest,
       appartmentSize,
       basePricePerNight,
       isParkingAvailable,
-      parkingtype,
+      privateParking,
       siteParking,
       reservation,
       priceOfParking,
-      breakfast,
-      priceOfBreakfast,
-      kindOfBreakfast,
       language,
-      facillities,
-      extraBed,
-      selectedNumberOfBed,
-      extraBedAccomodateGuest,
+      facilities,
       amenities,
+      extraBed,
       propertyphoto,
       advanceCancelfreeofCharge,
-      checkInForm,
-      checkOutForm,
+      accidentalBookingPolicy,
+      checkInFrom,
+      checkInTo,
+      checkOutFrom,
+      checkOutTo,
       smoking,
       accomodateChildren,
-      minimumStay,
       pets,
       chargesOfPets,
-      addAnotherProperty,
+      minimumStay,
+      selectedNumberOfBed,
+      extraBedAccomodateGuest,
     } = req.body;
     let home;
     const hotelId = req.user._id;
     try {
       const homeInfoToRegister = new homeInfo({
-        hotelId,
         guestBook,
       similarPropertyCategory,
-        propertyName,
-        starRating,
-        customName,
-        contactNumber,
-        streetAddress,
-        addressLine2,
-        city,
-        postCode,
-        country,
-        partOfCompany,
-        channelManager,
-        nameOfCompany,
-        nameOfManager,
-        numberOfBedroom,
-        numberOfLivingroom,
-        numberOfBathroom,
-        numberOfAppartments,
-        typeOfAppartments,
-        kindOfBeds,
-        numberOfBed,
-        addAnotherBed,
-        ownerImage,
-        cnicImage,
-        taxFileImage,
-        noOfStayingGuests,
-        privateBathroom,
-        numberOfSofaBed,
-        guest,
-        appartmentSize,
-        basePricePerNight,
-        isParkingAvailable,
-        parkingtype,
-        siteParking,
-        reservation,
-        priceOfParking,
-        breakfast,
-        priceOfBreakfast,
-        kindOfBreakfast,
-        language,
-        facillities,
-        extraBed,
-        selectedNumberOfBed,
-        extraBedAccomodateGuest,
-        amenities,
-        propertyphoto,
-        advanceCancelfreeofCharge,
-        checkInForm,
-        checkOutForm,
-        smoking,
-        accomodateChildren,
-        minimumStay,
-        pets,
-        chargesOfPets,
-        addAnotherProperty,
+      propertyName,
+      starRating,
+      name,
+      contactNumber,
+      streetAddress,
+      addressLine2,
+      city,
+      postCode,
+      country,
+      partOfCompany,
+      channelManager,
+      nameOfCompany,
+      nameOfManager,
+      appartmentsNo,
+      customName,
+      numberOfBedroom,
+      numberOfLivingroom,
+      numberOfBathroom,
+      numberOfRooms,
+      beds,
+      noOfStayingGuests,
+      numberOfSofaBed,
+      guest,
+      appartmentSize,
+      basePricePerNight,
+      isParkingAvailable,
+      privateParking,
+      siteParking,
+      reservation,
+      priceOfParking,
+      language,
+      facilities,
+      amenities,
+      extraBed,
+      propertyphoto,
+      advanceCancelfreeofCharge,
+      accidentalBookingPolicy,
+      checkInFrom,
+      checkInTo,
+      checkOutFrom,
+      checkOutTo,
+      smoking,
+      accomodateChildren,
+      pets,
+      chargesOfPets,
+      minimumStay,
+      selectedNumberOfBed,
+      extraBedAccomodateGuest,
       });
 
       home = await homeInfoToRegister.save();
@@ -204,62 +185,56 @@ const homeInfoController = {
   // update
   async editHome(req, res, next) {
     const homeInfoSchema = Joi.object({
-      guestBook: Joi.string().required(),
-      similarPropertyCategory: Joi.string().required(),
-      propertyName: Joi.string().required(),
-      starRating: Joi.string().required(),
-      customName: Joi.string().required(),
-      contactNumber: Joi.string().required(),
-      streetAddress: Joi.string().required(),
-      addressLine2: Joi.string().required(),
-      city: Joi.string().required(),
-      postCode: Joi.string().required(),
-      country: Joi.string().required(),
-      partOfCompany: Joi.string().required(),
+      guestBook: Joi.string(),
+      similarPropertyCategory: Joi.string(),
+      propertyName: Joi.string(),
+      starRating: Joi.string(),
+      name: Joi.string(),
+      contactNumber: Joi.string(),
+      streetAddress: Joi.string(),
+      addressLine2: Joi.string(),
+      city: Joi.string(),
+      postCode: Joi.string(),
+      country: Joi.string(),
+      partOfCompany: Joi.string(),
       channelManager: Joi.string(),
       nameOfCompany: Joi.string(),
       nameOfManager: Joi.string(),
+      appartmentsNo: Joi.string(),
+      customName: Joi.string(),
       numberOfBedroom: Joi.string(),
       numberOfLivingroom: Joi.string(),
-      numberOfBathroom: Joi.string().required(),
-      numberOfAppartments: Joi.string().required(),
-      typeOfAppartments: Joi.string().required(),
-      kindOfBeds: Joi.string().required(),
-      numberOfBed: Joi.string().required(),
-      addAnotherBed: Joi.string().required(),
-      noOfStayingGuests: Joi.string().required(),
-      ownerImage: Joi.string().required(),
-      cnicImage: Joi.string().required(),
-      taxFileImage: Joi.string(),
-      privateBathroom: Joi.boolean().required(),
-      numberOfSofaBed: Joi.string().required(),
-      guest: Joi.string().required(),
-      appartmentSize: Joi.string().required(),
-      basePricePerNight: Joi.string().required(),
-      isParkingAvailable: Joi.string().required(),
-      parkingtype: Joi.string(),
+      numberOfBathroom: Joi.string(),
+      numberOfRooms: Joi.string(),
+      beds: Joi.array,
+      noOfStayingGuests: Joi.string(),
+      numberOfSofaBed: Joi.string(),
+      guest: Joi.string(),
+      appartmentSize: Joi.string(),
+      basePricePerNight: Joi.string(),
+      isParkingAvailable: Joi.string(),
+      privateParking: Joi.string(),
       siteParking: Joi.string(),
       reservation: Joi.string(),
       priceOfParking: Joi.string(),
-      breakfast: Joi.string().required(),
-      priceOfBreakfast: Joi.string(),
-      kindOfBreakfast: Joi.string(),
-      language: Joi.string().required(),
-      facillities: Joi.string(),
-      extraBed: Joi.string(),
-      selectedNumberOfBed: Joi.string().required(),
-      extraBedAccomodateGuest: Joi.string(),
+      language: Joi.string(),
+      facilities: Joi.array(),
       amenities: Joi.string(),
-      propertyphoto: Joi.string().required(),
-      advanceCancelfreeofCharge: Joi.string().required(),
-      checkInForm: Joi.string().required(),
-      checkOutForm: Joi.string().required(),
-      smoking: Joi.string(),
-      accomodateChildren: Joi.string(),
-      minimumStay: Joi.string().required(),
+      extraBed: Joi.string(),
+      propertyphoto: Joi.string(),
+      advanceCancelfreeofCharge: Joi.string(),
+      accidentalBookingPolicy: Joi.boolean(),
+      checkInFrom: Joi.string(),
+      checkInTo: Joi.string(),
+      checkOutFrom: Joi.string(),
+      checkOutTo: Joi.string(),
+      smoking: Joi.boolean(),
+      accomodateChildren: Joi.boolean(),
       pets: Joi.string(),
-      chargesOfPets: Joi.string().required(),
-      addAnotherProperty: Joi.string(),
+      chargesOfPets: Joi.string(),
+      minimumStay: Joi.string(),
+      selectedNumberOfBed: Joi.string(),
+      extraBedAccomodateGuest: Joi.string(),
     });
     const { error } = homeInfoSchema.validate(req.body);
 
@@ -271,7 +246,7 @@ const homeInfoController = {
       similarPropertyCategory,
       propertyName,
       starRating,
-      customName,
+      name,
       contactNumber,
       streetAddress,
       addressLine2,
@@ -282,47 +257,41 @@ const homeInfoController = {
       channelManager,
       nameOfCompany,
       nameOfManager,
+      appartmentsNo,
+      customName,
       numberOfBedroom,
       numberOfLivingroom,
       numberOfBathroom,
-      numberOfAppartments,
-      typeOfAppartments,
-      kindOfBeds,
-      numberOfBed,
-      addAnotherBed,
-      ownerImage,
-      cnicImage,
-      taxFileImage,
+      numberOfRooms,
+      beds,
       noOfStayingGuests,
-      privateBathroom,
       numberOfSofaBed,
       guest,
       appartmentSize,
       basePricePerNight,
       isParkingAvailable,
-      parkingtype,
+      privateParking,
       siteParking,
       reservation,
       priceOfParking,
-      breakfast,
-      priceOfBreakfast,
-      kindOfBreakfast,
       language,
-      facillities,
-      extraBed,
-      selectedNumberOfBed,
-      extraBedAccomodateGuest,
+      facilities,
       amenities,
+      extraBed,
       propertyphoto,
       advanceCancelfreeofCharge,
-      checkInForm,
-      checkOutForm,
+      accidentalBookingPolicy,
+      checkInFrom,
+      checkInTo,
+      checkOutFrom,
+      checkOutTo,
       smoking,
       accomodateChildren,
-      minimumStay,
       pets,
       chargesOfPets,
-      addAnotherProperty,
+      minimumStay,
+      selectedNumberOfBed,
+      extraBedAccomodateGuest,
     } = req.body;
 
     const hotelHomeId = req.user._id;
@@ -340,7 +309,7 @@ const homeInfoController = {
     if (similarPropertyCategory) existingHome.similarPropertyCategory = similarPropertyCategory;
     if (propertyName) existingHome.propertyName = propertyName;
     if (starRating) existingHome.starRating = starRating;
-    if (customName) existingHome.customName = customName;
+    if (name) existingHome.name = name;
     if (contactNumber) existingHome.contactNumber = contactNumber;
     if (streetAddress) existingHome.streetAddress = streetAddress;
     if (addressLine2) existingHome.addressLine2 = addressLine2;
@@ -348,24 +317,20 @@ const homeInfoController = {
     if (postCode) existingHome.postCode = postCode;
     if (country) existingHome.country = country;
     if (partOfCompany) existingHome.partOfCompany = partOfCompany;
-    if (channelManager) existingHome.channelManager = channelManager;
     if (nameOfCompany) existingHome.nameOfCompany = nameOfCompany;
+    if (channelManager) existingHome.channelManager = channelManager;
     if (nameOfManager) existingHome.nameOfManager = nameOfManager;
+    if (appartmentsNo) existingHome.appartmentsNo = appartmentsNo;
+    if (customName) existingHome.customName = customName;
     if (numberOfBedroom) existingHome.numberOfBedroom = numberOfBedroom;
     if (numberOfLivingroom)
       existingHome.numberOfLivingroom = numberOfLivingroom;
     if (numberOfBathroom)
       existingHome.numberOfBathroom = numberOfBathroom;
-    if (numberOfAppartments)
-      existingHome.numberOfAppartments = numberOfAppartments;
-    if (typeOfAppartments)
-      existingHome.typeOfAppartments = typeOfAppartments;
-    if (kindOfBeds) existingHome.kindOfBeds = kindOfBeds;
-    if (numberOfBed) existingHome.numberOfBed = numberOfBed;
-    if (addAnotherBed) existingHome.addAnotherBed = addAnotherBed;
-    if (ownerImage) existingHome.ownerImage = ownerImage;
-    if (cnicImage) existingHome.cnicImage = cnicImage;
-    if (taxFileImage) existingHome.taxFileImage = taxFileImage;
+    if (numberOfRooms)
+      existingHome.numberOfRooms = numberOfRooms;
+    if (beds)
+      existingHome.beds = beds;
     if (noOfStayingGuests)
       existingHome.noOfStayingGuests = noOfStayingGuests;
     if (privateBathroom) existingHome.privateBathroom = privateBathroom;
@@ -375,34 +340,34 @@ const homeInfoController = {
     if (basePricePerNight) existingHome.basePricePerNight = basePricePerNight;
     if (isParkingAvailable)
       existingHome.isParkingAvailable = isParkingAvailable;
-    if (parkingtype) existingHome.parkingtype = parkingtype;
+    if (privateParking) existingHome.privateParking = privateParking;
     if (siteParking) existingHome.siteParking = siteParking;
     if (reservation) existingHome.reservation = reservation;
     if (priceOfParking) existingHome.priceOfParking = priceOfParking;
-    if (breakfast) existingHome.breakfast = breakfast;
-    if (priceOfBreakfast)
-      existingHome.priceOfBreakfast = priceOfBreakfast;
-    if (kindOfBreakfast) existingHome.kindOfBreakfast = kindOfBreakfast;
     if (language) existingHome.language = language;
-    if (facillities) existingHome.facillities = facillities;
+    if (facilities) existingHome.facilities = facilities;
+    if (amenities)
+      existingHome.amenities = amenities;
     if (extraBed) existingHome.extraBed = extraBed;
-    if (selectedNumberOfBed)
-      existingHome.selectedNumberOfBed = selectedNumberOfBed;
-    if (extraBedAccomodateGuest)
-      existingHome.extraBedAccomodateGuest = extraBedAccomodateGuest;
-    if (amenities) existingHome.amenities = amenities;
     if (propertyphoto) existingHome.propertyphoto = propertyphoto;
-    if (advanceCancelfreeofCharge)
-      existingHome.advanceCancelfreeofCharge = advanceCancelfreeofCharge;
-    if (checkInForm) existingHome.checkInForm = checkInForm;
-    if (checkOutForm) existingHome.checkOutForm = checkOutForm;
+    if (advanceCancelfreeofCharge) existingHome.advanceCancelfreeofCharge = advanceCancelfreeofCharge;
+    if (accidentalBookingPolicy) existingHome.accidentalBookingPolicy = accidentalBookingPolicy;
+    if (checkInFrom)
+      existingHome.checkInFrom = checkInFrom;
+    if (checkInTo)
+      existingHome.checkInTo = checkInTo;
+    if (checkOutFrom)
+      existingHome.checkOutFrom = checkOutFrom;
+    if (checkOutTo)
+      existingHome.checkOutTo = checkOutTo;
     if (smoking) existingHome.smoking = smoking;
     if (accomodateChildren)
       existingHome.accomodateChildren = accomodateChildren;
-    if (minimumStay) existingHome.minimumStay = minimumStay;
     if (pets) existingHome.pets = pets;
     if (chargesOfPets) existingHome.chargesOfPets = chargesOfPets;
-    if (addAnotherProperty) existingHome.addAnotherProperty = addAnotherProperty;
+    if (minimumStay) existingHome.minimumStay = minimumStay;
+    if (selectedNumberOfBed) existingHome.selectedNumberOfBed = selectedNumberOfBed;
+    if (extraBedAccomodateGuest) existingHome.extraBedAccomodateGuest = extraBedAccomodateGuest;
 
     await existingHome.save();
 
