@@ -25,6 +25,7 @@ class travelAgencyDTO {
       this.licenseImage = agency.licenseImage;
       this.cnicImage = agency.cnicImage;
       this.taxFileImage = agency.taxFileImage;
+      this.fcmToken = agency.fcmToken;
     }
   }
   module.exports = travelAgencyDTO;

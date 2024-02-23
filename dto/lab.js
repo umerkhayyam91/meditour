@@ -31,6 +31,7 @@ class LabDTO {
     this.availabilityDuration = lab.availabilityDuration;
     this.availability = lab.availability;
     this.averageRating = lab.averageRating;
+    this.fcmToken = lab.fcmToken;
   }
 }
 

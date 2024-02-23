@@ -49,6 +49,7 @@ const labAuthController = {
       description: Joi.string().required(),
       availabilityDuration: Joi.string().required(),
       availability: Joi.boolean().required(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = labRegisterSchema.validate(req.body);
@@ -86,6 +87,7 @@ const labAuthController = {
       description,
       availabilityDuration,
       availability,
+      fcmToken
     } = req.body;
 
     // 5. store user data in db
@@ -121,6 +123,7 @@ const labAuthController = {
         description,
         availabilityDuration,
         availability,
+        fcmToken
       });
 
       lab = await labToRegister.save();
@@ -154,6 +157,7 @@ const labAuthController = {
     const labLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = labLoginSchema.validate(req.body);
@@ -162,7 +166,7 @@ const labAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     // const username = req.body.username
     // const password = req.body.password
@@ -180,6 +184,15 @@ const labAuthController = {
         };
 
         return next(error);
+      }else {
+        //update fcmToken
+        if (fcmToken && lab?.fcmToken !== fcmToken) {
+          Object.keys(lab).map((key) => (lab["fcmToken"] = fcmToken));
+
+          let update = await lab.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (lab.isVerified == false) {
         const error = {

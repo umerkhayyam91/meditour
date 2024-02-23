@@ -30,6 +30,7 @@ const authController = {
       userImage: Joi.string(),
       phone: Joi.string().required(),
       password: Joi.string().pattern(passwordPattern).required(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = userRegisterSchema.validate(req.body);
@@ -38,7 +39,7 @@ const authController = {
       return next(error);
     }
 
-    const { name, email, gender, dateOfBirth, userImage, phone, password } =
+    const { name, email, gender, dateOfBirth, userImage, phone, password, fcmToken } =
       req.body;
     const emailExists = await User.findOne({ email });
 
@@ -70,6 +71,7 @@ const authController = {
         mrNo,
         phone,
         password: hashedPassword,
+        fcmToken
       });
 
       user = await userToRegister.save();
@@ -91,6 +93,7 @@ const authController = {
     const userLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = userLoginSchema.validate(req.body);
@@ -99,7 +102,7 @@ const authController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let user;
 
@@ -115,6 +118,15 @@ const authController = {
         };
 
         return next(error);
+      }  else {
+        //update fcmToken
+        if (fcmToken && user?.fcmToken !== fcmToken) {
+          Object.keys(user).map((key) => (user["fcmToken"] = fcmToken));
+
+          let update = await user.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (user.isVerified == false) {
         const error = {

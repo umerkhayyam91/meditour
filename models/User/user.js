@@ -21,6 +21,9 @@ const userSchema = new Schema({
     ref: 'Pharmacy',
     default: []
   }],
+  fcmToken: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Users", userSchema, "Users");

@@ -25,6 +25,7 @@ class donationDTO {
       this.licenseImage = donation.licenseImage;
       this.cnicImage = donation.cnicImage;
       this.taxFileImage = donation.taxFileImage;
+      this.fcmToken = donation.fcmToken;
     }
   }
   module.exports = donationDTO;

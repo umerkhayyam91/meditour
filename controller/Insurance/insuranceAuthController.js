@@ -34,6 +34,7 @@ const insuranceAuthController = {
       licenseImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = insuranceRegisterSchema.validate(req.body);
@@ -64,6 +65,7 @@ const insuranceAuthController = {
       licenseImage,
       cnicImage,
       taxFileImage,
+      fcmToken
     } = req.body;
 
     let accessToken;
@@ -93,6 +95,7 @@ const insuranceAuthController = {
         licenseImage,
         cnicImage,
         taxFileImage,
+        fcmToken
       });
 
       insurance = await insuranceToRegister.save();
@@ -123,6 +126,7 @@ const insuranceAuthController = {
     const insuranceSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = insuranceSchema.validate(req.body);
@@ -131,7 +135,7 @@ const insuranceAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let insurance;
 
@@ -146,6 +150,15 @@ const insuranceAuthController = {
         };
 
         return next(error);
+      }else {
+        //update fcmToken
+        if (fcmToken && insurance?.fcmToken !== fcmToken) {
+          Object.keys(insurance).map((key) => (insurance["fcmToken"] = fcmToken));
+
+          let update = await insurance.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (insurance.isVerified == false) {
         const error = {

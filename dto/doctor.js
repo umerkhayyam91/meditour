@@ -34,6 +34,7 @@ class doctorDTO {
     this.pmdcImage = doc.pmdcImage;
     this.taxFileImage = doc.taxFileImage;
     this.averageRating = doc.averageRating;
+    this.fcmToken = doc.fcmToken;
   }
 }
 module.exports = doctorDTO;

@@ -25,6 +25,7 @@ class hospitalDTO {
       this.registrationImage = hospital.registrationImage;
       this.taxFileImage = hospital.taxFileImage;
       this.cnicImage = hospital.cnicImage;
+      this.fcmToken = hospital.fcmToken;
     }
   }
   

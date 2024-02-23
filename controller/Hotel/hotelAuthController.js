@@ -34,6 +34,7 @@ const hotelAuthController = {
       licenseImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = hotelRegisterSchema.validate(req.body);
@@ -64,6 +65,7 @@ const hotelAuthController = {
       licenseImage,
       cnicImage,
       taxFileImage,
+      fcmToken
     } = req.body;
 
     let accessToken;
@@ -93,6 +95,7 @@ const hotelAuthController = {
       licenseImage,
       cnicImage,
       taxFileImage,
+      fcmToken
       });
 
       hotel = await hotelToRegister.save();
@@ -120,6 +123,7 @@ const hotelAuthController = {
     const hotelSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = hotelSchema.validate(req.body);
@@ -128,7 +132,7 @@ const hotelAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let hotel;
 
@@ -143,6 +147,15 @@ const hotelAuthController = {
         };
 
         return next(error);
+      }else {
+        //update fcmToken
+        if (fcmToken && hotel?.fcmToken !== fcmToken) {
+          Object.keys(hotel).map((key) => (hotel["fcmToken"] = fcmToken));
+
+          let update = await hotel.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (hotel.isVerified == false) {
         const error = {

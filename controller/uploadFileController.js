@@ -4,12 +4,13 @@ const serviceAccount = require("../serviceAccountKey.json");
 const multer = require("multer");
 const fs = require("fs");
 const admin = require("firebase-admin");
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    storageBucket: "meditour-33ba8.appspot.com", // Replace with your actual storage bucket URL
-  });
+// admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount),
+//     storageBucket: "meditour-33ba8.appspot.com", // Replace with your actual storage bucket URL
+//   });
+const { firebase } = require("../firebase/");
 
-const bucket = admin.storage().bucket();
+const bucket = firebase.storage().bucket();
 
 
 const uploadFileController = {

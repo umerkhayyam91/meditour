@@ -40,6 +40,7 @@ const docAuthController = {
       clinicLogo: Joi.string(),
       pmdcImage: Joi.string(),
       taxFileImage: Joi.string(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = docRegisterSchema.validate(req.body);
@@ -76,6 +77,7 @@ const docAuthController = {
       clinicLogo,
       pmdcImage,
       taxFileImage,
+      fcmToken
     } = req.body;
 
     let accessToken;
@@ -111,6 +113,7 @@ const docAuthController = {
         clinicLogo,
         pmdcImage,
         taxFileImage,
+        fcmToken
       });
 
       doc = await docToRegister.save();
@@ -140,6 +143,7 @@ const docAuthController = {
     const docLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = docLoginSchema.validate(req.body);
@@ -148,7 +152,7 @@ const docAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let doc;
 
@@ -164,6 +168,15 @@ const docAuthController = {
         };
 
         return next(error);
+      } else {
+        //update fcmToken
+        if (fcmToken && doc?.fcmToken !== fcmToken) {
+          Object.keys(doc).map((key) => (doc["fcmToken"] = fcmToken));
+
+          let update = await doc.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (doc.isVerified == false) {
         const error = {

@@ -116,6 +116,9 @@ const labSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    fcmToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,

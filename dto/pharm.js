@@ -31,6 +31,7 @@ class PharmDTO {
     this.availabilityDuration = pharm.availabilityDuration;
     this.availability = pharm.availability;
     this.averageRating = pharm.averageRating;
+    this.fcmToken = pharm.fcmToken;
   }
 }
 module.exports = PharmDTO;

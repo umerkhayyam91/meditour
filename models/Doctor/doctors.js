@@ -137,6 +137,9 @@ const doctorSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    fcmToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,

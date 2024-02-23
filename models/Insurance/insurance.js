@@ -87,6 +87,9 @@ const insuranceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    fcmToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,

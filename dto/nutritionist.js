@@ -35,6 +35,7 @@ class doctorDTO {
     this.clinicLogo = doc.clinicLogo;
     this.pmdcImage = doc.pmdcImage;
     this.taxFileImage = doc.taxFileImage;
+    this.fcmToken = doc.fcmToken;
   }
 }
 module.exports = doctorDTO;

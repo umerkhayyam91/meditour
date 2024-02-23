@@ -1,30 +1,31 @@
-class travelAgencyDTO {
-    constructor(agency) {
-      this._id = agency._id;
-      this.email = agency.email;
-      this.phoneNumber = agency.phoneNumber;
-      this.password = agency.password;
-      this.companyName = agency.companyName;
-      this.companyLicenseNo = agency.companyLicenseNo;
-      this.companyEmergencyNo = agency.companyEmergencyNo;
-      this.ownerName = agency.ownerName;
-      this.cnicOrPassportNo = agency.cnicOrPassportNo;
-      this.companyAddress = agency.companyAddress;
-      this.state = agency.state;
-      this.country = agency.country;
-      this.website = agency.website;
-      this.twitter = agency.twitter;
-      this.facebook = agency.facebook;
-      this.instagram = agency.instagram;
-      this.incomeTaxNo = agency.incomeTaxNo;
-      this.salesTaxNo = agency.salesTaxNo;
-      this.bankName = agency.bankName;
-      this.accountHolderName = agency.accountHolderName;
-      this.accountNumber = agency.accountNumber;
-      this.companyLogo = agency.companyLogo;
-      this.licenseImage = agency.licenseImage;
-      this.cnicImage = agency.cnicImage;
-      this.taxFileImage = agency.taxFileImage;
+class hotelDTO {
+    constructor(hotel) {
+      this._id = hotel._id;
+      this.email = hotel.email;
+      this.phoneNumber = hotel.phoneNumber;
+      this.password = hotel.password;
+      this.companyName = hotel.companyName;
+      this.companyLicenseNo = hotel.companyLicenseNo;
+      this.companyEmergencyNo = hotel.companyEmergencyNo;
+      this.ownerName = hotel.ownerName;
+      this.cnicOrPassportNo = hotel.cnicOrPassportNo;
+      this.companyAddress = hotel.companyAddress;
+      this.state = hotel.state;
+      this.country = hotel.country;
+      this.website = hotel.website;
+      this.twitter = hotel.twitter;
+      this.facebook = hotel.facebook;
+      this.instagram = hotel.instagram;
+      this.incomeTaxNo = hotel.incomeTaxNo;
+      this.salesTaxNo = hotel.salesTaxNo;
+      this.bankName = hotel.bankName;
+      this.accountHolderName = hotel.accountHolderName;
+      this.accountNumber = hotel.accountNumber;
+      this.companyLogo = hotel.companyLogo;
+      this.licenseImage = hotel.licenseImage;
+      this.cnicImage = hotel.cnicImage;
+      this.taxFileImage = hotel.taxFileImage;
+      this.fcmToken = hotel.fcmToken;
     }
   }
-  module.exports = travelAgencyDTO;
+  module.exports = hotelDTO;

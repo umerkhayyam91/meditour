@@ -40,6 +40,7 @@ const pharmAuthController = {
       description: Joi.string().required(),
       availabilityDuration: Joi.string().required(),
       availability: Joi.boolean().required(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = pharmRegisterSchema.validate(req.body);
@@ -75,6 +76,7 @@ const pharmAuthController = {
       description,
       availabilityDuration,
       availability,
+      fcmToken
     } = req.body;
 
     let accessToken;
@@ -108,7 +110,8 @@ const pharmAuthController = {
         accountNumber,
         description,
         availabilityDuration,
-        availability
+        availability,
+        fcmToken
       });
 
       pharm = await pharmToRegister.save();
@@ -137,6 +140,7 @@ const pharmAuthController = {
     const pharmLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = pharmLoginSchema.validate(req.body);
@@ -145,7 +149,7 @@ const pharmAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let pharm;
 
@@ -160,6 +164,15 @@ const pharmAuthController = {
         };
 
         return next(error);
+      }else {
+        //update fcmToken
+        if (fcmToken && pharm?.fcmToken !== fcmToken) {
+          Object.keys(pharm).map((key) => (pharm["fcmToken"] = fcmToken));
+
+          let update = await pharm.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (pharm.isVerified == false) {
         const error = {

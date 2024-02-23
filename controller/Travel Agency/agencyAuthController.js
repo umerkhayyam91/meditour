@@ -34,6 +34,7 @@ const ambulanceAuthController = {
       licenseImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = ambulanceRegisterSchema.validate(req.body);
@@ -64,6 +65,7 @@ const ambulanceAuthController = {
       licenseImage,
       cnicImage,
       taxFileImage,
+      fcmToken
     } = req.body;
 
     let accessToken;
@@ -93,6 +95,7 @@ const ambulanceAuthController = {
         licenseImage,
         cnicImage,
         taxFileImage,
+        fcmToken
       });
 
       agency = await agencyToRegister.save();
@@ -120,6 +123,7 @@ const ambulanceAuthController = {
     const agencySchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = agencySchema.validate(req.body);
@@ -128,7 +132,7 @@ const ambulanceAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let agency;
 
@@ -143,6 +147,15 @@ const ambulanceAuthController = {
         };
 
         return next(error);
+      }else {
+        //update fcmToken
+        if (fcmToken && agency?.fcmToken !== fcmToken) {
+          Object.keys(agency).map((key) => (agency["fcmToken"] = fcmToken));
+
+          let update = await agency.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (agency.isVerified == false) {
         const error = {

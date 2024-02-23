@@ -48,10 +48,9 @@ const appartmentInfoSchema = new mongoose.Schema({
   nameOfCompany: {
     type: String,
   },
-  channelManager: {
-    type: String,
-    enum: ["I use a channel manager", "I don't use a channel manager"],
-    
+  isChannelManager: {
+    type: Boolean,
+    required: true,
   },
   nameOfManager: {
     type: String,
@@ -72,7 +71,6 @@ const appartmentInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   typeOfAppartments: {
     type: String,
     required: true,
@@ -225,10 +223,11 @@ const appartmentInfoSchema = new mongoose.Schema({
   minimumStay: {
     type: String,
     required: true,
-   },
+  },
   pets: {
     type: String,
-    enum: ["Yes", "No"],  },
+    enum: ["Yes", "No"],
+  },
   chargesOfPets: {
     type: String,
     required: true,
@@ -238,4 +237,8 @@ const appartmentInfoSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("AppartmentInfo",appartmentInfoSchema,"appartments info");
+module.exports = mongoose.model(
+  "AppartmentInfo",
+  appartmentInfoSchema,
+  "appartments info"
+);

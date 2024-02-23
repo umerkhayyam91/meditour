@@ -27,6 +27,7 @@ class rentCarDTO {
       this.cnicImage = rentCar.cnicImage;
       this.taxFileImage = rentCar.taxFileImage;
       this.averageRating = rentCar.averageRating;
+      this.fcmToken = rentCar.fcmToken;
     }
   }
   module.exports = rentCarDTO;

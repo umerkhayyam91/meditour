@@ -25,6 +25,7 @@ class ambulanceDTO {
       this.registrationImage = ambulance.registrationImage;
       this.cnicOrPassportImage = ambulance.cnicOrPassportImage;
       this.taxFileImage = ambulance.taxFileImage;
+      this.fcmToken = ambulance.fcmToken;
     }
   }
   module.exports = ambulanceDTO;

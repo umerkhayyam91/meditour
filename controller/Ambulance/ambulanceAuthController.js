@@ -34,6 +34,7 @@ const ambulanceAuthController = {
       registrationImage: Joi.string().required(),
       cnicOrPassportImage: Joi.string().required(),
       taxFileImage: Joi.string(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = ambulanceRegisterSchema.validate(req.body);
@@ -64,6 +65,7 @@ const ambulanceAuthController = {
       registrationImage,
       cnicOrPassportImage,
       taxFileImage,
+      fcmToken
     } = req.body;
 
     let accessToken;
@@ -93,6 +95,7 @@ const ambulanceAuthController = {
         registrationImage,
         cnicOrPassportImage,
         taxFileImage,
+        fcmToken
       });
 
       ambulance = await ambulanceToRegister.save();
@@ -123,6 +126,7 @@ const ambulanceAuthController = {
     const ambulanceLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = ambulanceLoginSchema.validate(req.body);
@@ -131,7 +135,7 @@ const ambulanceAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let ambulance;
 
@@ -147,6 +151,15 @@ const ambulanceAuthController = {
         };
 
         return next(error);
+      }else {
+        //update fcmToken
+        if (fcmToken && ambulance?.fcmToken !== fcmToken) {
+          Object.keys(ambulance).map((key) => (ambulance["fcmToken"] = fcmToken));
+
+          let update = await ambulance.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (ambulance.isVerified == false) {
         const error = {

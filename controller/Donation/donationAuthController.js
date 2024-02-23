@@ -34,6 +34,7 @@ const donationAuthController = {
       licenseImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = donationRegisterSchema.validate(req.body);
@@ -64,6 +65,7 @@ const donationAuthController = {
       licenseImage,
       cnicImage,
       taxFileImage,
+      fcmToken
     } = req.body;
 
     let accessToken;
@@ -93,6 +95,7 @@ const donationAuthController = {
         licenseImage,
         cnicImage,
         taxFileImage,
+        fcmToken
       });
 
       donation = await donationToRegister.save();
@@ -120,6 +123,7 @@ const donationAuthController = {
     const donationSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = donationSchema.validate(req.body);
@@ -128,7 +132,7 @@ const donationAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let donation;
 
@@ -143,6 +147,15 @@ const donationAuthController = {
         };
 
         return next(error);
+      }else {
+        //update fcmToken
+        if (fcmToken && donation?.fcmToken !== fcmToken) {
+          Object.keys(donation).map((key) => (donation["fcmToken"] = fcmToken));
+
+          let update = await donation.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (donation.isVerified == false) {
         const error = {

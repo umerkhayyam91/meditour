@@ -10,7 +10,8 @@ class UserDTO {
     this.userImage = user.userImage;
     this.password = user.password;
     this.favouriteLabs = user.favouriteLabs;
-    this.favouritePharmacies= user.favouritePharmacies;
+    this.favouritePharmacies = user.favouritePharmacies;
+    this.fcmToken = user.fcmToken;
   }
 }
 

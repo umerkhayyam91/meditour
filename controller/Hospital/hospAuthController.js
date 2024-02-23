@@ -35,6 +35,7 @@ const hospAuthController = {
       bankName: Joi.string().required(),
       accountHolderName: Joi.string().required(),
       accountNumber: Joi.string().required(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = pharmRegisterSchema.validate(req.body);
@@ -65,6 +66,7 @@ const hospAuthController = {
       bankName,
       accountHolderName,
       accountNumber,
+      fcmToken
     } = req.body;
 
     let accessToken;
@@ -94,6 +96,7 @@ const hospAuthController = {
         bankName,
         accountHolderName,
         accountNumber,
+        fcmToken
       });
 
       hospital = await hospToRegister.save();
@@ -121,6 +124,7 @@ const hospAuthController = {
     const hospLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = hospLoginSchema.validate(req.body);
@@ -129,7 +133,7 @@ const hospAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let hosp;
 
@@ -144,6 +148,15 @@ const hospAuthController = {
         };
 
         return next(error);
+      }else {
+        //update fcmToken
+        if (fcmToken && hosp?.fcmToken !== fcmToken) {
+          Object.keys(hosp).map((key) => (hosp["fcmToken"] = fcmToken));
+
+          let update = await hosp.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (hosp.isVerified == false) {
         const error = {

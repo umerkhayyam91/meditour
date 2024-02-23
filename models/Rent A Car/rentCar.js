@@ -95,6 +95,9 @@ const travelAgencySchema = new mongoose.Schema(
     averageRating: {
       type: Number,
     },
+    fcmToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,

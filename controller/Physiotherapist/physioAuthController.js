@@ -38,6 +38,7 @@ const physioAuthController = {
       clinicLogo: Joi.string(),
       pmdcImage: Joi.string(),
       taxFileImage: Joi.string(),
+      fcmToken: Joi.string(),
     });
 
     const { error } = physioRegisterSchema.validate(req.body);
@@ -74,6 +75,7 @@ const physioAuthController = {
       clinicLogo,
       pmdcImage,
       taxFileImage,
+      fcmToken
     } = req.body;
 
     let accessToken;
@@ -109,6 +111,7 @@ const physioAuthController = {
         clinicLogo,
         pmdcImage,
         taxFileImage,
+        fcmToken
       });
 
       physio = await physioToRegister.save();
@@ -138,6 +141,7 @@ const physioAuthController = {
     const physioLoginSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = physioLoginSchema.validate(req.body);
@@ -146,7 +150,7 @@ const physioAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let physio;
 
@@ -161,6 +165,15 @@ const physioAuthController = {
         };
 
         return next(error);
+      }else {
+        //update fcmToken
+        if (fcmToken && physio?.fcmToken !== fcmToken) {
+          Object.keys(physio).map((key) => (physio["fcmToken"] = fcmToken));
+
+          let update = await physio.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (physio.isVerified == false) {
         const error = {

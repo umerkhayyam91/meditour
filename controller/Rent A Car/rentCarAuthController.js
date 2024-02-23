@@ -35,6 +35,7 @@ const rentCarAuthController = {
       licenseImage: Joi.string().required(),
       cnicImage: Joi.string().required(),
       taxFileImage: Joi.string(),
+      fcmToken: Joi.string(),
     });
     const { error } = rentCarRegisterSchema.validate(req.body);
 
@@ -65,6 +66,7 @@ const rentCarAuthController = {
       licenseImage,
       cnicImage,
       taxFileImage,
+      fcmToken
     } = req.body;
 
     let accessToken;
@@ -95,6 +97,7 @@ const rentCarAuthController = {
         licenseImage,
         cnicImage,
         taxFileImage,
+        fcmToken
       });
 
       rentCar = await rentCarToRegister.save();
@@ -122,6 +125,7 @@ const rentCarAuthController = {
     const rentCarSchema = Joi.object({
       email: Joi.string().min(5).max(30).required(),
       password: Joi.string().pattern(passwordPattern),
+      fcmToken: Joi.string(),
     });
 
     const { error } = rentCarSchema.validate(req.body);
@@ -130,7 +134,7 @@ const rentCarAuthController = {
       return next(error);
     }
 
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     let rentCar;
 
@@ -145,6 +149,15 @@ const rentCarAuthController = {
         };
 
         return next(error);
+      }else {
+        //update fcmToken
+        if (fcmToken && rentCar?.fcmToken !== fcmToken) {
+          Object.keys(rentCar).map((key) => (rentCar["fcmToken"] = fcmToken));
+
+          let update = await rentCar.save();
+        } else {
+          console.log("same Token");
+        }
       }
       if (rentCar.isVerified == false) {
         const error = {

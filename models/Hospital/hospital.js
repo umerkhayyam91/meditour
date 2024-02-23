@@ -102,7 +102,10 @@ const hospitalSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false
-    }
+    },
+    fcmToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,
