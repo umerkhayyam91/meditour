@@ -11,7 +11,7 @@ const homeInfoSchema = new mongoose.Schema({
   similarPropertyCategory: {
     type: String,
     enum: [
-      "appartment ",
+      "appartmen ",
       "holiday home",
       "Villa",
       "aparthotel",
@@ -96,10 +96,16 @@ const homeInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  beds: {
-    type: String,
-    required: true,
-  },
+  beds: [{
+    bedKind: {
+      type: String,
+      required: true,
+    },
+    noOfBeds: {
+      type: String,
+      required: true,
+    }
+  }],
   noOfStayingGuests: {
     type: String,
     required: true,
@@ -145,7 +151,7 @@ const homeInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  facillities: {
+  facillities: [{
     type: String,
     enum: [
       "Free Wifi",
@@ -162,20 +168,20 @@ const homeInfoSchema = new mongoose.Schema({
       "Mosque",
       "Water Park",
     ],
-  },
-  amenities: {
+  }],
+  amenities: [{
     type: String,
     required: true,
     enum: [
-      "Air Conditiong ",
+      "Air Conditioning",
       "Bath Tub",
       "Spa Tub",
-      "Flat Screen Tv",
+      "Flat Screen TV",
       "Electric Kettle",
       "Balcony",
       "Terrace",
     ],
-  },
+  }],
   extraBed: {
     type: String,
     enum: ["yes", "no"],
@@ -200,7 +206,7 @@ const homeInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  checkOutForm: {
+  checkOutFrom: {
     type: String,
     required: true,
   },
@@ -209,12 +215,12 @@ const homeInfoSchema = new mongoose.Schema({
     required: true,
   },
   smoking: {
-    type: String,
-    enum: ["Yes", "No"],
+    type: Boolean,
+    required: true
   },
   accomodateChildren: {
-    type: String,
-    enum: ["Yes", "No"],
+    type: Boolean,
+    required: true
   },
   pets: {
     type: String,
