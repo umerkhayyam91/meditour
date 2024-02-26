@@ -5,9 +5,11 @@ const {
 } = require("../../models/All Doctors Models/availability");
 const userLabController = {
   async getNearbyDocs(req, res, next) {
+    console.log("challaaaa");
     try {
       const latitude = req.query.lat;
       const longitude = req.query.long;
+      console.log("lat......", latitude, longitude);
       const speciality = req.query.speciality;
       const name = req.query.name;
       const radius = req.query.radius || 10000;
